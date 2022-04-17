@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+
+  cetusguard:
+    container_name: "cetusguard"
+    image: "docker.io/hectorm/cetusguard:latest"
+    restart: "on-failure"
+    read_only: true
+    networks:
+      - "cetusguard"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    environment:
+      CETUSGUARD_BACKEND_ADDR: "unix:///var/run/docker.sock"
+      CETUSGUARD_FRONTEND_ADDR: "tcp://:2375"
+      CETUSGUARD_RULES: |
+        ! List containers
+        GET %API_PREFIX_CONTAINERS%/json(\?.*)?
+        ! Inspect a container
+        GET %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/json(\?.*)?
+      CETUSGUARD_LOG_LEVEL: "7"
+
+  traefik:
+    container_name: "cetusguard-traefik"
+    image: "docker.io/traefik:v2.7"
+    restart: "on-failure"
+    networks:
+      - "cetusguard"
+    ports:
+      - "127.0.0.1:3000:3000/tcp"
+      - "127.0.0.1:8080:8080/tcp"
+    command:
+      - "--api.insecure=true"
+      - "--api.dashboard=true"
+      - "--providers.docker.endpoint=tcp://cetusguard:2375"
+      - "--providers.docker.network=cetusguard"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.traefik.address=:3000/tcp"
+      - "--entrypoints.whoami.address=:8080/tcp"
+
+  whoami:
+    container_name: "cetusguard-whoami"
+    image: "docker.io/traefik/whoami:latest"
+    restart: "on-failure"
+    networks:
+      - "cetusguard"
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.whoami.rule: "PathPrefix(`/`)"
+      traefik.http.routers.whoami.entryPoints: "whoami"
+      traefik.http.routers.whoami.service: "whoami"
+      traefik.http.services.whoami.loadbalancer.server.port: "80"
+
+networks:
+
+  cetusguard:
+    name: "cetusguard"

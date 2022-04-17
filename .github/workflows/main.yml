@@ -1,0 +1,144 @@
+name: 'Main'
+
+on:
+  push:
+    tags: ['*']
+    branches: ['*']
+  pull_request:
+    branches: ['*']
+  workflow_dispatch:
+
+env:
+  GO_VERSION: '1.18'
+
+jobs:
+
+  test:
+    name: 'Test on ${{ matrix.os }}'
+    runs-on: '${{ matrix.os }}'
+    permissions:
+      contents: 'read'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'windows-latest', 'macos-latest']
+    steps:
+      - name: 'Checkout project'
+        uses: 'actions/checkout@v3'
+      - name: 'Set up Go'
+        uses: 'actions/setup-go@v3'
+        with:
+          go-version: '${{ env.GO_VERSION }}'
+      - name: 'Test'
+        run: |
+          make test
+
+  build:
+    name: 'Build for ${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}'
+    needs: 'test'
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: 'read'
+    strategy:
+      fail-fast: false
+      matrix:
+        go: [
+          { GOOS: 'linux',   GOARCH: 'amd64' },
+          { GOOS: 'linux',   GOARCH: '386'   },
+          { GOOS: 'linux',   GOARCH: 'arm64' },
+          { GOOS: 'linux',   GOARCH: 'arm'   },
+          { GOOS: 'windows', GOARCH: 'amd64' },
+          { GOOS: 'windows', GOARCH: '386'   },
+          { GOOS: 'windows', GOARCH: 'arm64' },
+          { GOOS: 'windows', GOARCH: 'arm'   },
+          { GOOS: 'darwin',  GOARCH: 'amd64' },
+          { GOOS: 'darwin',  GOARCH: 'arm64' },
+        ]
+    steps:
+      - name: 'Checkout project'
+        uses: 'actions/checkout@v3'
+      - name: 'Set up Go'
+        uses: 'actions/setup-go@v3'
+        with:
+          go-version: '${{ env.GO_VERSION }}'
+      - name: 'Build'
+        run: |
+          make build GOOS="${{ matrix.go.GOOS }}" GOARCH="${{ matrix.go.GOARCH }}"
+          file ./dist/*-*-* && gzip -nv ./dist/*-*-*
+      - name: 'Upload artifacts'
+        if: "startsWith(github.ref, 'refs/tags/')"
+        uses: 'actions/upload-artifact@v3'
+        with:
+          name: 'dist'
+          path: './dist/*.gz'
+
+  release:
+    name: 'Create GitHub release'
+    if: "startsWith(github.ref, 'refs/tags/')"
+    needs: 'build'
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: 'write'
+    steps:
+      - name: 'Download artifacts'
+        uses: 'actions/download-artifact@v3'
+        with:
+          name: 'dist'
+      - name: 'Create release'
+        run: |
+          RELEASE_ID="$(curl -fsS --proto '=https' --tlsv1.3 --globoff \
+            --url "https://api.github.com/repos/${GITHUB_REPOSITORY:?}/releases" \
+            --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            --header 'Accept: application/vnd.github.v3+json' \
+            --header 'Content-Type: application/json' \
+            --data "$(jq -rn --arg tag "${GITHUB_REF_NAME:?}" '{"name": $tag, "tag_name": $tag}')" | jq -r '.id')"
+          for asset in ./*.gz; do
+            [ -f "${asset:?}" ] || continue
+            encodedAssetName="$(jq -rn --arg v "$(basename "${asset:?}")" '$v|@uri')"
+            curl -fsS --proto '=https' --tlsv1.3 --globoff \
+              --url "https://uploads.github.com/repos/${GITHUB_REPOSITORY:?}/releases/${RELEASE_ID:?}/assets?name=${encodedAssetName:?})" \
+              --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+              --header 'Accept: application/vnd.github.v3+json' \
+              --header 'Content-Type: application/octet-stream' \
+              --data-binary "@${asset:?}" >/dev/null
+          done
+
+  docker:
+    name: 'Build and push Docker images'
+    needs: 'build'
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: 'read'
+    steps:
+      - name: 'Checkout project'
+        uses: 'actions/checkout@v3'
+      - name: 'Set up QEMU'
+        uses: 'docker/setup-qemu-action@v1'
+      - name: 'Set up Docker Buildx'
+        uses: 'docker/setup-buildx-action@v1'
+      - name: 'Login to Docker Hub'
+        if: "github.event_name != 'pull_request'"
+        uses: 'docker/login-action@v1'
+        with:
+          registry: 'docker.io'
+          username: '${{ secrets.DOCKERHUB_USERNAME }}'
+          password: '${{ secrets.DOCKERHUB_TOKEN }}'
+      - name: 'Extract metadata'
+        id: 'meta'
+        uses: 'docker/metadata-action@v3'
+        with:
+          images: |
+            docker.io/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+      - name: 'Build and push'
+        uses: 'docker/build-push-action@v2'
+        with:
+          context: './'
+          platforms: 'linux/amd64,linux/arm64/v8,linux/arm/v7'
+          tags: '${{ steps.meta.outputs.tags }}'
+          labels: '${{ steps.meta.outputs.labels }}'
+          push: "${{ github.event_name != 'pull_request' }}"

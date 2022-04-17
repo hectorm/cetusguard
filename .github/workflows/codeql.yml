@@ -1,0 +1,33 @@
+name: 'CodeQL'
+
+on:
+  push:
+    tags: ['*']
+    branches: ['*']
+  pull_request:
+    branches: ['*']
+  workflow_dispatch:
+
+jobs:
+
+  codeql:
+    name: 'CodeQL analysis'
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: 'read'
+      security-events: 'write'
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ['go']
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v3'
+      - name: 'Initialize CodeQL'
+        uses: 'github/codeql-action/init@v2'
+        with:
+          languages: '${{ matrix.language }}'
+      - name: 'Autobuild'
+        uses: 'github/codeql-action/autobuild@v2'
+      - name: 'Perform CodeQL Analysis'
+        uses: 'github/codeql-action/analyze@v2'

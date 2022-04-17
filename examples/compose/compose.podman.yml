@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+
+  cetusguard:
+    container_name: "cetusguard"
+    image: "docker.io/hectorm/cetusguard:latest"
+    restart: "on-failure"
+    read_only: true
+    networks:
+      - "cetusguard-private"
+      - "cetusguard-public"
+    volumes:
+      - "cetusguard-socket:/sockets/cetusguard/"
+      - "podmand-socket:/sockets/podman/:ro"
+    environment:
+      CETUSGUARD_BACKEND_ADDR: "unix:///sockets/podman/podman.sock"
+      CETUSGUARD_FRONTEND_ADDR: "unix:///sockets/cetusguard/cetusguard.sock"
+      CETUSGUARD_RULES: "GET,HEAD,POST,PUT,DELETE /.+"
+      CETUSGUARD_NO_DEFAULT_RULES: "1"
+      CETUSGUARD_LOG_LEVEL: "7"
+    depends_on:
+      - "podmand"
+
+  podmand:
+    container_name: "cetusguard-podmand"
+    image: "quay.io/podman/stable:latest"
+    restart: "on-failure"
+    privileged: true
+    networks:
+      - "cetusguard-private"
+    volumes:
+      - "podmand-socket:/sockets/podman/"
+    entrypoint: ["/bin/podman", "system", "service", "--time=0", "unix:///sockets/podman/podman.sock"]
+
+  podman:
+    container_name: "cetusguard-podman"
+    image: "quay.io/podman/stable:latest"
+    restart: "on-failure"
+    stop_signal: "SIGKILL"
+    networks:
+      - "cetusguard-public"
+    volumes:
+      - "cetusguard-socket:/sockets/cetusguard/:ro"
+    environment:
+      CONTAINER_HOST: "unix:///sockets/cetusguard/cetusguard.sock"
+    entrypoint: ["/bin/sh", "-c", "while :; do sleep 60; done"]
+    depends_on:
+      - "cetusguard"
+
+networks:
+
+  cetusguard-private:
+    name: "cetusguard-private"
+
+  cetusguard-public:
+    name: "cetusguard-public"
+
+volumes:
+
+  cetusguard-socket:
+    name: "cetusguard-socket"
+
+  podmand-socket:
+    name: "cetusguard-podmand-socket"

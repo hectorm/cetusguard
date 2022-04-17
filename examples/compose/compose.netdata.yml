@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+
+  cetusguard:
+    container_name: "cetusguard"
+    image: "docker.io/hectorm/cetusguard:latest"
+    restart: "on-failure"
+    read_only: true
+    networks:
+      - "cetusguard"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    environment:
+      CETUSGUARD_BACKEND_ADDR: "unix:///var/run/docker.sock"
+      CETUSGUARD_FRONTEND_ADDR: "tcp://:2375"
+      CETUSGUARD_RULES: |
+        ! Inspect a container
+        GET %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/json(\?.*)?
+      CETUSGUARD_LOG_LEVEL: "7"
+
+  netdata:
+    container_name: "cetusguard-netdata"
+    image: "docker.io/netdata/netdata:v1"
+    restart: "on-failure"
+    cap_add:
+      - "SYS_PTRACE"
+    networks:
+      - "cetusguard"
+    ports:
+      - "127.0.0.1:19999:19999/tcp"
+    volumes:
+      - "/etc/os-release:/host/etc/os-release:ro"
+      - "/etc/passwd:/host/etc/passwd:ro"
+      - "/etc/group:/host/etc/group:ro"
+      - "/proc:/host/proc:ro"
+      - "/sys:/host/sys:ro"
+    environment:
+      DOCKER_HOST: "cetusguard:2375"
+
+networks:
+
+  cetusguard:
+    name: "cetusguard"

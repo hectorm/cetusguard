@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+
+  cetusguard:
+    container_name: "cetusguard"
+    image: "docker.io/hectorm/cetusguard:latest"
+    restart: "on-failure"
+    read_only: true
+    networks:
+      - "cetusguard-private"
+      - "cetusguard-public"
+    volumes:
+      - "./rules.list:/rules.list:ro"
+      - "cetusguard-socket:/sockets/cetusguard/"
+      - "dockerd-socket:/sockets/docker/:ro"
+    environment:
+      CETUSGUARD_BACKEND_ADDR: "unix:///sockets/docker/docker.sock"
+      CETUSGUARD_FRONTEND_ADDR: "unix:///sockets/cetusguard/cetusguard.sock"
+      CETUSGUARD_RULES_FILE: "/rules.list"
+      CETUSGUARD_LOG_LEVEL: "7"
+    depends_on:
+      - "dockerd"
+
+  dockerd:
+    container_name: "cetusguard-dockerd"
+    image: "docker.io/docker:dind"
+    restart: "on-failure"
+    privileged: true
+    networks:
+      - "cetusguard-private"
+    volumes:
+      - "./certs/ca/:/certs/ca/:ro"
+      - "./certs/client/:/certs/client/:ro"
+      - "./certs/server/:/certs/server/:ro"
+      - "dockerd-socket:/sockets/docker/"
+    environment:
+      DOCKER_HOST: "unix:///sockets/docker/docker.sock"
+      DOCKER_TLS_CERTDIR: "/certs/"
+
+  docker:
+    container_name: "cetusguard-docker"
+    image: "docker.io/docker:latest"
+    restart: "on-failure"
+    stop_signal: "SIGKILL"
+    networks:
+      - "cetusguard-public"
+    volumes:
+      - "cetusguard-socket:/sockets/cetusguard/:ro"
+    environment:
+      DOCKER_HOST: "unix:///sockets/cetusguard/cetusguard.sock"
+    entrypoint: ["/bin/sh", "-c", "while :; do sleep 60; done"]
+    depends_on:
+      - "cetusguard"
+
+networks:
+
+  cetusguard-private:
+    name: "cetusguard-private"
+
+  cetusguard-public:
+    name: "cetusguard-public"
+
+volumes:
+
+  cetusguard-socket:
+    name: "cetusguard-socket"
+
+  dockerd-socket:
+    name: "cetusguard-dockerd-socket"
