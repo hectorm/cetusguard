@@ -91,7 +91,7 @@ jobs:
             --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             --header 'Accept: application/vnd.github.v3+json' \
             --header 'Content-Type: application/json' \
-            --data "$(jq -rn --arg tag "${GITHUB_REF_NAME:?}" '{"name": $tag, "tag_name": $tag}')" | jq -r '.id')"
+            --data "$(jq -rn --arg tag "${GITHUB_REF_NAME:?}" '{"name": $tag, "tag_name": $tag, "generate_release_notes": true}')" | jq -r '.id')"
           for asset in ./*.gz; do
             [ -f "${asset:?}" ] || continue
             encodedAssetName="$(jq -rn --arg v "$(basename "${asset:?}")" '$v|@uri')"
