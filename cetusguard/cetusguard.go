@@ -257,13 +257,16 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 	if res.StatusCode == 101 || resContentType == contentTypeRawStream || resContentType == contentTypeMultiplexedStream {
 		logger.Debugf("connection hijack\n")
 
+		var upCloseOnce sync.Once
+		var downCloseOnce sync.Once
+
 		up, ok := res.Body.(io.ReadWriteCloser)
 		if !ok {
 			mWri.WriteHeader(http.StatusInternalServerError)
 			return errors.New("body is not writable")
 		}
 		defer func() {
-			_ = up.Close()
+			upCloseOnce.Do(func() { _ = up.Close() })
 		}()
 
 		hj, ok := wri.(http.Hijacker)
@@ -277,7 +280,7 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 			return err
 		}
 		defer func() {
-			_ = down.Close()
+			downCloseOnce.Do(func() { _ = down.Close() })
 		}()
 
 		_, err = downRw.Write([]byte(res.Proto + " " + res.Status + "\r\n"))
@@ -303,52 +306,19 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 		var wg sync.WaitGroup
 		wg.Add(2)
 
-		wgDone := make(chan bool, 1)
-		wgErrs := make(chan error, 1)
-
 		go func() {
 			defer wg.Done()
-
-			_, err := io.Copy(down, up)
-			if err != nil {
-				if errors.Is(err, context.Canceled) || errors.Is(err, syscall.EPIPE) || errors.Is(err, syscall.ECONNRESET) {
-					wgErrs <- nil
-				} else {
-					wgErrs <- err
-				}
-				return
-			}
-
-			if c, ok := down.(*net.TCPConn); ok {
-				_ = c.CloseWrite()
-			}
+			_, _ = io.Copy(up, down)
+			upCloseOnce.Do(func() { _ = up.Close() })
 		}()
 
 		go func() {
 			defer wg.Done()
-
-			_, err := io.Copy(up, down)
-			if err != nil {
-				if errors.Is(err, context.Canceled) || errors.Is(err, syscall.EPIPE) || errors.Is(err, syscall.ECONNRESET) {
-					wgErrs <- nil
-				} else {
-					wgErrs <- err
-				}
-				return
-			}
-
-			if c, ok := up.(*net.TCPConn); ok {
-				_ = c.CloseWrite()
-			}
+			_, _ = io.Copy(down, up)
+			downCloseOnce.Do(func() { _ = down.Close() })
 		}()
 
-		go func() {
-			wg.Wait()
-			close(wgDone)
-			close(wgErrs)
-		}()
-
-		return <-wgErrs
+		wg.Wait()
 	} else {
 		for k, vv := range res.Header {
 			for _, v := range vv {

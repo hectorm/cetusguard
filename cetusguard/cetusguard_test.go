@@ -209,8 +209,7 @@ func TestCetusGuardPlainAllowedStreamReq(t *testing.T) {
 		t.Fatalf("res.StatusCode = %d, want %d", res.StatusCode, http.StatusSwitchingProtocols)
 	}
 
-	msg := make([]byte, 4)
-	_, err = io.ReadFull(res.Body, msg)
+	msg, err := io.ReadAll(res.Body)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -546,8 +545,7 @@ func TestCetusGuardTlsAuthAllowedStreamReq(t *testing.T) {
 		t.Fatalf("res.StatusCode = %d, want %d", res.StatusCode, http.StatusSwitchingProtocols)
 	}
 
-	msg := make([]byte, 4)
-	_, err = io.ReadFull(res.Body, msg)
+	msg, err := io.ReadAll(res.Body)
 	if err != nil {
 		t.Fatal(err)
 	}
