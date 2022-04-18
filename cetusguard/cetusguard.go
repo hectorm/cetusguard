@@ -309,7 +309,6 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 		go func() {
 			defer wg.Done()
 			_, _ = io.Copy(up, down)
-			upCloseOnce.Do(func() { _ = up.Close() })
 		}()
 
 		go func() {
