@@ -371,7 +371,7 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 }
 
 func (cg *Server) handleInvalidRequest(wri http.ResponseWriter, req *http.Request) {
-	logger.Warningf("denied request: %s %s\n", req.Method, req.RequestURI)
+	logger.Warningf("denied request: %s %s\n", req.Method, req.URL.RequestURI())
 
 	wri.WriteHeader(http.StatusForbidden)
 }
