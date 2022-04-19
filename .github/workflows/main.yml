@@ -23,7 +23,7 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'windows-latest', 'macos-latest']
     steps:
-      - name: 'Checkout project'
+      - name: 'Checkout'
         uses: 'actions/checkout@v3'
       - name: 'Set up Go'
         uses: 'actions/setup-go@v3'
@@ -35,7 +35,7 @@ jobs:
 
   build:
     name: 'Build for ${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}'
-    needs: 'test'
+    needs: ['test']
     runs-on: 'ubuntu-latest'
     permissions:
       contents: 'read'
@@ -55,7 +55,7 @@ jobs:
           { GOOS: 'darwin',  GOARCH: 'arm64' },
         ]
     steps:
-      - name: 'Checkout project'
+      - name: 'Checkout'
         uses: 'actions/checkout@v3'
       - name: 'Set up Go'
         uses: 'actions/setup-go@v3'
@@ -75,7 +75,7 @@ jobs:
   release:
     name: 'Create GitHub release'
     if: "startsWith(github.ref, 'refs/tags/')"
-    needs: 'build'
+    needs: ['build']
     runs-on: 'ubuntu-latest'
     permissions:
       contents: 'write'
@@ -86,31 +86,39 @@ jobs:
           name: 'dist'
       - name: 'Create release'
         run: |
-          RELEASE_ID="$(curl -fsS --proto '=https' --tlsv1.3 --globoff \
-            --url "https://api.github.com/repos/${GITHUB_REPOSITORY:?}/releases" \
+          RELEASE_STATUS="$(curl -fs --proto '=https' --tlsv1.3 --globoff \
+            --url "https://api.github.com/repos/${GITHUB_REPOSITORY:?}/releases/tags/${GITHUB_REF_NAME:?}" \
             --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             --header 'Accept: application/vnd.github.v3+json' \
             --header 'Content-Type: application/json' \
-            --data "$(jq -rn --arg tag "${GITHUB_REF_NAME:?}" '{"name": $tag, "tag_name": $tag, "generate_release_notes": true}')" | jq -r '.id')"
-          for asset in ./*.gz; do
-            [ -f "${asset:?}" ] || continue
-            encodedAssetName="$(jq -rn --arg v "$(basename "${asset:?}")" '$v|@uri')"
-            curl -fsS --proto '=https' --tlsv1.3 --globoff \
-              --url "https://uploads.github.com/repos/${GITHUB_REPOSITORY:?}/releases/${RELEASE_ID:?}/assets?name=${encodedAssetName:?})" \
+            --write-out '%{http_code}' --output /dev/null ||:)"
+          if [ "${RELEASE_STATUS:?}" != '200' ]; then
+            RELEASE_ID="$(curl -fsS --proto '=https' --tlsv1.3 --globoff \
+              --url "https://api.github.com/repos/${GITHUB_REPOSITORY:?}/releases" \
               --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
               --header 'Accept: application/vnd.github.v3+json' \
-              --header 'Content-Type: application/octet-stream' \
-              --data-binary "@${asset:?}" >/dev/null
-          done
+              --header 'Content-Type: application/json' \
+              --data "$(jq -rn --arg tag "${GITHUB_REF_NAME:?}" '{"name": $tag, "tag_name": $tag, "generate_release_notes": true}')" | jq -r '.id')"
+            for asset in ./*; do
+              [ -f "${asset:?}" ] || continue
+              encodedAssetName="$(jq -rn --arg v "$(basename "${asset:?}")" '$v|@uri')"
+              curl -fsS --proto '=https' --tlsv1.3 --globoff \
+                --url "https://uploads.github.com/repos/${GITHUB_REPOSITORY:?}/releases/${RELEASE_ID:?}/assets?name=${encodedAssetName:?})" \
+                --header 'Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+                --header 'Accept: application/vnd.github.v3+json' \
+                --header 'Content-Type: application/octet-stream' \
+                --data-binary "@${asset:?}" --output /dev/null
+            done
+          fi
 
   docker:
     name: 'Build and push Docker images'
-    needs: 'build'
+    needs: ['build']
     runs-on: 'ubuntu-latest'
     permissions:
       contents: 'read'
     steps:
-      - name: 'Checkout project'
+      - name: 'Checkout'
         uses: 'actions/checkout@v3'
       - name: 'Set up QEMU'
         uses: 'docker/setup-qemu-action@v1'
