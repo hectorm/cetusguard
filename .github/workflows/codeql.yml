@@ -7,15 +7,16 @@ on:
   pull_request:
     branches: ['*']
   schedule:
-    - cron: '25 06 * * 3'
+    - cron: '25 10 * * 3'
   workflow_dispatch:
 
 jobs:
 
-  codeql:
-    name: 'CodeQL analysis'
+  analyze:
+    name: 'Analyze'
     runs-on: 'ubuntu-latest'
     permissions:
+      actions: 'read'
       contents: 'read'
       security-events: 'write'
     strategy:
