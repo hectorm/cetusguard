@@ -11,6 +11,7 @@ bindir ?= $(exec_prefix)/bin
 
 GIT := git
 GO := go
+GOFMT := gofmt
 INSTALL := install
 
 INSTALL_PROGRAM := $(INSTALL)
@@ -47,6 +48,10 @@ run: ./dist/$(EXEC)
 ./dist/$(EXEC): $(SRCS)
 	@mkdir -p "$$(dirname '$@')"
 	'$(GO)' build $(GOFLAGS) -ldflags '$(LDFLAGS)' -o '$@' ./cmd/cetusguard/
+
+.PHONY: lint
+lint:
+	@test -z "$$('$(GOFMT)' -s -l ./ | tee /dev/stderr)"
 
 .PHONY: test
 test:
