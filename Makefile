@@ -57,6 +57,10 @@ lint:
 test:
 	'$(GO)' test -v ./...
 
+.PHONY: test-e2e
+test-e2e:
+	./e2e/run.sh
+
 .PHONY: install
 install:
 	@mkdir -p '$(DESTDIR)$(bindir)'

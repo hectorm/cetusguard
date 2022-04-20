@@ -1,0 +1,18 @@
+diff --git a/e2e/compose-env.yaml b/e2e/compose-env.yaml
+index a4c700c465..4a2f263d2e 100644
+--- a/e2e/compose-env.yaml
++++ b/e2e/compose-env.yaml
+@@ -7,2 +7,13 @@ services:
+   engine:
++      image: 'localhost.test/cetusguard:${CONTAINER_LOG_TAG:?}'
++      restart: 'on-failure'
++      logging: { driver: 'journald', options: { tag: '${CONTAINER_LOG_TAG:?}' } }
++      read_only: true
++      environment:
++        CETUSGUARD_BACKEND_ADDR: 'tcp://engine-shaded:2375'
++        CETUSGUARD_FRONTEND_ADDR: 'tcp://:2375'
++        CETUSGUARD_RULES: 'GET,HEAD,POST,PUT,DELETE /.+'
++        CETUSGUARD_LOG_LEVEL: '7'
++
++  engine-shaded:
+       image: 'docker:${TEST_ENGINE_VERSION:-stable-dind}'
