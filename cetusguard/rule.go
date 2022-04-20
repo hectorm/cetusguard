@@ -25,18 +25,20 @@ var (
 	commentLineRegex = regexp.MustCompile(`^[\t ]*(?:!.*)?$`)
 	newLineRegex     = regexp.MustCompile(`\r?\n`)
 	ruleBuiltins     = map[string]string{
-		"HOST":                 `(?:[a-zA-Z0-9][a-zA-Z0-9_.-]*)`,
-		"IPV4":                 `(?:[0-9]{1,3}(?:\.[0-9]{1,3}){3})`,
-		"IPV6":                 `(?:\[[a-fA-F0-9]{0,4}(?::[a-fA-F0-9]{0,4}){2,7}\])`,
-		"IP":                   `(?:%IPV4%|%IPV6%)`,
-		"HOST_OR_IP":           `(?:%HOST%|%IP%)`,
-		"HOST_OR_IP_WITH_PORT": `(?:%HOST_OR_IP%(?::[0-9]+)?)`,
+		"DOMAIN":       `(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)`,
+		"IPV4":         `(?:[0-9]{1,3}(?:\.[0-9]{1,3}){3})`,
+		"IPV6":         `(?:\[[a-fA-F0-9]{0,4}(?::[a-fA-F0-9]{0,4}){2,7}(?:%[a-zA-Z0-9_]+)?\])`,
+		"IP":           `(?:%IPV4%|%IPV6%)`,
+		"DOMAIN_OR_IP": `(?:%DOMAIN%|%IP%)`,
+		"HOST":         `(?:%DOMAIN_OR_IP%(?::[0-9]+)?)`,
 
-		"IMAGE_ID":         `(?:(?:[a-zA-Z0-9_-]+:)?[a-fA-F0-9]+)`,
-		"IMAGE_COMPONENT":  `(?:[a-zA-Z0-9][a-zA-Z0-9_.-]*)`,
-		"IMAGE_TAG":        `(?:[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,127})`,
-		"IMAGE_NAME":       `(?:(?:%HOST_OR_IP_WITH_PORT%)?(?:/%IMAGE_COMPONENT%)+(?::%IMAGE_TAG%)?)`,
-		"IMAGE_ID_OR_NAME": `(?:%IMAGE_ID%|%IMAGE_NAME%)`,
+		"IMAGE_ID":              `(?:[a-fA-F0-9]+)`,
+		"IMAGE_COMPONENT":       `(?:[a-zA-Z0-9]+(?:(?:\.|_{1,2}|-+)[a-zA-Z0-9]+)*)`,
+		"IMAGE_TAG":             `(?:[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,127})`,
+		"IMAGE_DIGEST":          `(?:[a-zA-Z][a-zA-Z0-9]*(?:[_.+-][a-zA-Z][a-zA-Z0-9]*)*:[a-fA-F0-9]{32,})`,
+		"IMAGE_NAME":            `(?:(?:%HOST%/)?%IMAGE_COMPONENT%(?:/%IMAGE_COMPONENT%)*)`,
+		"IMAGE_REFERENCE":       `(?:%IMAGE_NAME%(?::%IMAGE_TAG%)?(?:@%IMAGE_DIGEST%)?)`,
+		"IMAGE_ID_OR_REFERENCE": `(?:%IMAGE_ID%|%IMAGE_REFERENCE%)`,
 
 		"CONTAINER_ID":         `(?:[a-fA-F0-9]+)`,
 		"CONTAINER_NAME":       `(?:[a-zA-Z0-9][a-zA-Z0-9_.-]+)`,
