@@ -64,15 +64,15 @@ test-e2e:
 .PHONY: install
 install:
 	@mkdir -p '$(DESTDIR)$(bindir)'
-	$(INSTALL_PROGRAM) './dist/$(EXEC)' '$(DESTDIR)$(bindir)/$(EXEC)'
+	$(INSTALL_PROGRAM) './dist/$(EXEC)' '$(DESTDIR)$(bindir)/cetusguard'
 
 PHONY: installcheck
 installcheck:
-	@test -x '$(DESTDIR)$(bindir)/$(EXEC)'
+	@test -x '$(DESTDIR)$(bindir)/cetusguard'
 
 .PHONY: uninstall
 uninstall:
-	rm -fv '$(DESTDIR)$(bindir)/$(EXEC)'
+	rm -fv '$(DESTDIR)$(bindir)/cetusguard'
 
 .PHONY: clean
 clean:
