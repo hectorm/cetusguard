@@ -985,12 +985,12 @@ func TestCetusGuardInvalidFrontendAddr(t *testing.T) {
 
 var testRules = []Rule{{
 	Methods: map[string]bool{"GET": true, "HEAD": true, "POST": true},
-	Pattern: regexp.MustCompile(`^/test$`),
+	Pattern: regexp.MustCompile(`^/~foo\+bar\+\x{1F433}$`),
 }}
 
 func httpClientReq(scheme string, addr string) (*http.Request, error) {
 	body := strings.NewReader("PING")
-	req, err := http.NewRequest("POST", "/test", body)
+	req, err := http.NewRequest("POST", "/~foo+bar+%F0%9F%90%B3?foo=bar", body)
 	if err != nil {
 		return nil, err
 	}

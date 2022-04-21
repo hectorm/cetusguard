@@ -85,13 +85,13 @@ GET %API_PREFIX_INFO%
 GET %API_PREFIX_SYSTEM%/df
 
 ! Monitor events
-GET %API_PREFIX_EVENTS%(\?.*)?
+GET %API_PREFIX_EVENTS%
 
 ! List containers
-GET %API_PREFIX_CONTAINERS%/json(\?.*)?
+GET %API_PREFIX_CONTAINERS%/json
 
 ! Inspect a container 
-GET %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/json(\?.*)?
+GET %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/json
 ```
 
 ## License

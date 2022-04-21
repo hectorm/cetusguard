@@ -213,7 +213,7 @@ func (cg *Server) setIsRunning(running bool) {
 
 func (cg *Server) validateRequest(req *http.Request) bool {
 	for _, rule := range cg.Rules {
-		if rule.Methods[req.Method] && rule.Pattern.MatchString(req.URL.RequestURI()) {
+		if rule.Methods[req.Method] && rule.Pattern.MatchString(req.URL.Path) {
 			return true
 		}
 	}
@@ -222,7 +222,7 @@ func (cg *Server) validateRequest(req *http.Request) bool {
 }
 
 func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request) error {
-	logger.Debugf("allowed request: %s %s\n", req.Method, req.URL.RequestURI())
+	logger.Debugf("allowed request: %s %s\n", req.Method, req.URL.Path)
 
 	mWri := &middleware.ResponseWriter{ResponseWriter: wri}
 	if f, ok := wri.(http.Flusher); ok {
@@ -340,7 +340,7 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 }
 
 func (cg *Server) handleInvalidRequest(wri http.ResponseWriter, req *http.Request) {
-	logger.Warningf("denied request: %s %s\n", req.Method, req.URL.RequestURI())
+	logger.Warningf("denied request: %s %s\n", req.Method, req.URL.Path)
 
 	wri.WriteHeader(http.StatusForbidden)
 }
