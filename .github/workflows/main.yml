@@ -104,7 +104,6 @@ jobs:
           make build GOOS="${{ matrix.go.GOOS }}" GOARCH="${{ matrix.go.GOARCH }}"
           file ./dist/*-*-* && gzip -nv ./dist/*-*-*
       - name: 'Upload artifacts'
-        if: "startsWith(github.ref, 'refs/tags/')"
         uses: 'actions/upload-artifact@v3'
         with:
           name: 'dist'
