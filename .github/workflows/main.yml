@@ -108,6 +108,7 @@ jobs:
         with:
           name: 'dist'
           path: './dist/*.gz'
+          retention-days: 1
 
   build-push-docker:
     name: 'Build and push Docker images'
