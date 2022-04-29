@@ -44,9 +44,9 @@ These are the supported options:
   -no-default-rules
         Do not load any default rules (env CETUSGUARD_NO_DEFAULT_RULES)
   -rules value
-        Filter rules separated by new lines, can be specified multiple times (env CETUSGUARD_RULES)
+        Filter rules separated by new lines, can be specified multiple times (env CETUSGUARD_RULES) (default [])
   -rules-file value
-        Filter rules file, can be specified multiple times (env CETUSGUARD_RULES_FILE)
+        Filter rules file, can be specified multiple times (env CETUSGUARD_RULES_FILE) (default [])
   -version
         Show version number and quit
 ```

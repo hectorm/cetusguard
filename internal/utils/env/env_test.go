@@ -45,6 +45,47 @@ func TestStringEnvEmpty(t *testing.T) {
 	}
 }
 
+func TestStringSliceEnvDefault(t *testing.T) {
+	val := StringSliceEnv([]string{"BAR"}, "FOO")
+
+	if len(val) != 1 || val[0] != "BAR" {
+		t.Errorf("val = %v, want %v", val, []string{"BAR"})
+	}
+}
+
+func TestStringSliceEnvFirst(t *testing.T) {
+	t.Setenv("FOO1", "VAL1")
+	t.Setenv("FOO2", "VAL2")
+	t.Setenv("FOO3", "VAL3")
+
+	val := StringSliceEnv([]string{"BAR"}, "FOO1", "FOO2", "FOO3")
+
+	if len(val) != 1 || val[0] != "VAL1" {
+		t.Errorf("val = %v, want %v", val, []string{"VAL1"})
+	}
+}
+
+func TestStringSliceEnvSecond(t *testing.T) {
+	t.Setenv("FOO2", "VAL2")
+	t.Setenv("FOO3", "VAL3")
+
+	val := StringSliceEnv([]string{"BAR"}, "FOO1", "FOO2", "FOO3")
+
+	if len(val) != 1 || val[0] != "VAL2" {
+		t.Errorf("val = %v, want %v", val, []string{"VAL2"})
+	}
+}
+
+func TestStringSliceEnvEmpty(t *testing.T) {
+	t.Setenv("FOO", "")
+
+	val := StringSliceEnv([]string{"BAR"}, "FOO")
+
+	if len(val) != 1 || val[0] != "" {
+		t.Errorf("val = %v, want %v", val, []string{})
+	}
+}
+
 func TestIntEnvDefault(t *testing.T) {
 	val := IntEnv(0, "FOO")
 

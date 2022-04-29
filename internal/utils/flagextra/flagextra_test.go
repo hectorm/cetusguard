@@ -7,13 +7,13 @@ import (
 	"testing"
 )
 
-func TestFlagStringMultiValueZero(t *testing.T) {
+func TestFlagStringSliceValueDefault(t *testing.T) {
 	fs := flag.NewFlagSet("foobar", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
 
-	var result StringList
+	var result []string
 	fs.Var(
-		&result,
+		NewStringSliceValue([]string{"bar1", "bar2"}, &result),
 		"foo",
 		"Foo",
 	)
@@ -23,20 +23,20 @@ func TestFlagStringMultiValueZero(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var wanted StringList
+	wanted := []string{"bar1", "bar2"}
 
 	if !reflect.DeepEqual(result, wanted) {
 		t.Errorf("result = %v, want %v", result, wanted)
 	}
 }
 
-func TestFlagStringMultiValueOne(t *testing.T) {
+func TestFlagStringSliceValueOne(t *testing.T) {
 	fs := flag.NewFlagSet("foobar", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
 
-	var result StringList
+	var result []string
 	fs.Var(
-		&result,
+		NewStringSliceValue([]string{}, &result),
 		"foo",
 		"Foo",
 	)
@@ -46,21 +46,20 @@ func TestFlagStringMultiValueOne(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var wanted StringList
-	_ = wanted.Set("bar1")
+	wanted := []string{"bar1"}
 
 	if !reflect.DeepEqual(result, wanted) {
 		t.Errorf("result = %v, want %v", result, wanted)
 	}
 }
 
-func TestFlagStringMultiValueTwo(t *testing.T) {
+func TestFlagStringSliceValueTwo(t *testing.T) {
 	fs := flag.NewFlagSet("foobar", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
 
-	var result StringList
+	var result []string
 	fs.Var(
-		&result,
+		NewStringSliceValue([]string{}, &result),
 		"foo",
 		"Foo",
 	)
@@ -70,28 +69,26 @@ func TestFlagStringMultiValueTwo(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	var wanted StringList
-	_ = wanted.Set("bar1")
-	_ = wanted.Set("bar2")
+	wanted := []string{"bar1", "bar2"}
 
 	if !reflect.DeepEqual(result, wanted) {
 		t.Errorf("result = %v, want %v", result, wanted)
 	}
 }
 
-func TestFlagStringMultiValueNoValue(t *testing.T) {
+func TestFlagStringSliceValueNoValue(t *testing.T) {
 	fs := flag.NewFlagSet("foobar", flag.ContinueOnError)
 	fs.SetOutput(io.Discard)
 
-	var result StringList
+	var result []string
 	fs.Var(
-		&result,
+		NewStringSliceValue([]string{}, &result),
 		"foo",
 		"Foo",
 	)
 
 	err := fs.Parse([]string{"-foo"})
-	if err == nil || result != nil {
+	if err == nil {
 		t.Errorf("result = %v, want an error", result)
 	}
 }

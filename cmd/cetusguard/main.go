@@ -84,16 +84,16 @@ func main() {
 		"Path to the frontend TLS key (env CETUSGUARD_FRONTEND_TLS_KEY)",
 	)
 
-	var ruleList flagextra.StringList
+	var ruleList []string
 	flag.Var(
-		&ruleList,
+		flagextra.NewStringSliceValue(env.StringSliceEnv([]string{}, "CETUSGUARD_RULES"), &ruleList),
 		"rules",
 		"Filter rules separated by new lines, can be specified multiple times (env CETUSGUARD_RULES)",
 	)
 
-	var ruleFileList flagextra.StringList
+	var ruleFileList []string
 	flag.Var(
-		&ruleFileList,
+		flagextra.NewStringSliceValue(env.StringSliceEnv([]string{}, "CETUSGUARD_RULES_FILE"), &ruleFileList),
 		"rules-file",
 		"Filter rules file, can be specified multiple times (env CETUSGUARD_RULES_FILE)",
 	)
@@ -151,20 +151,6 @@ func main() {
 	}
 	for _, ruleFileElem := range ruleFileList {
 		builtRules, err := cetusguard.BuildRulesFromFilePath(ruleFileElem)
-		if err != nil {
-			logger.Critical(err)
-		}
-		rules = append(rules, builtRules...)
-	}
-	if rulesEnv, ok := os.LookupEnv("CETUSGUARD_RULES"); ok {
-		builtRules, err := cetusguard.BuildRules(rulesEnv)
-		if err != nil {
-			logger.Critical(err)
-		}
-		rules = append(rules, builtRules...)
-	}
-	if rulesFileEnv, ok := os.LookupEnv("CETUSGUARD_RULES_FILE"); ok {
-		builtRules, err := cetusguard.BuildRulesFromFilePath(rulesFileEnv)
 		if err != nil {
 			logger.Critical(err)
 		}

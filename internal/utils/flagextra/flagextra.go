@@ -1,14 +1,25 @@
 package flagextra
 
-import "fmt"
+import (
+	"encoding/json"
+)
 
-type StringList []string
-
-func (ss *StringList) String() string {
-	return fmt.Sprintf("%s", *ss)
+func NewStringSliceValue(def []string, p *[]string) *stringSliceValue {
+	*p = def
+	return (*stringSliceValue)(p)
 }
 
-func (ss *StringList) Set(v string) error {
+type stringSliceValue []string
+
+func (ss *stringSliceValue) Set(v string) error {
 	*ss = append(*ss, v)
 	return nil
+}
+
+func (ss *stringSliceValue) String() string {
+	b, err := json.Marshal(*ss)
+	if err != nil {
+		return ""
+	}
+	return string(b)
 }
