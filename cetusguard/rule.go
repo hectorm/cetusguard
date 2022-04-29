@@ -11,7 +11,7 @@ import (
 	"github.com/hectorm/cetusguard/internal/logger"
 )
 
-var RawDefaultRules = []string{
+var RawBuiltinRules = []string{
 	// Ping
 	`GET,HEAD %API_PREFIX_PING%`,
 	// Get version
@@ -24,7 +24,7 @@ var (
 	ruleLineRegex    = regexp.MustCompile(`^[\t ]*([A-Z]+(?:,[A-Z]+)*)[\t ]+(.+?)[\t ]*$`)
 	commentLineRegex = regexp.MustCompile(`^[\t ]*(?:!.*)?$`)
 	newLineRegex     = regexp.MustCompile(`\r?\n`)
-	ruleBuiltins     = map[string]string{
+	ruleVars         = map[string]string{
 		"DOMAIN":       `(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)`,
 		"IPV4":         `(?:[0-9]{1,3}(?:\.[0-9]{1,3}){3})`,
 		"IPV6":         `(?:\[[a-fA-F0-9]{0,4}(?::[a-fA-F0-9]{0,4}){2,7}(?:%[a-zA-Z0-9_]+)?\])`,
@@ -81,16 +81,16 @@ var (
 		"API_PREFIX_VERSION":      `%API_PREFIX%?/version`,
 		"API_PREFIX_VOLUMES":      `%API_PREFIX%?/volumes`,
 
-		// Private built-ins, may change in any version
+		// Private variables, may change in any version
 		"_OBJECT_ID":   `(?:[a-fA-F0-9]+)`,
 		"_OBJECT_NAME": `(?:[a-zA-Z0-9][a-zA-Z0-9_.-]+)`,
 	}
 )
 
 func init() {
-	for k, v := range ruleBuiltins {
-		for kk, vv := range ruleBuiltins {
-			ruleBuiltins[kk] = strings.ReplaceAll(vv, "%"+k+"%", v)
+	for k, v := range ruleVars {
+		for kk, vv := range ruleVars {
+			ruleVars[kk] = strings.ReplaceAll(vv, "%"+k+"%", v)
 		}
 	}
 }
@@ -116,7 +116,7 @@ func BuildRules(str string) ([]Rule, error) {
 			methods[method] = true
 		}
 
-		for k, v := range ruleBuiltins {
+		for k, v := range ruleVars {
 			patternFrag = strings.ReplaceAll(patternFrag, "%"+k+"%", v)
 		}
 		pattern, err := regexp.Compile("^" + patternFrag + "$")

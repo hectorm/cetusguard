@@ -17,7 +17,7 @@ services:
       CETUSGUARD_BACKEND_ADDR: "unix:///sockets/podman/podman.sock"
       CETUSGUARD_FRONTEND_ADDR: "unix:///sockets/cetusguard/cetusguard.sock"
       CETUSGUARD_RULES: "GET,HEAD,POST,PUT,DELETE /.+"
-      CETUSGUARD_NO_DEFAULT_RULES: "1"
+      CETUSGUARD_NO_BUILTIN_RULES: "1"
       CETUSGUARD_LOG_LEVEL: "7"
     depends_on:
       - "podmand"

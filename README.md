@@ -41,8 +41,8 @@ These are the supported options:
         Path to the frontend TLS key (env CETUSGUARD_FRONTEND_TLS_KEY)
   -log-level int
         The minimum entry level to log, from 0 to 7 (env CETUSGUARD_LOG_LEVEL) (default 6)
-  -no-default-rules
-        Do not load any default rules (env CETUSGUARD_NO_DEFAULT_RULES)
+  -no-builtin-rules
+        Do not load built-in rules (env CETUSGUARD_NO_BUILTIN_RULES)
   -rules value
         Filter rules separated by new lines, can be specified multiple times (env CETUSGUARD_RULES) (default [])
   -rules-file value
@@ -66,7 +66,7 @@ rule    = *blank methods 1*blank pattern *blank ; Rule
 
 Only requests that match the specified HTTP methods and target path regex will be allowed.
 
-There are some built-in variables specified by surrounding `%` that can be used to compose rule patterns, the full list and their values can be found in the [`rule.go`](./cetusguard/rule.go) file.
+There are some variables specified by surrounding `%` that can be used to compose rule patterns, the full list and their values can be found in the [`rule.go`](./cetusguard/rule.go) file.
 
 Lines beginning with `!` are ignored.
 

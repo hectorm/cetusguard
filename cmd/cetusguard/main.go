@@ -98,12 +98,12 @@ func main() {
 		"Filter rules file, can be specified multiple times (env CETUSGUARD_RULES_FILE)",
 	)
 
-	var noDefaultRules bool
+	var noBuiltinRules bool
 	flag.BoolVar(
-		&noDefaultRules,
-		"no-default-rules",
-		env.BoolEnv(false, "CETUSGUARD_NO_DEFAULT_RULES"),
-		"Do not load any default rules (env CETUSGUARD_NO_DEFAULT_RULES)",
+		&noBuiltinRules,
+		"no-builtin-rules",
+		env.BoolEnv(false, "CETUSGUARD_NO_BUILTIN_RULES"),
+		"Do not load built-in rules (env CETUSGUARD_NO_BUILTIN_RULES)",
 	)
 
 	var logLevel int
@@ -134,9 +134,9 @@ func main() {
 	}
 
 	var rules []cetusguard.Rule
-	if !noDefaultRules {
-		rawDefaultRules := strings.Join(cetusguard.RawDefaultRules, "\n")
-		builtRules, err := cetusguard.BuildRules(rawDefaultRules)
+	if !noBuiltinRules {
+		rawRules := strings.Join(cetusguard.RawBuiltinRules, "\n")
+		builtRules, err := cetusguard.BuildRules(rawRules)
 		if err != nil {
 			logger.Critical(err)
 		}

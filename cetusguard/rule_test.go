@@ -10,15 +10,15 @@ import (
 	"testing"
 )
 
-func TestRuleBuiltins(t *testing.T) {
+func TestRuleVars(t *testing.T) {
 	varRegex := regexp.MustCompile(`%[a-zA-Z0-9_]+%`)
-	for k, v := range ruleBuiltins {
+	for k, v := range ruleVars {
 		if varRegex.MatchString(v) {
-			t.Errorf("%s builtin contains an undefined variable: %s", k, v)
+			t.Errorf("%s variable contains an undefined variable: %s", k, v)
 			continue
 		}
 		if _, err := regexp.Compile("^" + v + "$"); err != nil {
-			t.Errorf("%s builtin could not be compiled: %v", k, err)
+			t.Errorf("%s variable could not be compiled: %v", k, err)
 			continue
 		}
 	}
@@ -35,10 +35,10 @@ func TestRuleString(t *testing.T) {
 	}
 }
 
-func TestBuildDefaultRules(t *testing.T) {
-	_, err := BuildRules(strings.Join(RawDefaultRules, "\n"))
+func TestBuildBuiltinRules(t *testing.T) {
+	_, err := BuildRules(strings.Join(RawBuiltinRules, "\n"))
 	if err != nil {
-		t.Errorf("cannot build default rules: %v", err)
+		t.Errorf("cannot build built-in rules: %v", err)
 	}
 }
 
@@ -173,7 +173,7 @@ func TestBuildRulesFromNonexistentPath(t *testing.T) {
 }
 
 func TestDomainRegex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleBuiltins["DOMAIN"] + "$")
+	re := regexp.MustCompile("^" + ruleVars["DOMAIN"] + "$")
 
 	testCases := map[string]bool{
 		"":                  false,
@@ -198,7 +198,7 @@ func TestDomainRegex(t *testing.T) {
 }
 
 func TestIpv4Regex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleBuiltins["IPV4"] + "$")
+	re := regexp.MustCompile("^" + ruleVars["IPV4"] + "$")
 
 	testCases := map[string]bool{
 		"":                false,
@@ -218,7 +218,7 @@ func TestIpv4Regex(t *testing.T) {
 }
 
 func TestIpv6Regex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleBuiltins["IPV6"] + "$")
+	re := regexp.MustCompile("^" + ruleVars["IPV6"] + "$")
 
 	testCases := map[string]bool{
 		"":                    false,
@@ -240,7 +240,7 @@ func TestIpv6Regex(t *testing.T) {
 }
 
 func TestHostRegex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleBuiltins["HOST"] + "$")
+	re := regexp.MustCompile("^" + ruleVars["HOST"] + "$")
 
 	testCases := map[string]bool{
 		"":                      false,
@@ -270,7 +270,7 @@ func TestHostRegex(t *testing.T) {
 }
 
 func TestObjectIdRegex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleBuiltins["_OBJECT_ID"] + "$")
+	re := regexp.MustCompile("^" + ruleVars["_OBJECT_ID"] + "$")
 
 	testCases := map[string]bool{
 		"":                 false,
@@ -286,7 +286,7 @@ func TestObjectIdRegex(t *testing.T) {
 }
 
 func TestObjectNameRegex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleBuiltins["_OBJECT_NAME"] + "$")
+	re := regexp.MustCompile("^" + ruleVars["_OBJECT_NAME"] + "$")
 
 	testCases := map[string]bool{
 		"":        false,
@@ -307,7 +307,7 @@ func TestObjectNameRegex(t *testing.T) {
 }
 
 func TestImageReferenceRegex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleBuiltins["IMAGE_REFERENCE"] + "$")
+	re := regexp.MustCompile("^" + ruleVars["IMAGE_REFERENCE"] + "$")
 
 	testCases := map[string]bool{
 		"":                        false,
@@ -359,7 +359,7 @@ func TestImageReferenceRegex(t *testing.T) {
 }
 
 func TestApiPrefixRegex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleBuiltins["API_PREFIX"] + "$")
+	re := regexp.MustCompile("^" + ruleVars["API_PREFIX"] + "$")
 
 	testCases := map[string]bool{
 		"":           false,
@@ -387,7 +387,7 @@ func TestApiPrefixRegex(t *testing.T) {
 }
 
 func TestApiPrefixPing(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleBuiltins["API_PREFIX_PING"] + "$")
+	re := regexp.MustCompile("^" + ruleVars["API_PREFIX_PING"] + "$")
 
 	testCases := map[string]bool{
 		"":            false,
