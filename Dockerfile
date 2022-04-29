@@ -24,4 +24,6 @@ FROM scratch AS main
 
 COPY --from=build /src/dist/cetusguard-* /bin/cetusguard
 
+ENV CETUSGUARD_FRONTEND_ADDR='tcp://:2375'
+
 ENTRYPOINT ["/bin/cetusguard"]

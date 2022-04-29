@@ -32,7 +32,7 @@ func main() {
 	flag.StringVar(
 		&frontendAddr,
 		"frontend-addr",
-		env.StringEnv("tcp://:2375", "CETUSGUARD_FRONTEND_ADDR"),
+		env.StringEnv("tcp://127.0.0.1:2375", "CETUSGUARD_FRONTEND_ADDR"),
 		"Address to bind the server to (env CETUSGUARD_FRONTEND_ADDR)",
 	)
 
