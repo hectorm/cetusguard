@@ -43,25 +43,27 @@ func TestCetusGuardStartAndStop(t *testing.T) {
 		t.Fatalf("server started, want stopped")
 	}
 
-	addr, err := tc.server.Addr()
-	if err == nil || addr != nil {
-		t.Fatalf("addr = %v, want an error", addr)
+	addrs, err := tc.server.Addrs()
+	if err == nil || addrs != nil {
+		t.Fatalf("addr = %v, want an error", addrs)
 	}
 
 	ready := make(chan any, 1)
+	err = nil
 	go func() {
-		err := tc.server.Start(ready)
-		if err != nil {
-			t.Error(err)
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	if !tc.server.IsRunning() {
 		t.Fatalf("server stopped, want started")
 	}
 
 	ready = make(chan any, 1)
+	err = nil
 	go func() {
 		err = tc.server.Start(ready)
 	}()
@@ -70,7 +72,7 @@ func TestCetusGuardStartAndStop(t *testing.T) {
 		t.Fatalf("server started, want an error")
 	}
 
-	_, err = tc.server.Addr()
+	_, err = tc.server.Addrs()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -86,13 +88,14 @@ func TestCetusGuardStartAndStop(t *testing.T) {
 	}
 
 	ready = make(chan any, 1)
+	err = nil
 	go func() {
-		err := tc.server.Start(ready)
-		if err != nil {
-			t.Error(err)
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	if !tc.server.IsRunning() {
 		t.Fatalf("server stopped, want started")
@@ -118,20 +121,21 @@ func TestCetusGuardPlainAllowedReq(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err != nil {
-			t.Error(err)
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
-
-	addr, err := tc.server.Addr()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("http", addr.String())
+	addrs, err := tc.server.Addrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req, err := httpClientReq("http", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -177,20 +181,21 @@ func TestCetusGuardPlainAllowedStreamReq(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err != nil {
-			t.Error(err)
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
-
-	addr, err := tc.server.Addr()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("http", addr.String())
+	addrs, err := tc.server.Addrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req, err := httpClientReq("http", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -237,20 +242,21 @@ func TestCetusGuardPlainDeniedReq(t *testing.T) {
 	tc.daemon.Handler = http.HandlerFunc(httpDaemonHandler)
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err != nil {
-			t.Error(err)
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
-
-	addr, err := tc.server.Addr()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("http", addr.String())
+	addrs, err := tc.server.Addrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req, err := httpClientReq("http", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -287,20 +293,21 @@ func TestCetusGuardPlainTlsAuthBackendReq(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err != nil {
-			t.Error(err)
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
-
-	addr, err := tc.server.Addr()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("http", addr.String())
+	addrs, err := tc.server.Addrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req, err := httpClientReq("http", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -346,20 +353,21 @@ func TestCetusGuardTlsAllowedReq(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err != nil {
-			t.Error(err)
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
-
-	addr, err := tc.server.Addr()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("https", addr.String())
+	addrs, err := tc.server.Addrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req, err := httpClientReq("https", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -404,20 +412,21 @@ func TestCetusGuardTlsDeniedReq(t *testing.T) {
 	tc.daemon.Handler = http.HandlerFunc(httpDaemonHandler)
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err != nil {
-			t.Error(err)
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
-
-	addr, err := tc.server.Addr()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("https", addr.String())
+	addrs, err := tc.server.Addrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req, err := httpClientReq("https", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -454,20 +463,21 @@ func TestCetusGuardTlsAuthAllowedReq(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err != nil {
-			t.Error(err)
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
-
-	addr, err := tc.server.Addr()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("https", addr.String())
+	addrs, err := tc.server.Addrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req, err := httpClientReq("https", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -513,20 +523,21 @@ func TestCetusGuardTlsAuthAllowedStreamReq(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err != nil {
-			t.Error(err)
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
-
-	addr, err := tc.server.Addr()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("https", addr.String())
+	addrs, err := tc.server.Addrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req, err := httpClientReq("https", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -573,20 +584,21 @@ func TestCetusGuardTlsAuthDeniedReq(t *testing.T) {
 	tc.daemon.Handler = http.HandlerFunc(httpDaemonHandler)
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err != nil {
-			t.Error(err)
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
-
-	addr, err := tc.server.Addr()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("https", addr.String())
+	addrs, err := tc.server.Addrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req, err := httpClientReq("https", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -623,20 +635,21 @@ func TestCetusGuardTlsAuthPlainBackendReq(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err != nil {
-			t.Error(err)
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
-
-	addr, err := tc.server.Addr()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("https", addr.String())
+	addrs, err := tc.server.Addrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req, err := httpClientReq("https", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -682,20 +695,21 @@ func TestCetusGuardExpiredDaemonCertReq(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err != nil {
-			t.Error(err)
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
-
-	addr, err := tc.server.Addr()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("https", addr.String())
+	addrs, err := tc.server.Addrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req, err := httpClientReq("https", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -732,20 +746,21 @@ func TestCetusGuardUntrustedDaemonCertReq(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err != nil {
-			t.Error(err)
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
-
-	addr, err := tc.server.Addr()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("https", addr.String())
+	addrs, err := tc.server.Addrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req, err := httpClientReq("https", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -782,20 +797,21 @@ func TestCetusGuardUntrustedClientCertReq(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err != nil {
-			t.Error(err)
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
-
-	addr, err := tc.server.Addr()
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("https", addr.String())
+	addrs, err := tc.server.Addrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req, err := httpClientReq("https", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -825,13 +841,14 @@ func TestCetusGuardInvalidBackendCacert(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err == nil {
-			t.Errorf("server started, want an error")
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
+	if err == nil {
+		t.Errorf("server started, want an error")
+	}
 
 	_ = tc.server.Stop()
 }
@@ -850,13 +867,14 @@ func TestCetusGuardInvalidBackendCert(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err == nil {
-			t.Errorf("server started, want an error")
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
+	if err == nil {
+		t.Errorf("server started, want an error")
+	}
 
 	_ = tc.server.Stop()
 }
@@ -875,13 +893,14 @@ func TestCetusGuardInvalidFrontendCacert(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err == nil {
-			t.Errorf("server started, want an error")
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
+	if err == nil {
+		t.Errorf("server started, want an error")
+	}
 
 	_ = tc.server.Stop()
 }
@@ -900,13 +919,14 @@ func TestCetusGuardInvalidFrontendCert(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err == nil {
-			t.Errorf("server started, want an error")
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
+	if err == nil {
+		t.Errorf("server started, want an error")
+	}
 
 	_ = tc.server.Stop()
 }
@@ -923,26 +943,29 @@ func TestCetusGuardInvalidBackendAddr(t *testing.T) {
 	defer tc.setup(t)()
 	tc.daemon.Handler = http.HandlerFunc(httpDaemonHandler)
 	tc.server.Rules = testRules
-
 	tc.server.Backend.Addr = "invalid"
+
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err == nil {
-			t.Errorf("server started, want an error")
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
+	if err == nil {
+		t.Errorf("server started, want an error")
+	}
 
 	tc.server.Backend.Addr = "invalid://127.0.0.1:0"
+
 	ready = make(chan any, 1)
+	err = nil
 	go func() {
-		err := tc.server.Start(ready)
-		if err == nil {
-			t.Errorf("server started, want an error")
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
+	if err == nil {
+		t.Errorf("server started, want an error")
+	}
 
 	_ = tc.server.Stop()
 }
@@ -959,28 +982,95 @@ func TestCetusGuardInvalidFrontendAddr(t *testing.T) {
 	defer tc.setup(t)()
 	tc.daemon.Handler = http.HandlerFunc(httpDaemonHandler)
 	tc.server.Rules = testRules
+	tc.server.Frontend.Addr = []string{"tcp://127.0.0.1:0", "invalid"}
 
-	tc.server.Frontend.Addr = "invalid"
 	ready := make(chan any, 1)
+	var err error
 	go func() {
-		err := tc.server.Start(ready)
-		if err == nil {
-			t.Errorf("server started, want an error")
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
+	if err == nil {
+		t.Fatalf("server started, want an error")
+	}
 
-	tc.server.Frontend.Addr = "invalid://127.0.0.1:0"
+	tc.server.Frontend.Addr = []string{"tcp://127.0.0.1:0", "invalid://127.0.0.1:0"}
+
 	ready = make(chan any, 1)
+	err = nil
 	go func() {
-		err := tc.server.Start(ready)
-		if err == nil {
-			t.Errorf("server started, want an error")
-		}
+		err = tc.server.Start(ready)
 	}()
 	<-ready
+	if err == nil {
+		t.Errorf("server started, want an error")
+	}
 
 	_ = tc.server.Stop()
+}
+
+func TestCetusGuardFrontendListenMultiple(t *testing.T) {
+	tc := &testCase{
+		daemonListenerFunc: tcpDaemonListener,
+		daemonFunc:         plainDaemon,
+		backendFunc:        plainBackend,
+		frontendFunc:       plainFrontend,
+		clientFunc:         plainClient,
+	}
+
+	defer tc.setup(t)()
+	tc.daemon.Handler = http.HandlerFunc(httpDaemonHandler)
+	tc.server.Rules = testRules
+	tc.server.Frontend.Addr = []string{"tcp://127.0.0.1:0", "tcp://127.0.0.1:0", "tcp://127.0.0.1:0", "tcp://127.0.0.1:0"}
+
+	ready := make(chan any, 1)
+	var err error
+	go func() {
+		err = tc.server.Start(ready)
+	}()
+	<-ready
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	addrs, err := tc.server.Addrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(addrs) != len(tc.server.Frontend.Addr) {
+		t.Fatalf("len(addrs) = %d, want %d", len(addrs), len(tc.server.Frontend.Addr))
+	}
+
+	for _, addr := range addrs {
+		req, err := httpClientReq("http", addr.String())
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		res, err := tc.client.Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if res.StatusCode != http.StatusOK {
+			t.Fatalf("res.StatusCode = %d, want %d", res.StatusCode, http.StatusOK)
+		}
+
+		msg, err := io.ReadAll(res.Body)
+		if err != nil {
+			t.Fatal(err)
+		}
+		_ = res.Body.Close()
+
+		if string(msg) != "PONG" {
+			t.Fatalf(`msg = "%s", want "%s"`, msg, "PONG")
+		}
+	}
+
+	err = tc.server.Stop()
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 var testRules = []Rule{{
@@ -1224,7 +1314,7 @@ func invalidCertTlsAuthBackend(listener net.Listener, tmpdir string) (*Backend, 
 
 func plainFrontend(_ string) (*Frontend, error) {
 	frontend := &Frontend{
-		Addr: "tcp://127.0.0.1:0",
+		Addr: []string{"tcp://127.0.0.1:0"},
 	}
 
 	return frontend, nil
@@ -1440,7 +1530,7 @@ func (tc *testCase) setup(t *testing.T) func() {
 	tc.server = &Server{
 		Backend:  tc.backend,
 		Frontend: tc.frontend,
-		Rules:    []Rule{},
+		Rules:    nil,
 	}
 
 	go func() {

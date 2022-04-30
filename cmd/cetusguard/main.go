@@ -28,12 +28,11 @@ func main() {
 		"Container daemon socket to connect to (env CETUSGUARD_BACKEND_ADDR, CONTAINER_HOST, DOCKER_HOST)",
 	)
 
-	var frontendAddr string
-	flag.StringVar(
-		&frontendAddr,
+	var frontendAddr []string
+	flag.Var(
+		flagextra.NewStringSliceValue(env.StringSliceEnv([]string{"tcp://127.0.0.1:2375"}, "CETUSGUARD_FRONTEND_ADDR"), &frontendAddr),
 		"frontend-addr",
-		env.StringEnv("tcp://127.0.0.1:2375", "CETUSGUARD_FRONTEND_ADDR"),
-		"Address to bind the server to (env CETUSGUARD_FRONTEND_ADDR)",
+		"Address to bind the server to, can be specified multiple times (env CETUSGUARD_FRONTEND_ADDR)",
 	)
 
 	var backendTlsCacert string
@@ -86,14 +85,14 @@ func main() {
 
 	var ruleList []string
 	flag.Var(
-		flagextra.NewStringSliceValue(env.StringSliceEnv([]string{}, "CETUSGUARD_RULES"), &ruleList),
+		flagextra.NewStringSliceValue(env.StringSliceEnv(nil, "CETUSGUARD_RULES"), &ruleList),
 		"rules",
 		"Filter rules separated by new lines, can be specified multiple times (env CETUSGUARD_RULES)",
 	)
 
 	var ruleFileList []string
 	flag.Var(
-		flagextra.NewStringSliceValue(env.StringSliceEnv([]string{}, "CETUSGUARD_RULES_FILE"), &ruleFileList),
+		flagextra.NewStringSliceValue(env.StringSliceEnv(nil, "CETUSGUARD_RULES_FILE"), &ruleFileList),
 		"rules-file",
 		"Filter rules file, can be specified multiple times (env CETUSGUARD_RULES_FILE)",
 	)

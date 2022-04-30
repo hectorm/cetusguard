@@ -31,8 +31,8 @@ These are the supported options:
         Path to the backend TLS certificate used to authenticate with the daemon (env CETUSGUARD_BACKEND_TLS_CERT)
   -backend-tls-key string
         Path to the backend TLS key used to authenticate with the daemon (env CETUSGUARD_BACKEND_TLS_KEY)
-  -frontend-addr string
-        Address to bind the server to (env CETUSGUARD_FRONTEND_ADDR) (default "tcp://:2375")
+  -frontend-addr value
+        Address to bind the server to, can be specified multiple times (env CETUSGUARD_FRONTEND_ADDR) (default ["tcp://127.0.0.1:2375"])
   -frontend-tls-cacert string
         Path to the frontend TLS certificate used to verify the identity of clients (env CETUSGUARD_FRONTEND_TLS_CACERT)
   -frontend-tls-cert string
@@ -44,9 +44,9 @@ These are the supported options:
   -no-builtin-rules
         Do not load built-in rules (env CETUSGUARD_NO_BUILTIN_RULES)
   -rules value
-        Filter rules separated by new lines, can be specified multiple times (env CETUSGUARD_RULES) (default [])
+        Filter rules separated by new lines, can be specified multiple times (env CETUSGUARD_RULES)
   -rules-file value
-        Filter rules file, can be specified multiple times (env CETUSGUARD_RULES_FILE) (default [])
+        Filter rules file, can be specified multiple times (env CETUSGUARD_RULES_FILE)
   -version
         Show version number and quit
 ```

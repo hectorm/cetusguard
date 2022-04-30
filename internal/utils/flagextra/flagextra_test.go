@@ -36,7 +36,7 @@ func TestFlagStringSliceValueOne(t *testing.T) {
 
 	var result []string
 	fs.Var(
-		NewStringSliceValue([]string{}, &result),
+		NewStringSliceValue(nil, &result),
 		"foo",
 		"Foo",
 	)
@@ -59,7 +59,7 @@ func TestFlagStringSliceValueTwo(t *testing.T) {
 
 	var result []string
 	fs.Var(
-		NewStringSliceValue([]string{}, &result),
+		NewStringSliceValue(nil, &result),
 		"foo",
 		"Foo",
 	)
@@ -82,7 +82,7 @@ func TestFlagStringSliceValueNoValue(t *testing.T) {
 
 	var result []string
 	fs.Var(
-		NewStringSliceValue([]string{}, &result),
+		NewStringSliceValue(nil, &result),
 		"foo",
 		"Foo",
 	)

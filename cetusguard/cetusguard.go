@@ -36,7 +36,7 @@ type Backend struct {
 }
 
 type Frontend struct {
-	Addr      string
+	Addr      []string
 	TlsCacert string
 	TlsCert   string
 	TlsKey    string
@@ -52,11 +52,9 @@ type Server struct {
 	backendTlsConfig  *tls.Config
 	backendHttpClient *http.Client
 
-	frontendProto       string
-	frontendHost        string
-	frontendNetListener net.Listener
-	frontendTlsConfig   *tls.Config
-	frontendHttpServer  *http.Server
+	frontendNetListeners []net.Listener
+	frontendTlsConfig    *tls.Config
+	frontendHttpServer   *http.Server
 
 	runningState int32
 	mu           sync.Mutex
@@ -76,12 +74,7 @@ func (cg *Server) Start(ready chan<- any) error {
 	defer cg.setIsRunning(false)
 
 	var err error
-
 	cg.backendProto, cg.backendHost, err = parseAddr(cg.Backend.Addr)
-	if err != nil {
-		return err
-	}
-	cg.frontendProto, cg.frontendHost, err = parseAddr(cg.Frontend.Addr)
 	if err != nil {
 		return err
 	}
@@ -90,23 +83,12 @@ func (cg *Server) Start(ready chan<- any) error {
 	if err != nil {
 		return err
 	}
-	cg.frontendTlsConfig, err = serverTlsConfig(cg.Frontend.TlsCacert, cg.Frontend.TlsCert, cg.Frontend.TlsKey)
-	if err != nil {
-		return err
-	}
-
-	cg.frontendNetListener, err = net.Listen(cg.frontendProto, cg.frontendHost)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		_ = cg.frontendNetListener.Close()
-	}()
 
 	backendDialer := &net.Dialer{
 		Timeout:   30 * time.Second,
 		KeepAlive: 90 * time.Second,
 	}
+
 	cg.backendHttpClient = &http.Client{
 		Timeout: 30 * time.Second,
 		Transport: &http.Transport{
@@ -120,6 +102,29 @@ func (cg *Server) Start(ready chan<- any) error {
 				return backendDialer.DialContext(ctx, cg.backendProto, cg.backendHost)
 			},
 		},
+	}
+
+	cg.frontendNetListeners = nil
+	for _, addr := range cg.Frontend.Addr {
+		proto, host, err := parseAddr(addr)
+		if err != nil {
+			return err
+		}
+		l, err := net.Listen(proto, host)
+		if err != nil {
+			return err
+		}
+		cg.frontendNetListeners = append(cg.frontendNetListeners, l)
+	}
+	defer func() {
+		for _, l := range cg.frontendNetListeners {
+			_ = l.Close()
+		}
+	}()
+
+	cg.frontendTlsConfig, err = serverTlsConfig(cg.Frontend.TlsCacert, cg.Frontend.TlsCert, cg.Frontend.TlsKey)
+	if err != nil {
+		return err
 	}
 
 	cg.frontendHttpServer = &http.Server{
@@ -141,7 +146,7 @@ func (cg *Server) Start(ready chan<- any) error {
 		}),
 	}
 
-	done := make(chan error, 1)
+	chErr := make(chan error, 1)
 
 	go func() {
 		chSig := make(chan os.Signal, 1)
@@ -150,25 +155,28 @@ func (cg *Server) Start(ready chan<- any) error {
 		sig := <-chSig
 		logger.Infof("%v signal received\n", sig)
 
-		done <- cg.Stop()
+		chErr <- cg.Stop()
 	}()
 
-	logger.Infof("serve on %s\n", cg.frontendNetListener.Addr())
+	for _, l := range cg.frontendNetListeners {
+		logger.Infof("serve on %s\n", l.Addr())
+		go func(l net.Listener) {
+			if cg.frontendTlsConfig != nil && l.Addr().Network() != "unix" {
+				err = cg.frontendHttpServer.ServeTLS(l, "", "")
+			} else {
+				err = cg.frontendHttpServer.Serve(l)
+			}
+			if err != http.ErrServerClosed {
+				chErr <- err
+			}
+		}(l)
+	}
 
 	cg.setIsRunning(true)
-	closeOnce.Do(func() { close(ready) })
 	unlockOnce.Do(cg.mu.Unlock)
+	closeOnce.Do(func() { close(ready) })
 
-	if cg.frontendTlsConfig != nil {
-		err = cg.frontendHttpServer.ServeTLS(cg.frontendNetListener, "", "")
-	} else {
-		err = cg.frontendHttpServer.Serve(cg.frontendNetListener)
-	}
-	if err != http.ErrServerClosed {
-		done <- err
-	}
-
-	return <-done
+	return <-chErr
 }
 
 func (cg *Server) Stop() error {
@@ -187,16 +195,20 @@ func (cg *Server) Stop() error {
 	err := cg.frontendHttpServer.Shutdown(ctx)
 
 	logger.Infof("exit\n")
-
 	return err
 }
 
-func (cg *Server) Addr() (net.Addr, error) {
+func (cg *Server) Addrs() ([]net.Addr, error) {
 	if !cg.IsRunning() {
 		return nil, errors.New("server is not running")
 	}
 
-	return cg.frontendNetListener.Addr(), nil
+	var addr []net.Addr
+	for _, l := range cg.frontendNetListeners {
+		addr = append(addr, l.Addr())
+	}
+
+	return addr, nil
 }
 
 func (cg *Server) IsRunning() bool {

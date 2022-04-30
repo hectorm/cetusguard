@@ -4,20 +4,31 @@ import (
 	"encoding/json"
 )
 
-func NewStringSliceValue(def []string, p *[]string) *stringSliceValue {
-	*p = def
-	return (*stringSliceValue)(p)
+func NewStringSliceValue(val []string, p *[]string) *stringSliceValue {
+	*p = val
+	return &stringSliceValue{
+		val: p,
+		def: true,
+	}
 }
 
-type stringSliceValue []string
+type stringSliceValue struct {
+	val *[]string
+	def bool
+}
 
 func (ss *stringSliceValue) Set(v string) error {
-	*ss = append(*ss, v)
+	if ss.def {
+		ss.def = false
+		*ss.val = []string{v}
+	} else {
+		*ss.val = append(*ss.val, v)
+	}
 	return nil
 }
 
 func (ss *stringSliceValue) String() string {
-	b, err := json.Marshal(*ss)
+	b, err := json.Marshal(ss.val)
 	if err != nil {
 		return ""
 	}
