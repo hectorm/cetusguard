@@ -50,7 +50,7 @@ jobs:
           check-latest: true
       - name: 'Test'
         run: |
-          make test
+          make test test-race
 
   test-e2e:
     name: 'Test e2e'

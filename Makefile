@@ -57,6 +57,10 @@ lint:
 test:
 	'$(GO)' test -v ./...
 
+.PHONY: test-race
+test-race:
+	CGO_ENABLED=1 '$(GO)' test -v -race ./...
+
 .PHONY: test-e2e
 test-e2e:
 	./e2e/run.sh
