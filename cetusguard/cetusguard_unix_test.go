@@ -27,14 +27,13 @@ func TestCetusGuardSocketAllowedReq(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
-	var err error
 	go func() {
-		err = tc.server.Start(ready)
+		err := tc.server.Start(ready)
+		if err != nil {
+			t.Error(err)
+		}
 	}()
 	<-ready
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	addrs, err := tc.server.Addrs()
 	if err != nil {
@@ -87,14 +86,13 @@ func TestCetusGuardSocketAllowedStreamReq(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
-	var err error
 	go func() {
-		err = tc.server.Start(ready)
+		err := tc.server.Start(ready)
+		if err != nil {
+			t.Error(err)
+		}
 	}()
 	<-ready
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	addrs, err := tc.server.Addrs()
 	if err != nil {
@@ -148,14 +146,13 @@ func TestCetusGuardSocketDeniedReq(t *testing.T) {
 	tc.daemon.Handler = http.HandlerFunc(httpDaemonHandler)
 
 	ready := make(chan any, 1)
-	var err error
 	go func() {
-		err = tc.server.Start(ready)
+		err := tc.server.Start(ready)
+		if err != nil {
+			t.Error(err)
+		}
 	}()
 	<-ready
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	addrs, err := tc.server.Addrs()
 	if err != nil {
@@ -199,14 +196,13 @@ func TestCetusGuardSocketTlsAuthBackendReq(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
-	var err error
 	go func() {
-		err = tc.server.Start(ready)
+		err := tc.server.Start(ready)
+		if err != nil {
+			t.Error(err)
+		}
 	}()
 	<-ready
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	addrs, err := tc.server.Addrs()
 	if err != nil {
@@ -259,14 +255,13 @@ func TestCetusGuardTlsAuthSocketBackendReq(t *testing.T) {
 	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
-	var err error
 	go func() {
-		err = tc.server.Start(ready)
+		err := tc.server.Start(ready)
+		if err != nil {
+			t.Error(err)
+		}
 	}()
 	<-ready
-	if err != nil {
-		t.Fatal(err)
-	}
 
 	addrs, err := tc.server.Addrs()
 	if err != nil {
