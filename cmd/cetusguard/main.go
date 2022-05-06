@@ -102,7 +102,7 @@ func main() {
 		&noBuiltinRules,
 		"no-builtin-rules",
 		env.BoolEnv(false, "CETUSGUARD_NO_BUILTIN_RULES"),
-		"Do not load built-in rules (env CETUSGUARD_NO_BUILTIN_RULES)",
+		"Do not load the built-in rules (env CETUSGUARD_NO_BUILTIN_RULES)",
 	)
 
 	var logLevel int

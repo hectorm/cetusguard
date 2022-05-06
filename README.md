@@ -42,7 +42,7 @@ These are the supported options:
   -log-level int
         The minimum entry level to log, from 0 to 7 (env CETUSGUARD_LOG_LEVEL) (default 6)
   -no-builtin-rules
-        Do not load built-in rules (env CETUSGUARD_NO_BUILTIN_RULES)
+        Do not load the built-in rules (env CETUSGUARD_NO_BUILTIN_RULES)
   -rules value
         Filter rules separated by new lines, can be specified multiple times (env CETUSGUARD_RULES)
   -rules-file value
