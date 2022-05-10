@@ -5,7 +5,7 @@ export LC_ALL='C'
 
 SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "${0:?}")" && pwd -P)"
 
-CLI_TREEISH='e7c0659ca607d5a6deb42f3c7f8e81ee77b54c10'
+CLI_TREEISH='v20.10.15'
 CLI_REMOTE='https://github.com/docker/cli.git'
 CLI_PATCH="${SCRIPT_DIR:?}/cli.patch"
 CLI_DIR="$(mktemp -d)"

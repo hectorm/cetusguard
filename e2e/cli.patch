@@ -1,5 +1,5 @@
 diff --git a/e2e/compose-env.yaml b/e2e/compose-env.yaml
-index a4c700c465..4a2f263d2e 100644
+index a4c700c465..5d4a35c0d0 100644
 --- a/e2e/compose-env.yaml
 +++ b/e2e/compose-env.yaml
 @@ -7,2 +7,13 @@ services:
