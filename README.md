@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./resources/logo/CetusGuard-Color-Reduced.svg" height="320">
+</p>
+
 # CetusGuard
 
 CetusGuard is a tool that allows to protect the Docker daemon socket by filtering the calls to its API endpoints.
