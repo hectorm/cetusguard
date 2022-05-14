@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./resources/logo/CetusGuard-Color-Reduced.svg" height="320">
+  <img src="./resources/logo/CetusGuard-Color-Reduced.svg" height="192">
 </p>
 
 # CetusGuard
