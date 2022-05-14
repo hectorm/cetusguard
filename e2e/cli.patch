@@ -4,9 +4,9 @@ index a4c700c465..5d4a35c0d0 100644
 +++ b/e2e/compose-env.yaml
 @@ -7,2 +7,13 @@ services:
    engine:
-+      image: 'localhost.test/cetusguard:${CONTAINER_LOG_TAG:?}'
++      image: 'localhost.test/cetusguard:${TEST_ID:?}'
 +      restart: 'on-failure'
-+      logging: { driver: 'journald', options: { tag: '${CONTAINER_LOG_TAG:?}' } }
++      logging: { driver: 'journald', options: { tag: '${TEST_ID:?}' } }
 +      read_only: true
 +      environment:
 +        CETUSGUARD_BACKEND_ADDR: 'tcp://engine-shaded:2375'
