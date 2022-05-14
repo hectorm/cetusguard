@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -363,7 +364,7 @@ func clientTlsConfig(cacertPath string, certPath string, keyPath string) (*tls.C
 
 	var cacertPool *x509.CertPool
 	if cacertPath != "" {
-		cacert, err := os.ReadFile(cacertPath)
+		cacert, err := os.ReadFile(filepath.Clean(cacertPath))
 		if err != nil {
 			return nil, err
 		}
@@ -399,7 +400,7 @@ func serverTlsConfig(cacertPath string, certPath string, keyPath string) (*tls.C
 	var clientAuth tls.ClientAuthType
 	var cacertPool *x509.CertPool
 	if cacertPath != "" {
-		cacert, err := os.ReadFile(cacertPath)
+		cacert, err := os.ReadFile(filepath.Clean(cacertPath))
 		if err != nil {
 			return nil, err
 		}

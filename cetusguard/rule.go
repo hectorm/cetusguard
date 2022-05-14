@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -136,7 +137,7 @@ func BuildRules(str string) ([]Rule, error) {
 func BuildRulesFromFilePath(path string) ([]Rule, error) {
 	var rules []Rule
 
-	file, err := os.Open(path)
+	file, err := os.Open(filepath.Clean(path))
 	if err != nil {
 		return nil, err
 	}
