@@ -89,7 +89,10 @@ jobs:
           make test-e2e
 
   build:
-    name: 'Build for ${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}${{ matrix.go.GOARM }}'
+    name: "Build for \
+      ${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}\
+      ${{ matrix.go.GOARM != '' && format('v{0}', matrix.go.GOARM) || '' }}\
+    "
     needs: ['test', 'test-race', 'test-e2e']
     runs-on: 'ubuntu-latest'
     permissions:

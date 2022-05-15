@@ -30,7 +30,11 @@ GOFLAGS := -trimpath
 LDFLAGS := -s -w -X "main.version=$(VERSION)"
 
 SRCS := $(shell '$(GIT)' ls-files '*.go' 2>/dev/null ||:)
-EXEC := cetusguard-$(GOOS)-$(GOARCH)$(GOARM)
+EXEC := cetusguard-$(GOOS)-$(GOARCH)
+
+ifneq ($(GOARM),)
+	EXEC := $(addsuffix v$(GOARM), $(EXEC))
+endif
 
 ifeq ($(GOOS),windows)
 	EXEC := $(addsuffix .exe, $(EXEC))
