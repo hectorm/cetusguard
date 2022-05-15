@@ -1222,7 +1222,7 @@ func tlsBackend(listener net.Listener, tmpdir string) (*Backend, error) {
 	}
 
 	clientCacertPath := filepath.Join(tmpdir, "client-ca.pem")
-	if err := os.WriteFile(clientCacertPath, testdata.TestTlsCacert, 0644); err != nil {
+	if err := os.WriteFile(clientCacertPath, testdata.TestTlsCacert, 0600); err != nil {
 		return nil, err
 	}
 	backend.TlsCacert = clientCacertPath
@@ -1237,7 +1237,7 @@ func invalidCacertTlsBackend(listener net.Listener, tmpdir string) (*Backend, er
 	}
 
 	clientCacertPath := filepath.Join(tmpdir, "client-ca.pem")
-	if err := os.WriteFile(clientCacertPath, testdata.TestInvalidTlsCacert, 0644); err != nil {
+	if err := os.WriteFile(clientCacertPath, testdata.TestInvalidTlsCacert, 0600); err != nil {
 		return nil, err
 	}
 	backend.TlsCacert = clientCacertPath
@@ -1252,7 +1252,7 @@ func tlsAuthBackend(listener net.Listener, tmpdir string) (*Backend, error) {
 	}
 
 	clientCertPath := filepath.Join(tmpdir, "client-cert.pem")
-	if err := os.WriteFile(clientCertPath, testdata.TestTlsClientCert, 0644); err != nil {
+	if err := os.WriteFile(clientCertPath, testdata.TestTlsClientCert, 0600); err != nil {
 		return nil, err
 	}
 	backend.TlsCert = clientCertPath
@@ -1273,7 +1273,7 @@ func invalidCertTlsAuthBackend(listener net.Listener, tmpdir string) (*Backend, 
 	}
 
 	clientCertPath := filepath.Join(tmpdir, "client-cert.pem")
-	if err := os.WriteFile(clientCertPath, testdata.TestInvalidTlsClientCert, 0644); err != nil {
+	if err := os.WriteFile(clientCertPath, testdata.TestInvalidTlsClientCert, 0600); err != nil {
 		return nil, err
 	}
 	backend.TlsCert = clientCertPath
@@ -1302,7 +1302,7 @@ func tlsFrontend(tmpdir string) (*Frontend, error) {
 	}
 
 	serverCertPath := filepath.Join(tmpdir, "server-cert.pem")
-	if err := os.WriteFile(serverCertPath, testdata.TestTlsServerCert, 0644); err != nil {
+	if err := os.WriteFile(serverCertPath, testdata.TestTlsServerCert, 0600); err != nil {
 		return nil, err
 	}
 	frontend.TlsCert = serverCertPath
@@ -1323,7 +1323,7 @@ func invalidCertTlsFrontend(tmpdir string) (*Frontend, error) {
 	}
 
 	serverCertPath := filepath.Join(tmpdir, "server-cert.pem")
-	if err := os.WriteFile(serverCertPath, testdata.TestInvalidTlsServerCert, 0644); err != nil {
+	if err := os.WriteFile(serverCertPath, testdata.TestInvalidTlsServerCert, 0600); err != nil {
 		return nil, err
 	}
 	frontend.TlsCert = serverCertPath
@@ -1344,7 +1344,7 @@ func tlsAuthFrontend(tmpdir string) (*Frontend, error) {
 	}
 
 	serverCacertPath := filepath.Join(tmpdir, "server-ca.pem")
-	if err := os.WriteFile(serverCacertPath, testdata.TestTlsCacert, 0644); err != nil {
+	if err := os.WriteFile(serverCacertPath, testdata.TestTlsCacert, 0600); err != nil {
 		return nil, err
 	}
 	frontend.TlsCacert = serverCacertPath
@@ -1359,7 +1359,7 @@ func invalidCacertTlsAuthFrontend(tmpdir string) (*Frontend, error) {
 	}
 
 	serverCacertPath := filepath.Join(tmpdir, "server-ca.pem")
-	if err := os.WriteFile(serverCacertPath, testdata.TestInvalidTlsCacert, 0644); err != nil {
+	if err := os.WriteFile(serverCacertPath, testdata.TestInvalidTlsCacert, 0600); err != nil {
 		return nil, err
 	}
 	frontend.TlsCacert = serverCacertPath

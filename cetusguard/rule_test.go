@@ -102,7 +102,7 @@ func TestBuildRulesFromFilePath(t *testing.T) {
 
 	tmpdir := t.TempDir()
 	path := filepath.Join(tmpdir, "rules.list")
-	if err := os.WriteFile(path, rawRules, 0644); err != nil {
+	if err := os.WriteFile(path, rawRules, 0600); err != nil {
 		t.Fatal(err)
 	}
 
@@ -121,7 +121,7 @@ func TestBuildInvalidRulesFromFilePath(t *testing.T) {
 
 	tmpdir := t.TempDir()
 	path := filepath.Join(tmpdir, "rules.list")
-	if err := os.WriteFile(path, rawRules, 0644); err != nil {
+	if err := os.WriteFile(path, rawRules, 0600); err != nil {
 		t.Fatal(err)
 	}
 
@@ -134,7 +134,7 @@ func TestBuildInvalidRulesFromFilePath(t *testing.T) {
 func TestBuildRulesFromSymlinkPath(t *testing.T) {
 	tmpdir := t.TempDir()
 	path := filepath.Join(tmpdir, "rules.list")
-	if err := os.WriteFile(path, []byte(""), 0644); err != nil {
+	if err := os.WriteFile(path, []byte(""), 0600); err != nil {
 		t.Fatal(err)
 	}
 
@@ -152,7 +152,7 @@ func TestBuildRulesFromSymlinkPath(t *testing.T) {
 func TestBuildRulesFromDirectoryPath(t *testing.T) {
 	tmpdir := t.TempDir()
 	path := filepath.Join(tmpdir, "rules")
-	if err := os.Mkdir(path, 0755); err != nil {
+	if err := os.Mkdir(path, 0700); err != nil {
 		log.Fatal(err)
 	}
 
