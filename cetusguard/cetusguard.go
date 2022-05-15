@@ -161,17 +161,17 @@ func (cg *Server) Start(ready chan<- any) error {
 
 	for _, l := range cg.frontendNetListeners {
 		logger.Infof("serve on %s\n", l.Addr())
-		go func(l net.Listener) {
+		go func(l net.Listener, srv *http.Server, tls *tls.Config) {
 			var err error
-			if cg.frontendTlsConfig != nil && l.Addr().Network() != "unix" {
-				err = cg.frontendHttpServer.ServeTLS(l, "", "")
+			if tls != nil && l.Addr().Network() != "unix" {
+				err = srv.ServeTLS(l, "", "")
 			} else {
-				err = cg.frontendHttpServer.Serve(l)
+				err = srv.Serve(l)
 			}
 			if err != http.ErrServerClosed {
 				chErr <- err
 			}
-		}(l)
+		}(l, cg.frontendHttpServer, cg.frontendTlsConfig)
 	}
 
 	cg.setIsRunning(true)
