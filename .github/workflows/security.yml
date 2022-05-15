@@ -1,4 +1,4 @@
-name: 'CodeQL'
+name: 'Security'
 
 on:
   push:
@@ -12,8 +12,8 @@ on:
 
 jobs:
 
-  analyze:
-    name: 'Analyze'
+  analyze-codeql:
+    name: 'CodeQL analysis'
     runs-on: 'ubuntu-latest'
     permissions:
       actions: 'read'
@@ -32,5 +32,24 @@ jobs:
           languages: '${{ matrix.language }}'
       - name: 'Autobuild'
         uses: 'github/codeql-action/autobuild@v2'
-      - name: 'Perform CodeQL Analysis'
+      - name: 'Perform CodeQL analysis'
         uses: 'github/codeql-action/analyze@v2'
+
+  analyze-gosec:
+    name: 'Gosec analysis'
+    runs-on: 'ubuntu-latest'
+    permissions:
+      actions: 'read'
+      contents: 'read'
+      security-events: 'write'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v3'
+      - name: 'Perform Gosec analysis'
+        uses: 'securego/gosec@v2.11.0'
+        with:
+          args: '-no-fail -tests -fmt sarif -out ./results.sarif ./...'
+      - name: 'Upload SARIF file'
+        uses: 'github/codeql-action/upload-sarif@v2'
+        with:
+          sarif_file: './results.sarif'
