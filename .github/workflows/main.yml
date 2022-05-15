@@ -89,7 +89,7 @@ jobs:
           make test-e2e
 
   build:
-    name: 'Build for ${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}'
+    name: 'Build for ${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}${{ matrix.go.GOARM }}'
     needs: ['test', 'test-race', 'test-e2e']
     runs-on: 'ubuntu-latest'
     permissions:
@@ -101,11 +101,12 @@ jobs:
           { GOOS: 'linux',   GOARCH: 'amd64' },
           { GOOS: 'linux',   GOARCH: '386'   },
           { GOOS: 'linux',   GOARCH: 'arm64' },
-          { GOOS: 'linux',   GOARCH: 'arm'   },
+          { GOOS: 'linux',   GOARCH: 'arm',   GOARM: '6' },
+          { GOOS: 'linux',   GOARCH: 'arm',   GOARM: '7' },
           { GOOS: 'windows', GOARCH: 'amd64' },
           { GOOS: 'windows', GOARCH: '386'   },
           { GOOS: 'windows', GOARCH: 'arm64' },
-          { GOOS: 'windows', GOARCH: 'arm'   },
+          { GOOS: 'windows', GOARCH: 'arm',   GOARM: '7' },
           { GOOS: 'darwin',  GOARCH: 'amd64' },
           { GOOS: 'darwin',  GOARCH: 'arm64' },
         ]
@@ -119,7 +120,10 @@ jobs:
           check-latest: true
       - name: 'Build'
         run: |
-          make build GOOS="${{ matrix.go.GOOS }}" GOARCH="${{ matrix.go.GOARCH }}"
+          make build \
+            GOOS="${{ matrix.go.GOOS }}" \
+            GOARCH="${{ matrix.go.GOARCH }}" \
+            GOARM="${{ matrix.go.GOARM }}"
           file ./dist/*-*-* && gzip -nv ./dist/*-*-*
       - name: 'Upload artifacts'
         uses: 'actions/upload-artifact@v3'
