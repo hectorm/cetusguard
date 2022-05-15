@@ -11,39 +11,35 @@ services:
       - "cetusguard-private"
       - "cetusguard-public"
     volumes:
-      - "cetusguard-socket:/sockets/cetusguard/"
-      - "podmand-socket:/sockets/podman/:ro"
+      - "./rules.list:/rules.list:ro"
     environment:
-      CETUSGUARD_BACKEND_ADDR: "unix:///sockets/podman/podman.sock"
-      CETUSGUARD_FRONTEND_ADDR: "unix:///sockets/cetusguard/cetusguard.sock"
-      CETUSGUARD_RULES: "GET,HEAD,POST,PUT,DELETE /.+"
-      CETUSGUARD_NO_BUILTIN_RULES: "1"
+      CETUSGUARD_BACKEND_ADDR: "tcp://podmand:2375"
+      CETUSGUARD_FRONTEND_ADDR: "tcp://:2375"
+      CETUSGUARD_RULES_FILE: "/rules.list"
       CETUSGUARD_LOG_LEVEL: "7"
     depends_on:
       - "podmand"
 
   podmand:
     container_name: "cetusguard-podmand"
-    image: "quay.io/podman/stable:latest"
+    image: "docker.io/mgoltzsche/podman:minimal"
     restart: "on-failure"
     privileged: true
+    user: "podman:podman"
     networks:
       - "cetusguard-private"
-    volumes:
-      - "podmand-socket:/sockets/podman/"
-    entrypoint: ["/bin/podman", "system", "service", "--time=0", "unix:///sockets/podman/podman.sock"]
+    entrypoint: ["podman", "system", "service", "--time=0", "tcp://:2375"]
 
   podman:
     container_name: "cetusguard-podman"
-    image: "quay.io/podman/stable:latest"
+    image: "docker.io/mgoltzsche/podman:minimal"
     restart: "on-failure"
     stop_signal: "SIGKILL"
+    user: "podman:podman"
     networks:
       - "cetusguard-public"
-    volumes:
-      - "cetusguard-socket:/sockets/cetusguard/:ro"
     environment:
-      CONTAINER_HOST: "unix:///sockets/cetusguard/cetusguard.sock"
+      CONTAINER_HOST: "tcp://cetusguard:2375"
     entrypoint: ["/bin/sh", "-c", "while :; do sleep 60; done"]
     depends_on:
       - "cetusguard"
@@ -55,11 +51,3 @@ networks:
 
   cetusguard-public:
     name: "cetusguard-public"
-
-volumes:
-
-  cetusguard-socket:
-    name: "cetusguard-socket"
-
-  podmand-socket:
-    name: "cetusguard-podmand-socket"
