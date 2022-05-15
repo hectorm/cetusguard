@@ -50,7 +50,25 @@ jobs:
           check-latest: true
       - name: 'Test'
         run: |
-          make test test-race
+          make test
+
+  test-race:
+    name: 'Test race'
+    needs: ['lint']
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: 'read'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v3'
+      - name: 'Set up Go'
+        uses: 'actions/setup-go@v3'
+        with:
+          go-version: '${{ env.GO_VERSION }}'
+          check-latest: true
+      - name: 'Test race'
+        run: |
+          make test-race
 
   test-e2e:
     name: 'Test e2e'
@@ -72,7 +90,7 @@ jobs:
 
   build:
     name: 'Build for ${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}'
-    needs: ['test', 'test-e2e']
+    needs: ['test', 'test-race', 'test-e2e']
     runs-on: 'ubuntu-latest'
     permissions:
       contents: 'read'
