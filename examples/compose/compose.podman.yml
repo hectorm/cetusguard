@@ -25,22 +25,22 @@ services:
     image: "docker.io/mgoltzsche/podman:minimal"
     restart: "on-failure"
     privileged: true
-    user: "podman:podman"
     networks:
       - "cetusguard-private"
-    entrypoint: ["podman", "system", "service", "--time=0", "tcp://:2375"]
+    entrypoint: "/usr/local/bin/podman"
+    command: ["system", "service", "--time=0", "tcp://:2375"]
 
   podman:
     container_name: "cetusguard-podman"
     image: "docker.io/mgoltzsche/podman:minimal"
     restart: "on-failure"
     stop_signal: "SIGKILL"
-    user: "podman:podman"
     networks:
       - "cetusguard-public"
     environment:
       CONTAINER_HOST: "tcp://cetusguard:2375"
-    entrypoint: ["/bin/sh", "-c", "while :; do sleep 60; done"]
+    entrypoint: "/bin/sh"
+    command: ["-c", "while :; do sleep 60; done"]
     depends_on:
       - "cetusguard"
 
