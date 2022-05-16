@@ -55,7 +55,8 @@ services:
       DOCKER_HOST: "tcp://cetusguard:2376"
       DOCKER_TLS_VERIFY: "1"
       DOCKER_CERT_PATH: "/certs/client/"
-    entrypoint: ["/bin/sh", "-c", "while :; do sleep 60; done"]
+    entrypoint: "/bin/sh"
+    command: ["-c", "while :; do sleep 60; done"]
     depends_on:
       - "cetusguard"
 

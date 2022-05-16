@@ -49,7 +49,8 @@ services:
       - "cetusguard-socket:/sockets/cetusguard/:ro"
     environment:
       DOCKER_HOST: "unix:///sockets/cetusguard/cetusguard.sock"
-    entrypoint: ["/bin/sh", "-c", "while :; do sleep 60; done"]
+    entrypoint: "/bin/sh"
+    command: ["-c", "while :; do sleep 60; done"]
     depends_on:
       - "cetusguard"
 
