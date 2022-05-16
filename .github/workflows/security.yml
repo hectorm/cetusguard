@@ -10,6 +10,8 @@ on:
     - cron: '25 10 * * 3'
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
 
   analyze-codeql:
@@ -25,15 +27,15 @@ jobs:
         language: ['go']
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@v3'
+        uses: 'actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28'
       - name: 'Initialize CodeQL'
-        uses: 'github/codeql-action/init@v2'
+        uses: 'github/codeql-action/init@158e02c0588aae3fd445902098a64000cbd2257b'
         with:
           languages: '${{ matrix.language }}'
       - name: 'Autobuild'
-        uses: 'github/codeql-action/autobuild@v2'
+        uses: 'github/codeql-action/autobuild@158e02c0588aae3fd445902098a64000cbd2257b'
       - name: 'Perform CodeQL analysis'
-        uses: 'github/codeql-action/analyze@v2'
+        uses: 'github/codeql-action/analyze@158e02c0588aae3fd445902098a64000cbd2257b'
 
   analyze-gosec:
     name: 'Gosec analysis'
@@ -44,12 +46,12 @@ jobs:
       security-events: 'write'
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@v3'
+        uses: 'actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28'
       - name: 'Perform Gosec analysis'
-        uses: 'securego/gosec@v2.11.0'
+        uses: 'securego/gosec@607d607b516bf301996678c68dc371a0dba9a938'
         with:
           args: '-no-fail -tests -fmt sarif -out ./results.sarif ./...'
       - name: 'Upload SARIF file'
-        uses: 'github/codeql-action/upload-sarif@v2'
+        uses: 'github/codeql-action/upload-sarif@158e02c0588aae3fd445902098a64000cbd2257b'
         with:
           sarif_file: './results.sarif'

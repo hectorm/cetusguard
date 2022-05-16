@@ -4,7 +4,7 @@
 ## "build" stage
 ##################################################
 
-FROM --platform=${BUILDPLATFORM:-linux/amd64} docker.io/golang:1.18-bullseye AS build
+FROM --platform=${BUILDPLATFORM:-linux/amd64} docker.io/golang:1.18.2-bullseye@sha256:a966d36a1bdf8769ebfd18eaf1b2cdfc86dfda1a2c61791ccd36ed8237e43a69 AS build
 
 ARG TARGETOS
 ARG TARGETARCH
