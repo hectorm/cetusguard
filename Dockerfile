@@ -4,16 +4,17 @@
 ## "build" stage
 ##################################################
 
-FROM docker.io/golang:1.18-bullseye AS build
+FROM --platform=${BUILDPLATFORM:-linux/amd64} docker.io/golang:1.18-bullseye AS build
+
+ARG TARGETOS
+ARG TARGETARCH
 
 WORKDIR /src/
-COPY ./Makefile ./
 COPY ./go.mod ./go.sum ./
 RUN go mod download
 COPY ./ ./
 RUN make test
-RUN make build
-RUN ./dist/cetusguard-* -version
+RUN make build GOOS="${TARGETOS-}" GOARCH="${TARGETARCH-}"
 RUN test -z "$(readelf -x .interp ./dist/cetusguard-* 2>/dev/null)"
 
 ##################################################

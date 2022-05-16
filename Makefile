@@ -21,9 +21,9 @@ GIT_TAG := $(shell '$(GIT)' tag -l --contains HEAD)
 GIT_SHA := $(shell '$(GIT)' rev-parse HEAD)
 VERSION := $(if $(GIT_TAG),$(GIT_TAG),$(GIT_SHA))
 
-export GOOS := $(shell '$(GO)' env GOOS)
-export GOARCH := $(shell '$(GO)' env GOARCH)
-export GOARM := $(shell '$(GO)' env GOARM)
+GOOS := $(shell '$(GO)' env GOOS)
+GOARCH := $(shell '$(GO)' env GOARCH)
+GOVARIANT := $(GO386)$(GOAMD64)$(GOARM)$(GOMIPS)$(GOMIPS64)$(GOPPC64)
 export CGO_ENABLED := 0
 
 GOFLAGS := -trimpath
@@ -32,8 +32,8 @@ LDFLAGS := -s -w -X "main.version=$(VERSION)"
 SRCS := $(shell '$(GIT)' ls-files '*.go' 2>/dev/null ||:)
 EXEC := cetusguard-$(GOOS)-$(GOARCH)
 
-ifneq ($(GOARM),)
-	EXEC := $(addsuffix v$(GOARM), $(EXEC))
+ifneq ($(GOVARIANT),)
+	EXEC := $(addsuffix -$(GOVARIANT), $(EXEC))
 endif
 
 ifeq ($(GOOS),windows)
