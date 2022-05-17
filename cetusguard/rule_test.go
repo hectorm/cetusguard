@@ -408,3 +408,43 @@ func TestApiPrefixPing(t *testing.T) {
 		}
 	}
 }
+
+func TestApiPrefixLibpodRegex(t *testing.T) {
+	re := regexp.MustCompile("^" + ruleVars["API_PREFIX_LIBPOD"] + "$")
+
+	testCases := map[string]bool{
+		"":                  false,
+		"/":                 false,
+		"/libpod":           false,
+		"/v/libpod":         false,
+		"/v9/libpod":        true,
+		"/v99.99.99/libpod": true,
+	}
+
+	for input, wanted := range testCases {
+		if result := re.MatchString(input); result != wanted {
+			t.Errorf("\"%s\" match = %t, want = %t", input, result, wanted)
+		}
+	}
+}
+
+func TestApiPrefixLibpodPingRegex(t *testing.T) {
+	re := regexp.MustCompile("^" + ruleVars["API_PREFIX_LIBPOD_PING"] + "$")
+
+	testCases := map[string]bool{
+		"":                    false,
+		"/":                   false,
+		"/_ping":              false,
+		"/libpod/_ping":       false,
+		"/v/libpod/_ping":     false,
+		"/v9.9/libpod/_ping":  true,
+		"/v9.9/libpod/_ping/": false,
+		"/v9.9/libpod/_pong":  false,
+	}
+
+	for input, wanted := range testCases {
+		if result := re.MatchString(input); result != wanted {
+			t.Errorf("\"%s\" match = %t, want = %t", input, result, wanted)
+		}
+	}
+}
