@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"path"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -226,12 +227,12 @@ func (cg *Server) setIsRunning(running bool) {
 }
 
 func (cg *Server) validateRequest(req *http.Request) bool {
+	p := cleanPath(req.URL.Path)
 	for _, rule := range cg.Rules {
-		if rule.Methods[req.Method] && rule.Pattern.MatchString(req.URL.Path) {
+		if rule.Methods[req.Method] && rule.Pattern.MatchString(p) {
 			return true
 		}
 	}
-
 	return false
 }
 
@@ -452,4 +453,19 @@ func parseAddr(addr string) (string, string, error) {
 	default:
 		return "", "", fmt.Errorf("unsupported address protocol: %s", addr)
 	}
+}
+
+// Borrowed from net/http/server.go
+func cleanPath(p string) string {
+	if p == "" {
+		return "/"
+	}
+	if p[0] != '/' {
+		p = "/" + p
+	}
+	np := path.Clean(p)
+	if p[len(p)-1] == '/' && np != "/" {
+		np += "/"
+	}
+	return np
 }
