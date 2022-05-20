@@ -24,7 +24,6 @@ func TestCetusGuardSocketAllowedReq(t *testing.T) {
 
 	defer tc.setup(t)()
 	tc.daemon.Handler = http.HandlerFunc(httpDaemonHandler)
-	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
 	go func() {
@@ -40,7 +39,7 @@ func TestCetusGuardSocketAllowedReq(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("http", addrs[0].String())
+	req, err := httpClientAllowedReq("http", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -83,7 +82,6 @@ func TestCetusGuardSocketAllowedStreamReq(t *testing.T) {
 
 	defer tc.setup(t)()
 	tc.daemon.Handler = http.HandlerFunc(httpDaemonHandler)
-	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
 	go func() {
@@ -99,7 +97,7 @@ func TestCetusGuardSocketAllowedStreamReq(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("http", addrs[0].String())
+	req, err := httpClientAllowedReq("http", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -133,7 +131,7 @@ func TestCetusGuardSocketAllowedStreamReq(t *testing.T) {
 	}
 }
 
-func TestCetusGuardSocketDeniedReq(t *testing.T) {
+func TestCetusGuardSocketDeniedMethodReq(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: socketDaemonListener,
 		daemonFunc:         socketDaemon,
@@ -159,7 +157,56 @@ func TestCetusGuardSocketDeniedReq(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("http", addrs[0].String())
+	req, err := httpClientDeniedMethodReq("http", addrs[0].String())
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := tc.client.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		_ = res.Body.Close()
+	}()
+
+	if res.StatusCode != http.StatusForbidden {
+		t.Fatalf("res.StatusCode = %d, want %d", res.StatusCode, http.StatusForbidden)
+	}
+
+	err = tc.server.Stop()
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestCetusGuardSocketDeniedPatternReq(t *testing.T) {
+	tc := &testCase{
+		daemonListenerFunc: socketDaemonListener,
+		daemonFunc:         socketDaemon,
+		backendFunc:        socketBackend,
+		frontendFunc:       socketFrontend,
+		clientFunc:         socketClient,
+	}
+
+	defer tc.setup(t)()
+	tc.daemon.Handler = http.HandlerFunc(httpDaemonHandler)
+
+	ready := make(chan any, 1)
+	go func() {
+		err := tc.server.Start(ready)
+		if err != nil {
+			t.Error(err)
+		}
+	}()
+	<-ready
+
+	addrs, err := tc.server.Addrs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req, err := httpClientDeniedPatternReq("http", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -193,7 +240,6 @@ func TestCetusGuardSocketTlsAuthBackendReq(t *testing.T) {
 
 	defer tc.setup(t)()
 	tc.daemon.Handler = http.HandlerFunc(httpDaemonHandler)
-	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
 	go func() {
@@ -209,7 +255,7 @@ func TestCetusGuardSocketTlsAuthBackendReq(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("http", addrs[0].String())
+	req, err := httpClientAllowedReq("http", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -252,7 +298,6 @@ func TestCetusGuardTlsAuthSocketBackendReq(t *testing.T) {
 
 	defer tc.setup(t)()
 	tc.daemon.Handler = http.HandlerFunc(httpDaemonHandler)
-	tc.server.Rules = testRules
 
 	ready := make(chan any, 1)
 	go func() {
@@ -268,7 +313,7 @@ func TestCetusGuardTlsAuthSocketBackendReq(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	req, err := httpClientReq("https", addrs[0].String())
+	req, err := httpClientAllowedReq("https", addrs[0].String())
 	if err != nil {
 		t.Fatal(err)
 	}
