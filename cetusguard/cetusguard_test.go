@@ -1049,7 +1049,7 @@ func TestCetusGuardFrontendListenMultiple(t *testing.T) {
 }
 
 var testRules = []Rule{{
-	Methods: map[string]bool{"GET": true, "HEAD": true, "POST": true},
+	Methods: map[string]struct{}{"GET": {}, "HEAD": {}, "POST": {}},
 	Pattern: regexp.MustCompile(`^/~foo\+bar\+\x{1F433}$`),
 }}
 

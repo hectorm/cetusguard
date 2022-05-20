@@ -135,9 +135,9 @@ func BuildRules(str string) ([]Rule, error) {
 		methodsFrag := matches[1]
 		patternFrag := matches[2]
 
-		methods := map[string]bool{}
+		methods := make(map[string]struct{})
 		for _, method := range strings.Split(methodsFrag, ",") {
-			methods[method] = true
+			methods[method] = struct{}{}
 		}
 
 		for k, v := range ruleVars {
@@ -192,7 +192,7 @@ func BuildRulesFromFilePath(path string) ([]Rule, error) {
 }
 
 type Rule struct {
-	Methods map[string]bool
+	Methods map[string]struct{}
 	Pattern *regexp.Regexp
 }
 

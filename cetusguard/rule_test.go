@@ -27,7 +27,7 @@ func TestRuleVars(t *testing.T) {
 func TestRuleString(t *testing.T) {
 	rawRule := "GET,HEAD,POST ^/.+$"
 	rule := Rule{
-		Methods: map[string]bool{"POST": true, "HEAD": true, "GET": true},
+		Methods: map[string]struct{}{"POST": {}, "HEAD": {}, "GET": {}},
 		Pattern: regexp.MustCompile(`^/.+$`),
 	}
 	if rule.String() != rawRule {
@@ -45,19 +45,19 @@ func TestBuildBuiltinRules(t *testing.T) {
 func TestBuildValidRules(t *testing.T) {
 	rawRules := map[string]Rule{
 		"! Comment\nGET,HEAD %API_PREFIX%/test01\n": {
-			Methods: map[string]bool{"GET": true, "HEAD": true},
+			Methods: map[string]struct{}{"GET": {}, "HEAD": {}},
 			Pattern: regexp.MustCompile(`^(?:/v[0-9]+(?:\.[0-9]+)*)?/test01$`),
 		},
 		"! Comment\r\nGET,HEAD %API_PREFIX%/test02\r\n": {
-			Methods: map[string]bool{"GET": true, "HEAD": true},
+			Methods: map[string]struct{}{"GET": {}, "HEAD": {}},
 			Pattern: regexp.MustCompile(`^(?:/v[0-9]+(?:\.[0-9]+)*)?/test02$`),
 		},
 		"\n\n\n! Comment\n\n\nGET,HEAD %API_PREFIX%/test03\n\n\n": {
-			Methods: map[string]bool{"GET": true, "HEAD": true},
+			Methods: map[string]struct{}{"GET": {}, "HEAD": {}},
 			Pattern: regexp.MustCompile(`^(?:/v[0-9]+(?:\.[0-9]+)*)?/test03$`),
 		},
 		" \t ! Comment\n \t GET,HEAD \t %API_PREFIX%/test04 \t ": {
-			Methods: map[string]bool{"GET": true, "HEAD": true},
+			Methods: map[string]struct{}{"GET": {}, "HEAD": {}},
 			Pattern: regexp.MustCompile(`^(?:/v[0-9]+(?:\.[0-9]+)*)?/test04$`),
 		},
 	}

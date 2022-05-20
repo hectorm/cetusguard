@@ -229,7 +229,8 @@ func (cg *Server) setIsRunning(running bool) {
 func (cg *Server) validateRequest(req *http.Request) bool {
 	p := cleanPath(req.URL.Path)
 	for _, rule := range cg.Rules {
-		if rule.Methods[req.Method] && rule.Pattern.MatchString(p) {
+		_, mOk := rule.Methods[req.Method]
+		if mOk && rule.Pattern.MatchString(p) {
 			return true
 		}
 	}
