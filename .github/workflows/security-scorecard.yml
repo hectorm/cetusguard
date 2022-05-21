@@ -29,6 +29,6 @@ jobs:
           repo_token: '${{ secrets.GITHUB_TOKEN }}'
           publish_results: false
       - name: 'Upload SARIF file'
-        uses: 'github/codeql-action/upload-sarif@158e02c0588aae3fd445902098a64000cbd2257b'
+        uses: 'github/codeql-action/upload-sarif@3673e4c8e07ab7a92d77d113c680405f5a0003e3'
         with:
           sarif_file: './results.sarif'
