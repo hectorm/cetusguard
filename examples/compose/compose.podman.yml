@@ -22,17 +22,17 @@ services:
 
   podmand:
     container_name: "cetusguard-podmand"
-    image: "docker.io/mgoltzsche/podman:minimal"
+    image: "quay.io/podman/stable:v4"
     restart: "on-failure"
     privileged: true
     networks:
       - "cetusguard-private"
-    entrypoint: "/usr/local/bin/podman"
+    entrypoint: "/usr/bin/podman"
     command: ["system", "service", "--time=0", "tcp://:2375"]
 
   podman:
     container_name: "cetusguard-podman"
-    image: "docker.io/mgoltzsche/podman:minimal"
+    image: "quay.io/podman/stable:v4"
     restart: "on-failure"
     stop_signal: "SIGKILL"
     networks:
