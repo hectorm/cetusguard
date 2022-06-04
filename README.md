@@ -13,15 +13,15 @@ Some highlights:
 
 ## Docker daemon security
 
-Unless you opt in to [rootless mode][1] (which has [some limitations][2]), the daemon requires root and any service that has access to its API can escalate privileges.
+Unless you opt in to [rootless mode][1], the Docker daemon requires root and any service that has access to its API can escalate privileges. Even in rootless mode, any container that has access to the API can escape out of the container, this applies to both Docker and Podman.
 
-The daemon by default [exposes its API][3] through a non-networked Unix socket that can be restricted by file system permissions and for networked use the daemon supports being exposed over SSH or TCP with TLS client authentication. However, you still have to fully trust any service you give access to its API.
+The Docker daemon by default [exposes its API][2] through a non-networked Unix socket that can be restricted by file system permissions and for networked use the daemon supports being exposed over SSH or TCP with TLS client authentication. However, you still have to fully trust any service you give access to its API.
 
 CetusGuard solves this problem by acting as a proxy between the daemon and the services that consume its API, allowing for example read-only access to some endpoints.
 
 ## Usage
 
-CetusGuard is distributed as a Docker image available on [Docker Hub][4] and as a statically linked binary available in the [releases section][5] of the project.
+CetusGuard is distributed as a Docker image available on [Docker Hub][3] and as a statically linked binary available in the [releases section][4] of the project.
 
 A collection of examples for experimenting with CetusGuard, including some real world scenarios with Traefik and Netdata, can be found in the [./examples/](./examples/) directory.
 
@@ -94,7 +94,7 @@ GET %API_PREFIX_EVENTS%
 ! List containers
 GET %API_PREFIX_CONTAINERS%/json
 
-! Inspect a container 
+! Inspect a container
 GET %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/json
 ```
 
@@ -103,7 +103,6 @@ GET %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/json
 [MIT License](./LICENSE.md) © [Héctor Molinero Fernández](https://hector.molinero.dev).
 
 [1]: https://docs.docker.com/engine/security/rootless/
-[2]: https://docs.docker.com/engine/security/rootless/#known-limitations
-[3]: https://docs.docker.com/engine/security/protect-access/
-[4]: https://hub.docker.com/r/hectorm/cetusguard
-[5]: https://github.com/hectorm/cetusguard/releases
+[2]: https://docs.docker.com/engine/security/protect-access/
+[3]: https://hub.docker.com/r/hectorm/cetusguard
+[4]: https://github.com/hectorm/cetusguard/releases
