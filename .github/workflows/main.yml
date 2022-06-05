@@ -100,14 +100,17 @@ jobs:
       fail-fast: false
       matrix:
         go: [
-          { GOOS: 'linux',   GOARCH: 'amd64' },
-          { GOOS: 'linux',   GOARCH: 'arm64' },
-          { GOOS: 'linux',   GOARCH: 'arm',   GOARM: '6' },
-          { GOOS: 'linux',   GOARCH: 'arm',   GOARM: '7' },
-          { GOOS: 'windows', GOARCH: 'amd64' },
-          { GOOS: 'windows', GOARCH: 'arm64' },
-          { GOOS: 'darwin',  GOARCH: 'amd64' },
-          { GOOS: 'darwin',  GOARCH: 'arm64' },
+          { GOOS: 'linux',   GOARCH: 'amd64'   },
+          { GOOS: 'linux',   GOARCH: 'arm64'   },
+          { GOOS: 'linux',   GOARCH: 'arm',     GOARM: '7' },
+          { GOOS: 'linux',   GOARCH: 'arm',     GOARM: '6' },
+          { GOOS: 'linux',   GOARCH: 'riscv64' },
+          { GOOS: 'linux',   GOARCH: 'ppc64le' },
+          { GOOS: 'linux',   GOARCH: 's390x'   },
+          { GOOS: 'windows', GOARCH: 'amd64'   },
+          { GOOS: 'windows', GOARCH: 'arm64'   },
+          { GOOS: 'darwin',  GOARCH: 'amd64'   },
+          { GOOS: 'darwin',  GOARCH: 'arm64'   },
         ]
     steps:
       - name: 'Checkout'
@@ -166,7 +169,7 @@ jobs:
         uses: 'docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8'
         with:
           context: './'
-          platforms: 'linux/amd64,linux/arm64/v8,linux/arm/v7,linux/arm/v6'
+          platforms: 'linux/amd64,linux/arm64/v8,linux/arm/v7,linux/arm/v6,linux/riscv64,linux/ppc64le,linux/s390x'
           tags: '${{ steps.meta.outputs.tags }}'
           labels: '${{ steps.meta.outputs.labels }}'
           push: "${{ github.event_name != 'pull_request' }}"
