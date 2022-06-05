@@ -8,13 +8,17 @@ FROM --platform=${BUILDPLATFORM:-linux/amd64} docker.io/golang:1.18.3-bullseye@s
 
 ARG TARGETOS
 ARG TARGETARCH
+ARG TARGETVARIANT
 
 WORKDIR /src/
 COPY ./go.mod ./go.sum ./
 RUN go mod download
 COPY ./ ./
 RUN make test
-RUN make build GOOS="${TARGETOS-}" GOARCH="${TARGETARCH-}"
+RUN make build \
+		GOOS="${TARGETOS-}" \
+		GOARCH="${TARGETARCH-}" \
+		GOARM="$([ "${TARGETARCH-}" != 'arm' ] || printf '%s' "${TARGETVARIANT#v}")"
 RUN test -z "$(readelf -x .interp ./dist/cetusguard-* 2>/dev/null)"
 
 ##################################################
