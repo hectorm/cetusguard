@@ -28,6 +28,11 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: 'actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28'
+      - name: 'Set up Go'
+        uses: 'actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923'
+        with:
+          go-version-file: './go.mod'
+          check-latest: true
       - name: 'Initialize CodeQL'
         uses: 'github/codeql-action/init@3673e4c8e07ab7a92d77d113c680405f5a0003e3'
         with:
@@ -47,6 +52,11 @@ jobs:
     steps:
       - name: 'Checkout'
         uses: 'actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28'
+      - name: 'Set up Go'
+        uses: 'actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923'
+        with:
+          go-version-file: './go.mod'
+          check-latest: true
       - name: 'Perform Gosec analysis'
         uses: 'securego/gosec@607d607b516bf301996678c68dc371a0dba9a938'
         with:
