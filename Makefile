@@ -43,7 +43,7 @@ ifeq ($(GOOS),windows)
 endif
 
 .PHONY: all
-all: gofmt gosec staticcheck test build
+all: test build
 
 .PHONY: build
 build: ./dist/$(EXEC)
