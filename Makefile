@@ -12,6 +12,7 @@ bindir ?= $(exec_prefix)/bin
 GIT := git
 GO := go
 GOFMT := gofmt
+STATICCHECK := staticcheck
 INSTALL := install
 
 INSTALL_PROGRAM := $(INSTALL)
@@ -54,9 +55,13 @@ run: ./dist/$(EXEC)
 	@mkdir -p "$$(dirname '$@')"
 	'$(GO)' build $(GOFLAGS) -ldflags '$(LDFLAGS)' -o '$@' ./cmd/cetusguard/
 
-.PHONY: lint
-lint:
+.PHONY: gofmt
+gofmt:
 	@test -z "$$('$(GOFMT)' -s -l ./ | tee /dev/stderr)"
+
+.PHONY: staticcheck
+staticcheck:
+	'$(STATICCHECK)' -tests ./...
 
 .PHONY: test
 test:

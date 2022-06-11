@@ -12,8 +12,8 @@ permissions: {}
 
 jobs:
 
-  lint:
-    name: 'Lint'
+  gofmt:
+    name: 'Gofmt'
     runs-on: 'ubuntu-latest'
     permissions:
       contents: 'read'
@@ -25,13 +25,31 @@ jobs:
         with:
           go-version-file: './go.mod'
           check-latest: true
-      - name: 'Lint'
+      - name: 'Gofmt'
         run: |
-          make lint
+          make gofmt
+
+  staticcheck:
+    name: 'Staticcheck'
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: 'read'
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28'
+      - name: 'Set up Go'
+        uses: 'actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923'
+        with:
+          go-version-file: './go.mod'
+          check-latest: true
+      - name: 'Staticcheck'
+        uses: 'dominikh/staticcheck-action@2109cb5d06335d7dd1c1a7e80e176e1dfdfc12fb'
+        with:
+          install-go: false
 
   test:
     name: 'Test on ${{ matrix.os }}'
-    needs: ['lint']
+    needs: ['gofmt', 'staticcheck']
     runs-on: '${{ matrix.os }}'
     permissions:
       contents: 'read'
@@ -53,7 +71,7 @@ jobs:
 
   test-race:
     name: 'Test race'
-    needs: ['lint']
+    needs: ['gofmt', 'staticcheck']
     runs-on: 'ubuntu-latest'
     permissions:
       contents: 'read'
@@ -71,7 +89,7 @@ jobs:
 
   test-e2e:
     name: 'Test e2e'
-    needs: ['lint']
+    needs: ['gofmt', 'staticcheck']
     runs-on: 'ubuntu-latest'
     permissions:
       contents: 'read'
