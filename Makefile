@@ -12,6 +12,7 @@ bindir ?= $(exec_prefix)/bin
 GIT := git
 GO := go
 GOFMT := gofmt
+GOSEC := gosec
 STATICCHECK := staticcheck
 INSTALL := install
 
@@ -42,7 +43,7 @@ ifeq ($(GOOS),windows)
 endif
 
 .PHONY: all
-all: build
+all: gofmt gosec staticcheck test build
 
 .PHONY: build
 build: ./dist/$(EXEC)
@@ -58,6 +59,10 @@ run: ./dist/$(EXEC)
 .PHONY: gofmt
 gofmt:
 	@test -z "$$('$(GOFMT)' -s -l ./ | tee /dev/stderr)"
+
+.PHONY: gosec
+gosec:
+	'$(GOSEC)' -tests ./...
 
 .PHONY: staticcheck
 staticcheck:
