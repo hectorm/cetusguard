@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"os"
@@ -1215,7 +1214,7 @@ func httpClientDeniedPatternReq(scheme string, addr string) (*http.Request, erro
 }
 
 func httpDaemonHandler(wri http.ResponseWriter, req *http.Request) {
-	b, err := ioutil.ReadAll(req.Body)
+	b, err := io.ReadAll(req.Body)
 	if err != nil {
 		wri.WriteHeader(http.StatusInternalServerError)
 		return
