@@ -43,7 +43,7 @@ jobs:
           go-version-file: './go.mod'
           check-latest: true
       - name: 'Staticcheck'
-        uses: 'dominikh/staticcheck-action@2109cb5d06335d7dd1c1a7e80e176e1dfdfc12fb'
+        uses: 'dominikh/staticcheck-action@a3513ade2e5cb8075ba1c1ed1890a989cf0f2aa0'
         with:
           install-go: false
 
