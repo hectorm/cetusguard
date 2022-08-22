@@ -19,7 +19,7 @@ jobs:
       contents: 'read'
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28'
+        uses: 'actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b'
       - name: 'Set up Go'
         uses: 'actions/setup-go@84cbf8094393cdc5fe1fe1671ff2647332956b1a'
         with:
@@ -36,7 +36,7 @@ jobs:
       contents: 'read'
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28'
+        uses: 'actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b'
       - name: 'Set up Go'
         uses: 'actions/setup-go@84cbf8094393cdc5fe1fe1671ff2647332956b1a'
         with:
@@ -59,7 +59,7 @@ jobs:
         os: ['ubuntu-latest', 'windows-latest', 'macos-latest']
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28'
+        uses: 'actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b'
       - name: 'Set up Go'
         uses: 'actions/setup-go@84cbf8094393cdc5fe1fe1671ff2647332956b1a'
         with:
@@ -77,7 +77,7 @@ jobs:
       contents: 'read'
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28'
+        uses: 'actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b'
       - name: 'Set up Go'
         uses: 'actions/setup-go@84cbf8094393cdc5fe1fe1671ff2647332956b1a'
         with:
@@ -95,7 +95,7 @@ jobs:
       contents: 'read'
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28'
+        uses: 'actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b'
       - name: 'Set up Go'
         uses: 'actions/setup-go@84cbf8094393cdc5fe1fe1671ff2647332956b1a'
         with:
@@ -132,7 +132,7 @@ jobs:
         ]
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28'
+        uses: 'actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b'
       - name: 'Set up Go'
         uses: 'actions/setup-go@84cbf8094393cdc5fe1fe1671ff2647332956b1a'
         with:
@@ -160,7 +160,7 @@ jobs:
       contents: 'read'
     steps:
       - name: 'Checkout'
-        uses: 'actions/checkout@d0651293c4a5a52e711f25b41b05b2212f385d28'
+        uses: 'actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b'
       - name: 'Set up QEMU'
         uses: 'docker/setup-qemu-action@8b122486cedac8393e77aa9734c3528886e4a1a8'
       - name: 'Set up Docker Buildx'
