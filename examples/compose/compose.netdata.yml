@@ -25,6 +25,8 @@ services:
     restart: "on-failure"
     cap_add:
       - "SYS_PTRACE"
+    security_opt:
+      - "apparmor:unconfined"
     networks:
       - "cetusguard"
     ports:
