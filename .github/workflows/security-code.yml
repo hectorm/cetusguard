@@ -58,7 +58,7 @@ jobs:
           go-version-file: './go.mod'
           check-latest: true
       - name: 'Perform Gosec analysis'
-        uses: 'securego/gosec@19fa856badad483cae700ee1213dd7f1a933d6d3'
+        uses: 'securego/gosec@1af1d5bb49259b62e45c505db397dd2ada5d74f8'
         with:
           args: '-no-fail -tests -fmt sarif -out ./results.sarif ./...'
       - name: 'Upload SARIF file'
