@@ -34,13 +34,13 @@ jobs:
           go-version-file: './go.mod'
           check-latest: true
       - name: 'Initialize CodeQL'
-        uses: 'github/codeql-action/init@ec3cf9c605b848da5f1e41e8452719eb1ccfb9a6'
+        uses: 'github/codeql-action/init@c3b6fce4ee2ca25bc1066aa3bf73962fda0e8898'
         with:
           languages: '${{ matrix.language }}'
       - name: 'Autobuild'
-        uses: 'github/codeql-action/autobuild@ec3cf9c605b848da5f1e41e8452719eb1ccfb9a6'
+        uses: 'github/codeql-action/autobuild@c3b6fce4ee2ca25bc1066aa3bf73962fda0e8898'
       - name: 'Perform CodeQL analysis'
-        uses: 'github/codeql-action/analyze@ec3cf9c605b848da5f1e41e8452719eb1ccfb9a6'
+        uses: 'github/codeql-action/analyze@c3b6fce4ee2ca25bc1066aa3bf73962fda0e8898'
 
   analyze-gosec:
     name: 'Gosec analysis'
@@ -62,6 +62,6 @@ jobs:
         with:
           args: '-no-fail -tests -fmt sarif -out ./results.sarif ./...'
       - name: 'Upload SARIF file'
-        uses: 'github/codeql-action/upload-sarif@ec3cf9c605b848da5f1e41e8452719eb1ccfb9a6'
+        uses: 'github/codeql-action/upload-sarif@c3b6fce4ee2ca25bc1066aa3bf73962fda0e8898'
         with:
           sarif_file: './results.sarif'
