@@ -10,6 +10,16 @@ import (
 	"testing"
 )
 
+func init() {
+	for k, v := range ruleVars {
+		for kk, vv := range ruleVars {
+			if strings.Contains(vv, "%"+k+"%") {
+				ruleVars[kk] = strings.ReplaceAll(vv, "%"+k+"%", v)
+			}
+		}
+	}
+}
+
 func TestRuleVars(t *testing.T) {
 	varRegex := regexp.MustCompile(`%[a-zA-Z0-9_]+%`)
 	for k, v := range ruleVars {

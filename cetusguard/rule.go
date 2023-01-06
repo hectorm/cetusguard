@@ -111,14 +111,6 @@ var (
 	}
 )
 
-func init() {
-	for k, v := range ruleVars {
-		for kk, vv := range ruleVars {
-			ruleVars[kk] = strings.ReplaceAll(vv, "%"+k+"%", v)
-		}
-	}
-}
-
 func BuildRules(str string) ([]Rule, error) {
 	var rules []Rule
 
@@ -140,8 +132,17 @@ func BuildRules(str string) ([]Rule, error) {
 			methods[method] = struct{}{}
 		}
 
-		for k, v := range ruleVars {
-			patternFrag = strings.ReplaceAll(patternFrag, "%"+k+"%", v)
+		for {
+			p := patternFrag
+			for k, v := range ruleVars {
+				if strings.Contains(p, "%"+k+"%") {
+					p = strings.ReplaceAll(p, "%"+k+"%", v)
+				}
+			}
+			if p == patternFrag {
+				break
+			}
+			patternFrag = p
 		}
 		pattern, err := regexp.Compile("^" + patternFrag + "$")
 		if err != nil {
