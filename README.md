@@ -7,15 +7,15 @@
 CetusGuard is a tool that protects the Docker daemon socket by filtering calls to its API endpoints.
 
 Some highlights:
- * It is written in a memory safe language.
- * Has a small codebase that can be easily audited.
+ * It is written in a memory-safe language.
+ * Has a small codebase that is easy to audit.
  * Has zero dependencies to mitigate supply chain attacks.
 
 ## Docker daemon security
 
-Unless you opt in to [rootless mode][1], the Docker daemon requires root and any service that has access to its API can escalate privileges. Even in rootless mode, any container that has access to the API can escape out of the container, this applies to both Docker and Podman.
+Unless you opt in to [rootless mode][1], the Docker daemon requires root and any service with access to its API can escalate privileges. Even in rootless mode, any container with access to the API can escape out of the container, this applies to both Docker and Podman.
 
-The Docker daemon by default [exposes its API][2] through a non-networked Unix socket that can be restricted by file system permissions and for networked use the daemon supports being exposed over SSH or TCP with TLS client authentication. However, you still have to fully trust any service you give access to its API.
+The Docker daemon [exposes its API][2] by default through a non-networked Unix socket, which can be restricted by file system permissions, and for networked use the daemon supports being exposed through SSH or TCP with TLS client authentication. However, you still need to fully trust any service you give access to its API.
 
 CetusGuard solves this problem by acting as a proxy between the daemon and the services that consume its API, allowing for example read-only access to some endpoints.
 
@@ -68,11 +68,11 @@ pattern = 1*UNICODE                             ; Target path regex
 rule    = *blank methods 1*blank pattern *blank ; Rule
 ```
 
-Only requests that match the specified HTTP methods and target path regex will be allowed.
+Only requests that match the specified HTTP methods and target path regex are allowed.
 
-There are some variables specified by surrounding `%` that can be used to compose rule patterns, the full list and their values can be found in the [`rule.go`](./cetusguard/rule.go) file.
+There are several variables specified by surrounding `%` that can be used to construct rule patterns, the full list and values can be found in the [`rule.go`](./cetusguard/rule.go) file.
 
-Lines beginning with `!` are ignored.
+Lines starting with `!` are ignored.
 
 Some example rules are:
 ```
