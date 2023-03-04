@@ -4,7 +4,7 @@ services:
 
   cetusguard:
     container_name: "cetusguard"
-    image: "docker.io/hectorm/cetusguard:latest"
+    image: "docker.io/hectorm/cetusguard:v1"
     restart: "on-failure"
     read_only: true
     networks:
@@ -24,7 +24,7 @@ services:
 
   dockerd:
     container_name: "cetusguard-dockerd"
-    image: "docker.io/docker:dind"
+    image: "docker.io/docker:23-dind"
     restart: "on-failure"
     privileged: true
     networks:
@@ -38,7 +38,7 @@ services:
 
   docker:
     container_name: "cetusguard-docker"
-    image: "docker.io/docker:latest"
+    image: "docker.io/docker:23-cli"
     restart: "on-failure"
     stop_signal: "SIGKILL"
     networks:
