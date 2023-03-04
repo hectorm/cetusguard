@@ -30,8 +30,6 @@ services:
     networks:
       - "cetusguard-private"
     volumes:
-      - "./certs/ca/:/certs/ca/:ro"
-      - "./certs/client/:/certs/client/:ro"
       - "./certs/server/:/certs/server/:ro"
       - "dockerd-socket:/sockets/docker/"
     environment:

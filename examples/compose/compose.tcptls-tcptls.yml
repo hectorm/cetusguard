@@ -38,8 +38,6 @@ services:
     networks:
       - "cetusguard-private"
     volumes:
-      - "./certs/ca/:/certs/ca/:ro"
-      - "./certs/client/:/certs/client/:ro"
       - "./certs/server/:/certs/server/:ro"
     environment:
       DOCKER_HOST: "tcp://dockerd:2376"
