@@ -4,7 +4,7 @@
 
 # CetusGuard
 
-CetusGuard is a tool that allows to protect the Docker daemon socket by filtering the calls to its API endpoints.
+CetusGuard is a tool that protects the Docker daemon socket by filtering calls to its API endpoints.
 
 Some highlights:
  * It is written in a memory safe language.
