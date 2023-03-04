@@ -40,7 +40,6 @@ services:
     container_name: "cetusguard-docker"
     image: "docker.io/docker:23-cli"
     restart: "on-failure"
-    stop_signal: "SIGKILL"
     networks:
       - "cetusguard-public"
     volumes:
@@ -48,7 +47,7 @@ services:
     environment:
       DOCKER_HOST: "unix:///sockets/cetusguard/cetusguard.sock"
     entrypoint: "/bin/sh"
-    command: ["-c", "while :; do sleep 60; done"]
+    command: ["-c", "trap : TERM INT; while :; do sleep 60; done & wait"]
     depends_on:
       - "cetusguard"
 

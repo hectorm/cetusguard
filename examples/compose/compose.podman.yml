@@ -34,13 +34,12 @@ services:
     container_name: "cetusguard-podman"
     image: "quay.io/podman/stable:v4"
     restart: "on-failure"
-    stop_signal: "SIGKILL"
     networks:
       - "cetusguard-public"
     environment:
       CONTAINER_HOST: "tcp://cetusguard:2375"
     entrypoint: "/bin/sh"
-    command: ["-c", "while :; do sleep 60; done"]
+    command: ["-c", "trap : TERM INT; while :; do sleep 60; done & wait"]
     depends_on:
       - "cetusguard"
 
