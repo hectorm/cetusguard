@@ -16,12 +16,10 @@ services:
       - "./certs/server/:/certs/server/:ro"
     environment:
       CETUSGUARD_BACKEND_ADDR: "tcp://dockerd:2376"
-      CETUSGUARD_BACKEND_TLS: "1"
       CETUSGUARD_BACKEND_TLS_CACERT: "/certs/client/ca.pem"
       CETUSGUARD_BACKEND_TLS_CERT: "/certs/client/cert.pem"
       CETUSGUARD_BACKEND_TLS_KEY: "/certs/client/key.pem"
       CETUSGUARD_FRONTEND_ADDR: "tcp://:2376"
-      CETUSGUARD_FRONTEND_TLS: "1"
       CETUSGUARD_FRONTEND_TLS_CACERT: "/certs/server/ca.pem"
       CETUSGUARD_FRONTEND_TLS_CERT: "/certs/server/cert.pem"
       CETUSGUARD_FRONTEND_TLS_KEY: "/certs/server/key.pem"
