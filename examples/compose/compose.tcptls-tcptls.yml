@@ -30,7 +30,7 @@ services:
 
   dockerd:
     container_name: "cetusguard-dockerd"
-    image: "docker.io/docker:23-dind"
+    image: "docker.io/docker:24-dind"
     restart: "on-failure"
     privileged: true
     networks:
@@ -43,7 +43,7 @@ services:
 
   docker:
     container_name: "cetusguard-docker"
-    image: "docker.io/docker:23-cli"
+    image: "docker.io/docker:24-cli"
     restart: "on-failure"
     networks:
       - "cetusguard-public"
