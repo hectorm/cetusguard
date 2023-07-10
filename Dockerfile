@@ -4,7 +4,7 @@
 ## "build" stage
 ##################################################
 
-FROM --platform=${BUILDPLATFORM:-linux/amd64} docker.io/golang:1.20.5-bookworm@sha256:5a9ba2f9f8f50f25a0c06ef328faa0f5b0a6ff742a399591ca2ff6a367161439 AS build
+FROM --platform=${BUILDPLATFORM:-linux/amd64} docker.io/golang:1.20.5-bookworm@sha256:94dbfc5c8bf24d114c115c17a6b5aaf7062c9b3de378caa90be2324559657bb3 AS build
 
 ARG TARGETOS
 ARG TARGETARCH
