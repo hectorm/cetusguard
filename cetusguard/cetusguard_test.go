@@ -1186,6 +1186,10 @@ func httpClientAllowedReq(scheme string, addr string) (*http.Request, error) {
 	req.URL.Scheme = scheme
 	req.URL.Host = addr
 
+	if strings.HasPrefix(addr, "/") {
+		req.Host = "test.cetusguard.localhost"
+	}
+
 	return req, nil
 }
 
@@ -1198,6 +1202,10 @@ func httpClientDeniedMethodReq(scheme string, addr string) (*http.Request, error
 	req.URL.Scheme = scheme
 	req.URL.Host = addr
 
+	if strings.HasPrefix(addr, "/") {
+		req.Host = "test.cetusguard.localhost"
+	}
+
 	return req, nil
 }
 
@@ -1209,6 +1217,10 @@ func httpClientDeniedPatternReq(scheme string, addr string) (*http.Request, erro
 	}
 	req.URL.Scheme = scheme
 	req.URL.Host = addr
+
+	if strings.HasPrefix(addr, "/") {
+		req.Host = "test.cetusguard.localhost"
+	}
 
 	return req, nil
 }
