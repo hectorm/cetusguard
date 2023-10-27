@@ -25,9 +25,7 @@ import (
 )
 
 const (
-	minTlsVersion                = tls.VersionTLS12
-	contentTypeRawStream         = "application/vnd.docker.raw-stream"
-	contentTypeMultiplexedStream = "application/vnd.docker.multiplexed-stream"
+	minTlsVersion = tls.VersionTLS12
 )
 
 type Backend struct {
@@ -269,8 +267,7 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 		_ = res.Body.Close()
 	}()
 
-	resContentType := res.Header.Get("Content-Type")
-	if res.StatusCode == 101 || resContentType == contentTypeRawStream || resContentType == contentTypeMultiplexedStream {
+	if res.StatusCode == 101 {
 		logger.Debugf("connection hijack\n")
 
 		var upCloseOnce sync.Once

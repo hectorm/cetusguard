@@ -1255,7 +1255,12 @@ func httpDaemonHandler(wri http.ResponseWriter, req *http.Request) {
 			_ = conn.Close()
 		}()
 
-		_, err = brw.Write([]byte("HTTP/1.1 101 UPGRADED\r\nConnection: Upgrade\r\nUpgrade: tcp\r\nContent-Type: " + contentTypeRawStream + "\r\n\r\nPONG"))
+		_, err = brw.Write([]byte("HTTP/1.1 101 UPGRADED\r\n" +
+			"Connection: Upgrade\r\n" +
+			"Upgrade: tcp\r\n" +
+			"Content-Type: application/vnd.docker.raw-stream\r\n" +
+			"\r\n" +
+			"PONG"))
 		if err != nil {
 			return
 		}
