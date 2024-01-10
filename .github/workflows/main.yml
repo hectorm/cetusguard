@@ -106,10 +106,10 @@ jobs:
           make test-e2e
 
   build:
-    name: "Build for \
-      ${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}\
-      ${{ matrix.go.GOARM != '' && format('v{0}', matrix.go.GOARM) || '' }}\
-    "
+    name: >-
+      Build for
+      ${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}
+      ${{ matrix.go.GOARM != '' && format('v{0}', matrix.go.GOARM) || '' }}
     needs: ['test', 'test-race', 'test-e2e']
     runs-on: 'ubuntu-latest'
     permissions:
@@ -148,7 +148,7 @@ jobs:
       - name: 'Upload artifacts'
         uses: 'actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392'
         with:
-          name: 'dist'
+          name: 'dist-${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}-${{ matrix.go.GOARM }}'
           path: './dist/*.gz'
           retention-days: 1
 
@@ -203,7 +203,8 @@ jobs:
       - name: 'Download artifacts'
         uses: 'actions/download-artifact@f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110'
         with:
-          name: 'dist'
+          pattern: 'dist-*'
+          merge-multiple: true
       - name: 'Create release'
         env:
           GITHUB_PAT: '${{ secrets.GITHUB_TOKEN }}'
