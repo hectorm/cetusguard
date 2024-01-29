@@ -146,7 +146,7 @@ jobs:
             GOARM="${{ matrix.go.GOARM }}"
           file ./dist/*-*-* && gzip -nv ./dist/*-*-*
       - name: 'Upload artifacts'
-        uses: 'actions/upload-artifact@694cdabd8bdb0f10b2cea11669e1bf5453eed0a6'
+        uses: 'actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8'
         with:
           name: 'dist-${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}-${{ matrix.go.GOARM }}'
           path: './dist/*.gz'
