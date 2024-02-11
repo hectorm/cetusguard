@@ -19,7 +19,7 @@ main() {
 	git clone "${CLI_REMOTE:?}" "${CLI_DIR:?}"
 	git -C "${CLI_DIR:?}" checkout "${CLI_TREEISH:?}"
 	git -C "${CLI_DIR:?}" apply -v "${CLI_PATCH:?}"
-	printf 'TEST_ID=%s\n' "${TEST_ID:?}" > "${CLI_DIR:?}"/e2e/.env
+	printf 'TEST_ID=%s\n' "${TEST_ID:?}" > "${CLI_DIR:?}"/.env
 
 	docker build --tag localhost.test/cetusguard:"${TEST_ID:?}" "${SCRIPT_DIR:?}"/../
 	( cd "${CLI_DIR:?}"; make -f "${CLI_DIR:?}"/docker.Makefile test-e2e-non-experimental; ) || ret="$?"
