@@ -256,7 +256,7 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 	}
 
 	res, err := cg.backendHttpClient.Transport.RoundTrip(newReq)
-	if errors.Is(err, context.Canceled) {
+	if errors.Is(err, context.Canceled) || errors.Is(err, syscall.ECONNREFUSED) {
 		mWri.WriteHeader(http.StatusBadGateway)
 		return nil
 	} else if err != nil {
