@@ -1558,10 +1558,10 @@ func tlsClient() (*http.Client, error) {
 		return nil, errors.New("error loading CA certificate")
 	}
 	transport := client.Transport.(*http.Transport)
-	/* #nosec G402 */
 	transport.TLSClientConfig = &tls.Config{
-		MinVersion:         minTlsVersion,
-		RootCAs:            cacertPool,
+		MinVersion: minTlsVersion,
+		RootCAs:    cacertPool,
+		/* #nosec G402 */
 		InsecureSkipVerify: true,
 	}
 
@@ -1579,10 +1579,10 @@ func altTlsClient() (*http.Client, error) {
 		return nil, errors.New("error loading CA certificate")
 	}
 	transport := client.Transport.(*http.Transport)
-	/* #nosec G402 */
 	transport.TLSClientConfig = &tls.Config{
-		MinVersion:         minTlsVersion,
-		RootCAs:            cacertPool,
+		MinVersion: minTlsVersion,
+		RootCAs:    cacertPool,
+		/* #nosec G402 */
 		InsecureSkipVerify: true,
 	}
 
