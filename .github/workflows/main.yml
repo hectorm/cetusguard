@@ -184,7 +184,7 @@ jobs:
             type=semver,pattern=v{{major}}.{{minor}}
             type=semver,pattern=v{{major}}
       - name: 'Build and push'
-        uses: 'docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0'
+        uses: 'docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25'
         with:
           context: './'
           platforms: 'linux/amd64,linux/arm64/v8,linux/arm/v7,linux/arm/v6,linux/riscv64,linux/ppc64le,linux/s390x'
