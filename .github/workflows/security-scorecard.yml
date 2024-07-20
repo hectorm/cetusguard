@@ -1,34 +1,34 @@
-name: 'Scorecard security analysis'
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: "Scorecard security analysis"
 
 on:
   push:
-    branches: ['master']
+    branches: ["master"]
   schedule:
-    - cron: '25 10 * * 3'
+    - cron: "25 10 * * 3"
   workflow_dispatch:
 
 permissions: {}
 
 jobs:
-
   analyze:
-    name: 'Scorecard security analysis'
-    runs-on: 'ubuntu-latest'
+    name: "Scorecard security analysis"
+    runs-on: "ubuntu-latest"
     permissions:
-      actions: 'read'
-      contents: 'read'
-      security-events: 'write'
+      actions: "read"
+      contents: "read"
+      security-events: "write"
     steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332'
-      - name: 'Perform security analysis'
-        uses: 'ossf/scorecard-action@dc50aa9510b46c811795eb24b2f1ba02a914e534'
+      - name: "Checkout"
+        uses: "actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332"
+      - name: "Perform security analysis"
+        uses: "ossf/scorecard-action@dc50aa9510b46c811795eb24b2f1ba02a914e534"
         with:
-          results_file: './results.sarif'
-          results_format: 'sarif'
-          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          results_file: "./results.sarif"
+          results_format: "sarif"
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
           publish_results: false
-      - name: 'Upload SARIF file'
-        uses: 'github/codeql-action/upload-sarif@4fa2a7953630fd2f3fb380f21be14ede0169dd4f'
+      - name: "Upload SARIF file"
+        uses: "github/codeql-action/upload-sarif@4fa2a7953630fd2f3fb380f21be14ede0169dd4f"
         with:
-          sarif_file: './results.sarif'
+          sarif_file: "./results.sarif"

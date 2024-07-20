@@ -1,107 +1,107 @@
-name: 'Main'
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: "Main"
 
 on:
   push:
-    tags: ['*']
-    branches: ['*']
+    tags: ["*"]
+    branches: ["*"]
   pull_request:
-    branches: ['*']
+    branches: ["*"]
   workflow_dispatch:
 
 permissions: {}
 
 jobs:
-
   gofmt:
-    name: 'Gofmt'
-    runs-on: 'ubuntu-latest'
+    name: "Gofmt"
+    runs-on: "ubuntu-latest"
     permissions:
-      contents: 'read'
+      contents: "read"
     steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332'
-      - name: 'Set up Go'
-        uses: 'actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32'
+      - name: "Checkout"
+        uses: "actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332"
+      - name: "Set up Go"
+        uses: "actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32"
         with:
-          go-version-file: './go.mod'
+          go-version-file: "./go.mod"
           check-latest: true
-      - name: 'Gofmt'
+      - name: "Gofmt"
         run: |
           make gofmt
 
   staticcheck:
-    name: 'Staticcheck'
-    runs-on: 'ubuntu-latest'
+    name: "Staticcheck"
+    runs-on: "ubuntu-latest"
     permissions:
-      contents: 'read'
+      contents: "read"
     steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332'
-      - name: 'Set up Go'
-        uses: 'actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32'
+      - name: "Checkout"
+        uses: "actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332"
+      - name: "Set up Go"
+        uses: "actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32"
         with:
-          go-version-file: './go.mod'
+          go-version-file: "./go.mod"
           check-latest: true
-      - name: 'Staticcheck'
-        uses: 'dominikh/staticcheck-action@fe1dd0c3658873b46f8c9bb3291096a617310ca6'
+      - name: "Staticcheck"
+        uses: "dominikh/staticcheck-action@fe1dd0c3658873b46f8c9bb3291096a617310ca6"
         with:
           install-go: false
 
   test:
-    name: 'Test on ${{ matrix.os }}'
-    needs: ['gofmt', 'staticcheck']
-    runs-on: '${{ matrix.os }}'
+    name: "Test on ${{ matrix.os }}"
+    needs: ["gofmt", "staticcheck"]
+    runs-on: "${{ matrix.os }}"
     permissions:
-      contents: 'read'
+      contents: "read"
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-latest', 'windows-latest', 'macos-latest']
+        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
     steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332'
-      - name: 'Set up Go'
-        uses: 'actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32'
+      - name: "Checkout"
+        uses: "actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332"
+      - name: "Set up Go"
+        uses: "actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32"
         with:
-          go-version-file: './go.mod'
+          go-version-file: "./go.mod"
           check-latest: true
-      - name: 'Test'
+      - name: "Test"
         run: |
           make test
 
   test-race:
-    name: 'Test race'
-    needs: ['gofmt', 'staticcheck']
-    runs-on: 'ubuntu-latest'
+    name: "Test race"
+    needs: ["gofmt", "staticcheck"]
+    runs-on: "ubuntu-latest"
     permissions:
-      contents: 'read'
+      contents: "read"
     steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332'
-      - name: 'Set up Go'
-        uses: 'actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32'
+      - name: "Checkout"
+        uses: "actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332"
+      - name: "Set up Go"
+        uses: "actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32"
         with:
-          go-version-file: './go.mod'
+          go-version-file: "./go.mod"
           check-latest: true
-      - name: 'Test race'
+      - name: "Test race"
         run: |
           make test-race
 
   test-e2e:
-    name: 'Test e2e'
-    needs: ['gofmt', 'staticcheck']
-    runs-on: 'ubuntu-20.04'
+    name: "Test e2e"
+    needs: ["gofmt", "staticcheck"]
+    runs-on: "ubuntu-20.04"
     permissions:
-      contents: 'read'
+      contents: "read"
     steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332'
-      - name: 'Set up Go'
-        uses: 'actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32'
+      - name: "Checkout"
+        uses: "actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332"
+      - name: "Set up Go"
+        uses: "actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32"
         with:
-          go-version-file: './go.mod'
+          go-version-file: "./go.mod"
           check-latest: true
-      - name: 'Test e2e'
+      - name: "Test e2e"
         run: |
           make test-e2e
 
@@ -110,71 +110,72 @@ jobs:
       Build for
       ${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}
       ${{ matrix.go.GOARM != '' && format('v{0}', matrix.go.GOARM) || '' }}
-    needs: ['test', 'test-race', 'test-e2e']
-    runs-on: 'ubuntu-latest'
+    needs: ["test", "test-race", "test-e2e"]
+    runs-on: "ubuntu-latest"
     permissions:
-      contents: 'read'
+      contents: "read"
     strategy:
       fail-fast: false
       matrix:
-        go: [
-          { GOOS: 'linux',   GOARCH: 'amd64'   },
-          { GOOS: 'linux',   GOARCH: 'arm64'   },
-          { GOOS: 'linux',   GOARCH: 'arm',     GOARM: '7' },
-          { GOOS: 'linux',   GOARCH: 'arm',     GOARM: '6' },
-          { GOOS: 'linux',   GOARCH: 'riscv64' },
-          { GOOS: 'linux',   GOARCH: 'ppc64le' },
-          { GOOS: 'linux',   GOARCH: 's390x'   },
-          { GOOS: 'windows', GOARCH: 'amd64'   },
-          { GOOS: 'windows', GOARCH: 'arm64'   },
-          { GOOS: 'darwin',  GOARCH: 'amd64'   },
-          { GOOS: 'darwin',  GOARCH: 'arm64'   },
-        ]
+        go:
+          [
+            { GOOS: "linux", GOARCH: "amd64" },
+            { GOOS: "linux", GOARCH: "arm64" },
+            { GOOS: "linux", GOARCH: "arm", GOARM: "7" },
+            { GOOS: "linux", GOARCH: "arm", GOARM: "6" },
+            { GOOS: "linux", GOARCH: "riscv64" },
+            { GOOS: "linux", GOARCH: "ppc64le" },
+            { GOOS: "linux", GOARCH: "s390x" },
+            { GOOS: "windows", GOARCH: "amd64" },
+            { GOOS: "windows", GOARCH: "arm64" },
+            { GOOS: "darwin", GOARCH: "amd64" },
+            { GOOS: "darwin", GOARCH: "arm64" },
+          ]
     steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332'
-      - name: 'Set up Go'
-        uses: 'actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32'
+      - name: "Checkout"
+        uses: "actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332"
+      - name: "Set up Go"
+        uses: "actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32"
         with:
-          go-version-file: './go.mod'
+          go-version-file: "./go.mod"
           check-latest: true
-      - name: 'Build'
+      - name: "Build"
         run: |
           make build \
             GOOS="${{ matrix.go.GOOS }}" \
             GOARCH="${{ matrix.go.GOARCH }}" \
             GOARM="${{ matrix.go.GOARM }}"
           file ./dist/*-*-* && gzip -nv ./dist/*-*-*
-      - name: 'Upload artifacts'
-        uses: 'actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b'
+      - name: "Upload artifacts"
+        uses: "actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b"
         with:
-          name: 'dist-${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}-${{ matrix.go.GOARM }}'
-          path: './dist/*.gz'
+          name: "dist-${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}-${{ matrix.go.GOARM }}"
+          path: "./dist/*.gz"
           retention-days: 1
 
   build-push-docker:
-    name: 'Build and push Docker images'
-    needs: ['build']
-    runs-on: 'ubuntu-latest'
+    name: "Build and push Docker images"
+    needs: ["build"]
+    runs-on: "ubuntu-latest"
     permissions:
-      contents: 'read'
+      contents: "read"
     steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332'
-      - name: 'Set up QEMU'
-        uses: 'docker/setup-qemu-action@5927c834f5b4fdf503fca6f4c7eccda82949e1ee'
-      - name: 'Set up Docker Buildx'
-        uses: 'docker/setup-buildx-action@4fd812986e6c8c2a69e18311145f9371337f27d4'
-      - name: 'Login to Docker Hub'
+      - name: "Checkout"
+        uses: "actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332"
+      - name: "Set up QEMU"
+        uses: "docker/setup-qemu-action@5927c834f5b4fdf503fca6f4c7eccda82949e1ee"
+      - name: "Set up Docker Buildx"
+        uses: "docker/setup-buildx-action@4fd812986e6c8c2a69e18311145f9371337f27d4"
+      - name: "Login to Docker Hub"
         if: "github.event_name != 'pull_request'"
-        uses: 'docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446'
+        uses: "docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446"
         with:
-          registry: 'docker.io'
-          username: '${{ secrets.DOCKERHUB_USERNAME }}'
-          password: '${{ secrets.DOCKERHUB_TOKEN }}'
-      - name: 'Extract metadata'
-        id: 'meta'
-        uses: 'docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81'
+          registry: "docker.io"
+          username: "${{ secrets.DOCKERHUB_USERNAME }}"
+          password: "${{ secrets.DOCKERHUB_TOKEN }}"
+      - name: "Extract metadata"
+        id: "meta"
+        uses: "docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81"
         with:
           images: |
             docker.io/${{ github.repository }}
@@ -183,31 +184,31 @@ jobs:
             type=semver,pattern=v{{version}}
             type=semver,pattern=v{{major}}.{{minor}}
             type=semver,pattern=v{{major}}
-      - name: 'Build and push'
-        uses: 'docker/build-push-action@1a162644f9a7e87d8f4b053101d1d9a712edc18c'
+      - name: "Build and push"
+        uses: "docker/build-push-action@1a162644f9a7e87d8f4b053101d1d9a712edc18c"
         with:
-          context: './'
-          platforms: 'linux/amd64,linux/arm64/v8,linux/arm/v7,linux/arm/v6,linux/riscv64,linux/ppc64le,linux/s390x'
-          tags: '${{ steps.meta.outputs.tags }}'
-          labels: '${{ steps.meta.outputs.labels }}'
+          context: "./"
+          platforms: "linux/amd64,linux/arm64/v8,linux/arm/v7,linux/arm/v6,linux/riscv64,linux/ppc64le,linux/s390x"
+          tags: "${{ steps.meta.outputs.tags }}"
+          labels: "${{ steps.meta.outputs.labels }}"
           push: "${{ github.event_name != 'pull_request' }}"
 
   release-github:
-    name: 'Create GitHub release'
+    name: "Create GitHub release"
     if: "startsWith(github.ref, 'refs/tags/v')"
-    needs: ['build', 'build-push-docker']
-    runs-on: 'ubuntu-latest'
+    needs: ["build", "build-push-docker"]
+    runs-on: "ubuntu-latest"
     permissions:
-      contents: 'write'
+      contents: "write"
     steps:
-      - name: 'Download artifacts'
-        uses: 'actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16'
+      - name: "Download artifacts"
+        uses: "actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16"
         with:
-          pattern: 'dist-*'
+          pattern: "dist-*"
           merge-multiple: true
-      - name: 'Create release'
+      - name: "Create release"
         env:
-          GITHUB_PAT: '${{ secrets.GITHUB_TOKEN }}'
+          GITHUB_PAT: "${{ secrets.GITHUB_TOKEN }}"
         run: |
           RELEASE_STATUS="$(curl -fs --proto '=https' --tlsv1.3 --globoff \
             --url "https://api.github.com/repos/${GITHUB_REPOSITORY:?}/releases/tags/${GITHUB_REF_NAME:?}" \
