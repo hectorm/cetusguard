@@ -90,7 +90,7 @@ jobs:
   test-e2e:
     name: "Test e2e"
     needs: ["gofmt", "staticcheck"]
-    runs-on: "ubuntu-latest"
+    runs-on: "ubuntu-24.04"
     permissions:
       contents: "read"
     steps:
