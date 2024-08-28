@@ -16,11 +16,14 @@ cleanup() { ret="$?"; rm -rf "${CLI_DIR:?}"; trap - EXIT; exit "${ret:?}"; }
 trap cleanup EXIT TERM INT HUP
 
 main() {
-	git clone "${CLI_REMOTE:?}" "${CLI_DIR:?}"
-	git -C "${CLI_DIR:?}" checkout "${CLI_TREEISH:?}"
+	git -C "${CLI_DIR:?}" init --quiet
+	git -C "${CLI_DIR:?}" remote add origin "${CLI_REMOTE:?}"
+	git -C "${CLI_DIR:?}" fetch --depth=1 origin "${CLI_TREEISH:?}"
+	git -C "${CLI_DIR:?}" checkout FETCH_HEAD
+	git -C "${CLI_DIR:?}" submodule update --init --recursive --depth=1
 	git -C "${CLI_DIR:?}" apply -v "${CLI_PATCH:?}"
-	printf 'TEST_ID=%s\n' "${TEST_ID:?}" > "${CLI_DIR:?}"/.env
 
+	printf 'TEST_ID=%s\n' "${TEST_ID:?}" > "${CLI_DIR:?}"/.env
 	docker build --tag localhost.test/cetusguard:"${TEST_ID:?}" "${SCRIPT_DIR:?}"/../
 	( cd "${CLI_DIR:?}"; make -f "${CLI_DIR:?}"/docker.Makefile test-e2e-non-experimental; ) || ret="$?"
 
