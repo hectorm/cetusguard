@@ -27,20 +27,20 @@ jobs:
         language: ["go"]
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332"
+        uses: "actions/checkout@d632683dd7b4114ad314bca15554477dd762a938"
       - name: "Set up Go"
         uses: "actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32"
         with:
           go-version-file: "./go.mod"
           check-latest: true
       - name: "Initialize CodeQL"
-        uses: "github/codeql-action/init@4dd16135b69a43b6c8efb853346f8437d92d3c93"
+        uses: "github/codeql-action/init@e2b3eafc8d227b0241d48be5f425d47c2d750a13"
         with:
           languages: "${{ matrix.language }}"
       - name: "Autobuild"
-        uses: "github/codeql-action/autobuild@4dd16135b69a43b6c8efb853346f8437d92d3c93"
+        uses: "github/codeql-action/autobuild@e2b3eafc8d227b0241d48be5f425d47c2d750a13"
       - name: "Perform CodeQL analysis"
-        uses: "github/codeql-action/analyze@4dd16135b69a43b6c8efb853346f8437d92d3c93"
+        uses: "github/codeql-action/analyze@e2b3eafc8d227b0241d48be5f425d47c2d750a13"
 
   analyze-gosec:
     name: "Gosec analysis"
@@ -51,17 +51,17 @@ jobs:
       security-events: "write"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332"
+        uses: "actions/checkout@d632683dd7b4114ad314bca15554477dd762a938"
       - name: "Set up Go"
         uses: "actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32"
         with:
           go-version-file: "./go.mod"
           check-latest: true
       - name: "Perform Gosec analysis"
-        uses: "securego/gosec@6fbd381238e97e1d1f3358f0d6d65de78dcf9245"
+        uses: "securego/gosec@d4617f51baf75f4f809066386a4f9d27b3ac3e46"
         with:
           args: "-no-fail -tests -fmt sarif -out ./results.sarif ./..."
       - name: "Upload SARIF file"
-        uses: "github/codeql-action/upload-sarif@4dd16135b69a43b6c8efb853346f8437d92d3c93"
+        uses: "github/codeql-action/upload-sarif@e2b3eafc8d227b0241d48be5f425d47c2d750a13"
         with:
           sarif_file: "./results.sarif"
