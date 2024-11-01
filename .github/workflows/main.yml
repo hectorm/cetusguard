@@ -19,9 +19,9 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@d632683dd7b4114ad314bca15554477dd762a938"
+        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up Go"
-        uses: "actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32"
+        uses: "actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -36,9 +36,9 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@d632683dd7b4114ad314bca15554477dd762a938"
+        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up Go"
-        uses: "actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32"
+        uses: "actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -59,9 +59,9 @@ jobs:
         os: ["ubuntu-latest", "windows-latest", "macos-latest"]
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@d632683dd7b4114ad314bca15554477dd762a938"
+        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up Go"
-        uses: "actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32"
+        uses: "actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -77,9 +77,9 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@d632683dd7b4114ad314bca15554477dd762a938"
+        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up Go"
-        uses: "actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32"
+        uses: "actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -95,9 +95,9 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@d632683dd7b4114ad314bca15554477dd762a938"
+        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up Go"
-        uses: "actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32"
+        uses: "actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -131,9 +131,9 @@ jobs:
           - { GOOS: "darwin", GOARCH: "arm64" }
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@d632683dd7b4114ad314bca15554477dd762a938"
+        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up Go"
-        uses: "actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32"
+        uses: "actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -145,7 +145,7 @@ jobs:
             GOARM="${{ matrix.go.GOARM }}"
           file ./dist/*-*-* && gzip -nv ./dist/*-*-*
       - name: "Upload artifacts"
-        uses: "actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874"
+        uses: "actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882"
         with:
           name: "dist-${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}-${{ matrix.go.GOARM }}"
           path: "./dist/*.gz"
@@ -159,11 +159,11 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@d632683dd7b4114ad314bca15554477dd762a938"
+        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up QEMU"
         uses: "docker/setup-qemu-action@49b3bc8e6bdd4a60e6116a5414239cba5943d3cf"
       - name: "Set up Docker Buildx"
-        uses: "docker/setup-buildx-action@988b5a0280414f521da01fcc63a27aeeb4b104db"
+        uses: "docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349"
       - name: "Login to Docker Hub"
         if: "github.event_name != 'pull_request'"
         uses: "docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567"
