@@ -29,18 +29,18 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up Go"
-        uses: "actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a"
+        uses: "actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34"
         with:
           go-version-file: "./go.mod"
           check-latest: true
       - name: "Initialize CodeQL"
-        uses: "github/codeql-action/init@48ab28a6f5dbc2a99bf1e0131198dd8f1df78169"
+        uses: "github/codeql-action/init@dd746615b3b9d728a6a37ca2045b68ca76d4841a"
         with:
           languages: "${{ matrix.language }}"
       - name: "Autobuild"
-        uses: "github/codeql-action/autobuild@48ab28a6f5dbc2a99bf1e0131198dd8f1df78169"
+        uses: "github/codeql-action/autobuild@dd746615b3b9d728a6a37ca2045b68ca76d4841a"
       - name: "Perform CodeQL analysis"
-        uses: "github/codeql-action/analyze@48ab28a6f5dbc2a99bf1e0131198dd8f1df78169"
+        uses: "github/codeql-action/analyze@dd746615b3b9d728a6a37ca2045b68ca76d4841a"
 
   analyze-gosec:
     name: "Gosec analysis"
@@ -53,15 +53,15 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up Go"
-        uses: "actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a"
+        uses: "actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34"
         with:
           go-version-file: "./go.mod"
           check-latest: true
       - name: "Perform Gosec analysis"
-        uses: "securego/gosec@d4617f51baf75f4f809066386a4f9d27b3ac3e46"
+        uses: "securego/gosec@e0cca6fe95306b7e7790d6f1bf6a7bec6d622459"
         with:
           args: "-no-fail -tests -fmt sarif -out ./results.sarif ./..."
       - name: "Upload SARIF file"
-        uses: "github/codeql-action/upload-sarif@48ab28a6f5dbc2a99bf1e0131198dd8f1df78169"
+        uses: "github/codeql-action/upload-sarif@dd746615b3b9d728a6a37ca2045b68ca76d4841a"
         with:
           sarif_file: "./results.sarif"
