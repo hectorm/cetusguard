@@ -145,7 +145,7 @@ jobs:
             GOARM="${{ matrix.go.GOARM }}"
           file ./dist/*-*-* && gzip -nv ./dist/*-*-*
       - name: "Upload artifacts"
-        uses: "actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08"
+        uses: "actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1"
         with:
           name: "dist-${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}-${{ matrix.go.GOARM }}"
           path: "./dist/*.gz"
@@ -161,9 +161,9 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up QEMU"
-        uses: "docker/setup-qemu-action@4574d27a4764455b42196d70a065bc6853246a25"
+        uses: "docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392"
       - name: "Set up Docker Buildx"
-        uses: "docker/setup-buildx-action@f7ce87c1d6bead3e36075b2ce75da1f6cc28aaca"
+        uses: "docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2"
       - name: "Login to Docker Hub"
         if: "github.event_name != 'pull_request'"
         uses: "docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567"
@@ -173,7 +173,7 @@ jobs:
           password: "${{ secrets.DOCKERHUB_TOKEN }}"
       - name: "Extract metadata"
         id: "meta"
-        uses: "docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96"
+        uses: "docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804"
         with:
           images: |
             docker.io/${{ github.repository }}
@@ -183,7 +183,7 @@ jobs:
             type=semver,pattern=v{{major}}.{{minor}}
             type=semver,pattern=v{{major}}
       - name: "Build and push"
-        uses: "docker/build-push-action@0adf9959216b96bec444f325f1e493d4aa344497"
+        uses: "docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4"
         with:
           context: "./"
           platforms: "linux/amd64,linux/arm64/v8,linux/arm/v7,linux/arm/v6,linux/riscv64,linux/ppc64le,linux/s390x"
@@ -200,7 +200,7 @@ jobs:
       contents: "write"
     steps:
       - name: "Download artifacts"
-        uses: "actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16"
+        uses: "actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806"
         with:
           pattern: "dist-*"
           merge-multiple: true
