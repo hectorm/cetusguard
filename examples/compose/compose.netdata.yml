@@ -13,13 +13,17 @@ services:
       CETUSGUARD_BACKEND_ADDR: "unix:///var/run/docker.sock"
       CETUSGUARD_FRONTEND_ADDR: "tcp://:2375"
       CETUSGUARD_RULES: |
+        ! List images
+        GET %API_PREFIX_IMAGES%/json
+        ! List containers
+        GET %API_PREFIX_CONTAINERS%/json
         ! Inspect a container
         GET %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/json
       CETUSGUARD_LOG_LEVEL: "7"
 
   netdata:
     container_name: "cetusguard-netdata"
-    image: "docker.io/netdata/netdata:v1"
+    image: "docker.io/netdata/netdata:v2"
     restart: "on-failure"
     cap_add:
       - "SYS_PTRACE"

@@ -23,7 +23,7 @@ services:
 
   traefik:
     container_name: "cetusguard-traefik"
-    image: "docker.io/traefik:v3.0"
+    image: "docker.io/traefik:v3.3"
     restart: "on-failure"
     networks:
       - "cetusguard"

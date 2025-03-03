@@ -20,7 +20,7 @@ services:
 
   podmand:
     container_name: "cetusguard-podmand"
-    image: "quay.io/podman/stable:v4"
+    image: "quay.io/podman/stable:v5"
     restart: "on-failure"
     privileged: true
     networks:
@@ -30,7 +30,7 @@ services:
 
   podman:
     container_name: "cetusguard-podman"
-    image: "quay.io/podman/stable:v4"
+    image: "quay.io/podman/stable:v5"
     restart: "on-failure"
     networks:
       - "cetusguard-public"
