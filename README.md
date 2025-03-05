@@ -21,7 +21,7 @@ CetusGuard solves this problem by acting as a proxy between the daemon and the s
 
 ## Usage
 
-CetusGuard is distributed as a Docker image available on [Docker Hub][3] and as a statically linked binary available in the [releases section][4] of the project.
+CetusGuard is distributed as a Docker image available on [Docker Hub][3] or [GitHub Container Registry][4] and as a statically linked binary available in the [releases section][5] of the project.
 
 A collection of examples for experimenting with CetusGuard, including some real world scenarios with Traefik and Netdata, can be found in the [./examples/](./examples/) directory.
 
@@ -105,4 +105,5 @@ GET %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/json
 [1]: https://docs.docker.com/engine/security/rootless/
 [2]: https://docs.docker.com/engine/security/protect-access/
 [3]: https://hub.docker.com/r/hectorm/cetusguard
-[4]: https://github.com/hectorm/cetusguard/releases
+[4]: https://github.com/hectorm/cetusguard/pkgs/container/cetusguard
+[5]: https://github.com/hectorm/cetusguard/releases
