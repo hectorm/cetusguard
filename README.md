@@ -96,6 +96,33 @@ GET %API_PREFIX_CONTAINERS%/json
 
 ! Inspect a container
 GET %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/json
+
+! Create a container
+POST %API_PREFIX_CONTAINERS%/create(\?.*)?
+
+! Start a container
+POST %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/start(\?.*)?
+
+! Kill a container
+POST %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/kill(\?.*)?
+
+! Remove a container
+DELETE %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%(\?.*)?
+
+! Connect a container to a network
+POST %API_PREFIX_NETWORKS%/%NETWORK_ID_OR_NAME%/connect(\?.*)?
+
+! Disconnect a container from a network
+POST %API_PREFIX_NETWORKS%/%NETWORK_ID_OR_NAME%/disconnect(\?.*)?
+
+! Inspect an image
+GET %API_PREFIX_IMAGES%/%IMAGE_ID_OR_REFERENCE%/json
+
+! Pull or import an image
+POST %API_PREFIX_IMAGES%/create
+
+! Remove an image
+DELETE %API_PREFIX_IMAGES%/%IMAGE_ID_OR_REFERENCE%(\?.*)?
 ```
 
 ## License
