@@ -1,5 +1,5 @@
 diff --git a/e2e/compose-env.yaml b/e2e/compose-env.yaml
-index 7feb2a0a70..de0a1d9bd3 100644
+index 2173f0e668..d9d2303ba7 100644
 --- a/e2e/compose-env.yaml
 +++ b/e2e/compose-env.yaml
 @@ -6,2 +6,13 @@ services:
@@ -15,4 +15,4 @@ index 7feb2a0a70..de0a1d9bd3 100644
 +        CETUSGUARD_LOG_LEVEL: '7'
 +
 +  engine-shaded:
-       image: 'docker:${ENGINE_VERSION:-26.1}-dind'
+       image: 'docker:${ENGINE_VERSION:-28}-dind'
