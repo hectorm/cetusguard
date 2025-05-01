@@ -21,7 +21,7 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up Go"
-        uses: "actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34"
+        uses: "actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -38,7 +38,7 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up Go"
-        uses: "actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34"
+        uses: "actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -61,7 +61,7 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up Go"
-        uses: "actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34"
+        uses: "actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -79,7 +79,7 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up Go"
-        uses: "actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34"
+        uses: "actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -97,7 +97,7 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up Go"
-        uses: "actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34"
+        uses: "actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -133,7 +133,7 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
       - name: "Set up Go"
-        uses: "actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34"
+        uses: "actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -145,7 +145,7 @@ jobs:
             GOARM="${{ matrix.go.GOARM }}"
           file ./dist/*-*-* && gzip -nv ./dist/*-*-*
       - name: "Upload artifacts"
-        uses: "actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1"
+        uses: "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02"
         with:
           name: "dist-${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}-${{ matrix.go.GOARM }}"
           path: "./dist/*.gz"
@@ -167,14 +167,14 @@ jobs:
         uses: "docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2"
       - name: "Login to GitHub Container Registry"
         if: "github.event_name != 'pull_request'"
-        uses: "docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567"
+        uses: "docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772"
         with:
           registry: "ghcr.io"
           username: "${{ github.actor }}"
           password: "${{ secrets.GITHUB_TOKEN }}"
       - name: "Login to Docker Hub"
         if: "github.event_name != 'pull_request'"
-        uses: "docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567"
+        uses: "docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772"
         with:
           registry: "docker.io"
           username: "${{ secrets.DOCKERHUB_USERNAME }}"
@@ -192,7 +192,7 @@ jobs:
             type=semver,pattern=v{{major}}.{{minor}}
             type=semver,pattern=v{{major}}
       - name: "Build and push"
-        uses: "docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4"
+        uses: "docker/build-push-action@14487ce63c7a62a4a324b0bfb37086795e31c6c1"
         with:
           context: "./"
           platforms: "linux/amd64,linux/arm64/v8,linux/arm/v7,linux/arm/v6,linux/riscv64,linux/ppc64le,linux/s390x"
@@ -211,7 +211,7 @@ jobs:
       contents: "write"
     steps:
       - name: "Download artifacts"
-        uses: "actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806"
+        uses: "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093"
         with:
           pattern: "dist-*"
           merge-multiple: true
