@@ -43,7 +43,7 @@ jobs:
           go-version-file: "./go.mod"
           check-latest: true
       - name: "Staticcheck"
-        uses: "dominikh/staticcheck-action@fe1dd0c3658873b46f8c9bb3291096a617310ca6"
+        uses: "dominikh/staticcheck-action@024238d2898c874f26d723e7d0ff4308c35589a2"
         with:
           install-go: false
 
@@ -164,7 +164,7 @@ jobs:
       - name: "Set up QEMU"
         uses: "docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392"
       - name: "Set up Docker Buildx"
-        uses: "docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2"
+        uses: "docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435"
       - name: "Login to GitHub Container Registry"
         if: "github.event_name != 'pull_request'"
         uses: "docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772"
@@ -181,7 +181,7 @@ jobs:
           password: "${{ secrets.DOCKERHUB_TOKEN }}"
       - name: "Extract metadata"
         id: "meta"
-        uses: "docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804"
+        uses: "docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f"
         with:
           images: |
             ghcr.io/${{ github.repository }}
