@@ -27,20 +27,20 @@ jobs:
         language: ["go"]
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
       - name: "Set up Go"
-        uses: "actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5"
+        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
         with:
           go-version-file: "./go.mod"
           check-latest: true
       - name: "Initialize CodeQL"
-        uses: "github/codeql-action/init@ff0a06e83cb2de871e5a09832bc6a81e7276941f"
+        uses: "github/codeql-action/init@3599b3baa15b485a2e49ef411a7a4bb2452e7f93"
         with:
           languages: "${{ matrix.language }}"
       - name: "Autobuild"
-        uses: "github/codeql-action/autobuild@ff0a06e83cb2de871e5a09832bc6a81e7276941f"
+        uses: "github/codeql-action/autobuild@3599b3baa15b485a2e49ef411a7a4bb2452e7f93"
       - name: "Perform CodeQL analysis"
-        uses: "github/codeql-action/analyze@ff0a06e83cb2de871e5a09832bc6a81e7276941f"
+        uses: "github/codeql-action/analyze@3599b3baa15b485a2e49ef411a7a4bb2452e7f93"
 
   analyze-gosec:
     name: "Gosec analysis"
@@ -51,17 +51,17 @@ jobs:
       security-events: "write"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
       - name: "Set up Go"
-        uses: "actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5"
+        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
         with:
           go-version-file: "./go.mod"
           check-latest: true
       - name: "Perform Gosec analysis"
-        uses: "securego/gosec@6decf96c3d272d5a8bbdcf9fddb5789d0be16a8d"
+        uses: "securego/gosec@15d5c61e866bc2e2e8389376a31f1e5e09bde7d8"
         with:
           args: "-no-fail -tests -fmt sarif -out ./results.sarif ./..."
       - name: "Upload SARIF file"
-        uses: "github/codeql-action/upload-sarif@ff0a06e83cb2de871e5a09832bc6a81e7276941f"
+        uses: "github/codeql-action/upload-sarif@3599b3baa15b485a2e49ef411a7a4bb2452e7f93"
         with:
           sarif_file: "./results.sarif"

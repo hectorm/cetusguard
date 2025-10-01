@@ -19,9 +19,9 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
       - name: "Set up Go"
-        uses: "actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5"
+        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -36,14 +36,14 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
       - name: "Set up Go"
-        uses: "actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5"
+        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
         with:
           go-version-file: "./go.mod"
           check-latest: true
       - name: "Staticcheck"
-        uses: "dominikh/staticcheck-action@fe1dd0c3658873b46f8c9bb3291096a617310ca6"
+        uses: "dominikh/staticcheck-action@024238d2898c874f26d723e7d0ff4308c35589a2"
         with:
           install-go: false
 
@@ -59,9 +59,9 @@ jobs:
         os: ["ubuntu-latest", "windows-latest", "macos-latest"]
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
       - name: "Set up Go"
-        uses: "actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5"
+        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -77,9 +77,9 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
       - name: "Set up Go"
-        uses: "actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5"
+        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -95,9 +95,9 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
       - name: "Set up Go"
-        uses: "actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5"
+        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -131,9 +131,9 @@ jobs:
           - { GOOS: "darwin", GOARCH: "arm64" }
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
       - name: "Set up Go"
-        uses: "actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5"
+        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -160,28 +160,28 @@ jobs:
       packages: "write"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
       - name: "Set up QEMU"
         uses: "docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392"
       - name: "Set up Docker Buildx"
-        uses: "docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2"
+        uses: "docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435"
       - name: "Login to GitHub Container Registry"
         if: "github.event_name != 'pull_request'"
-        uses: "docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772"
+        uses: "docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef"
         with:
           registry: "ghcr.io"
           username: "${{ github.actor }}"
           password: "${{ secrets.GITHUB_TOKEN }}"
       - name: "Login to Docker Hub"
         if: "github.event_name != 'pull_request'"
-        uses: "docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772"
+        uses: "docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef"
         with:
           registry: "docker.io"
           username: "${{ secrets.DOCKERHUB_USERNAME }}"
           password: "${{ secrets.DOCKERHUB_TOKEN }}"
       - name: "Extract metadata"
         id: "meta"
-        uses: "docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804"
+        uses: "docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f"
         with:
           images: |
             ghcr.io/${{ github.repository }}
@@ -211,7 +211,7 @@ jobs:
       contents: "write"
     steps:
       - name: "Download artifacts"
-        uses: "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093"
+        uses: "actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0"
         with:
           pattern: "dist-*"
           merge-multiple: true
