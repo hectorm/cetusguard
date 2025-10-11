@@ -13,7 +13,7 @@ permissions: {}
 
 jobs:
   gofmt:
-    name: "Gofmt"
+    name: "Run gofmt"
     runs-on: "ubuntu-latest"
     permissions:
       contents: "read"
@@ -25,12 +25,34 @@ jobs:
         with:
           go-version-file: "./go.mod"
           check-latest: true
-      - name: "Gofmt"
+      - name: "Run gofmt"
         run: |
           make gofmt
 
+  gosec:
+    name: "Run gosec"
+    runs-on: "ubuntu-latest"
+    permissions:
+      actions: "read"
+      contents: "read"
+      security-events: "write"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
+      - name: "Set up Go"
+        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
+        with:
+          go-version-file: "./go.mod"
+          check-latest: true
+      - name: "Install gosec"
+        run: |
+          go install github.com/securego/gosec/v2/cmd/gosec@latest
+      - name: "Run gosec"
+        run:
+          make gosec
+
   staticcheck:
-    name: "Staticcheck"
+    name: "Run staticcheck"
     runs-on: "ubuntu-latest"
     permissions:
       contents: "read"
@@ -42,14 +64,16 @@ jobs:
         with:
           go-version-file: "./go.mod"
           check-latest: true
-      - name: "Staticcheck"
-        uses: "dominikh/staticcheck-action@024238d2898c874f26d723e7d0ff4308c35589a2"
-        with:
-          install-go: false
+      - name: "Install staticcheck"
+        run: |
+          go install honnef.co/go/tools/cmd/staticcheck@latest
+      - name: "Run staticcheck"
+        run: |
+          make staticcheck
 
   test:
     name: "Test on ${{ matrix.os }}"
-    needs: ["gofmt", "staticcheck"]
+    needs: ["gofmt", "gosec", "staticcheck"]
     runs-on: "${{ matrix.os }}"
     permissions:
       contents: "read"
@@ -89,7 +113,7 @@ jobs:
 
   test-e2e:
     name: "Test e2e"
-    needs: ["gofmt", "staticcheck"]
+    needs: ["gofmt", "gosec", "staticcheck"]
     runs-on: "ubuntu-24.04"
     permissions:
       contents: "read"
