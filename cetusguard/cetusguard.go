@@ -266,7 +266,7 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 		return nil
 	} else if err != nil {
 		mWri.WriteHeader(http.StatusBadGateway)
-		return err
+		return fmt.Errorf("error forwarding request: %w", err)
 	}
 	defer func() {
 		_ = res.Body.Close()
@@ -281,7 +281,7 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 		rc := http.NewResponseController(wri)
 		err = rc.SetWriteDeadline(time.Time{})
 		if err != nil {
-			return err
+			return fmt.Errorf("error disabling write deadline: %w", err)
 		}
 	}
 
@@ -308,7 +308,7 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 
 		down, downRw, err := hj.Hijack()
 		if err != nil {
-			return err
+			return fmt.Errorf("error hijacking connection: %w", err)
 		}
 		defer func() {
 			downCloseOnce.Do(func() { _ = down.Close() })
@@ -316,22 +316,22 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 
 		_, err = downRw.Write([]byte(res.Proto + " " + res.Status + "\r\n"))
 		if err != nil {
-			return err
+			return fmt.Errorf("error writing response status: %w", err)
 		}
 
 		err = res.Header.Write(downRw)
 		if err != nil {
-			return err
+			return fmt.Errorf("error writing response headers: %w", err)
 		}
 
 		_, err = downRw.Write([]byte("\r\n"))
 		if err != nil {
-			return err
+			return fmt.Errorf("error writing response headers: %w", err)
 		}
 
 		err = downRw.Flush()
 		if err != nil {
-			return err
+			return fmt.Errorf("error flushing response headers: %w", err)
 		}
 
 		var wg sync.WaitGroup
@@ -362,7 +362,7 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 			if errors.Is(err, context.Canceled) || errors.Is(err, syscall.EPIPE) || errors.Is(err, syscall.ECONNRESET) {
 				return nil
 			} else if err != nil {
-				return err
+				return fmt.Errorf("error copying response body: %w", err)
 			}
 		}
 	}
