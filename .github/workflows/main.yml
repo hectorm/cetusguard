@@ -92,22 +92,7 @@ jobs:
       - name: "Test"
         run: |
           make test
-
-  test-race:
-    name: "Test race"
-    needs: ["gofmt", "staticcheck"]
-    runs-on: "ubuntu-latest"
-    permissions:
-      contents: "read"
-    steps:
-      - name: "Checkout"
-        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
-      - name: "Set up Go"
-        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
-        with:
-          go-version-file: "./go.mod"
-          check-latest: true
-      - name: "Test race"
+      - name: "Test (race)"
         run: |
           make test-race
 
@@ -134,7 +119,7 @@ jobs:
       Build for
       ${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}
       ${{ matrix.go.GOARM != '' && format('v{0}', matrix.go.GOARM) || '' }}
-    needs: ["test", "test-race", "test-e2e"]
+    needs: ["test", "test-e2e"]
     runs-on: "ubuntu-latest"
     permissions:
       contents: "read"
