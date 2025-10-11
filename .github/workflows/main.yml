@@ -122,7 +122,9 @@ jobs:
     needs: ["test", "test-e2e"]
     runs-on: "ubuntu-latest"
     permissions:
+      attestations: "write"
       contents: "read"
+      id-token: "write"
     strategy:
       fail-fast: false
       matrix:
@@ -152,8 +154,12 @@ jobs:
             GOOS="${{ matrix.go.GOOS }}" \
             GOARCH="${{ matrix.go.GOARCH }}" \
             GOARM="${{ matrix.go.GOARM }}"
-          file ./dist/*-*-* && gzip -nv ./dist/*-*-*
-      - name: "Upload artifacts"
+          file ./dist/* && gzip -nv ./dist/*
+      - name: "Generate artifact attestation"
+        uses: "actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a"
+        with:
+          subject-path: "./dist/*.gz"
+      - name: "Upload artifact"
         uses: "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02"
         with:
           name: "dist-${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}-${{ matrix.go.GOARM }}"
