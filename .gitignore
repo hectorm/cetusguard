@@ -1,3 +1,7 @@
 /dist/
 
-.idea/
+.env
+.env.*
+
+testdata/
+cover.*
