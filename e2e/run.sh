@@ -12,6 +12,7 @@ CLI_DIR="$(mktemp -d)"
 
 TEST_ID="e2e-$(date -u +'%Y%m%d%H%M%S')"
 
+# shellcheck disable=SC2329
 cleanup() { ret="$?"; rm -rf "${CLI_DIR:?}"; trap - EXIT; exit "${ret:?}"; }
 trap cleanup EXIT TERM INT HUP
 
