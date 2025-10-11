@@ -20,7 +20,7 @@ INSTALL_PROGRAM := $(INSTALL)
 INSTALL_DATA := $(INSTALL) -m 644
 
 GIT_TAG := $(shell '$(GIT)' tag -l --contains HEAD)
-GIT_SHA := $(shell '$(GIT)' rev-parse HEAD)
+GIT_SHA := $(shell '$(GIT)' rev-parse HEAD | cut -c1-8)
 VERSION := $(if $(GIT_TAG),$(GIT_TAG),$(GIT_SHA))
 
 GOOS := $(shell '$(GO)' env GOOS)
@@ -32,7 +32,7 @@ GOFLAGS := -trimpath
 LDFLAGS := -s -w -X "main.version=$(VERSION)"
 
 SRCS := $(shell '$(GIT)' ls-files '*.go' 2>/dev/null ||:)
-EXEC := cetusguard-$(GOOS)-$(GOARCH)
+EXEC := cetusguard-$(VERSION)-$(GOOS)-$(GOARCH)
 
 ifneq ($(GOVARIANT),)
 	EXEC := $(addsuffix -$(GOVARIANT), $(EXEC))
