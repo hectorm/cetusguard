@@ -163,7 +163,7 @@ jobs:
         with:
           subject-path: "./dist/*.gz"
       - name: "Upload artifact"
-        uses: "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02"
+        uses: "actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4"
         with:
           name: "dist-${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}-${{ matrix.go.GOARM }}"
           path: "./dist/*.gz"
@@ -232,7 +232,7 @@ jobs:
       contents: "write"
     steps:
       - name: "Download artifacts"
-        uses: "actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0"
+        uses: "actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53"
         with:
           pattern: "dist-*"
           merge-multiple: true
