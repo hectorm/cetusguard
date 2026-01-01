@@ -19,9 +19,9 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
+        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
       - name: "Set up Go"
-        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
+        uses: "actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -38,9 +38,9 @@ jobs:
       security-events: "write"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
+        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
       - name: "Set up Go"
-        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
+        uses: "actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -58,9 +58,9 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
+        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
       - name: "Set up Go"
-        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
+        uses: "actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -83,9 +83,9 @@ jobs:
         os: ["ubuntu-latest", "windows-latest", "macos-latest"]
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
+        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
       - name: "Set up Go"
-        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
+        uses: "actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -104,9 +104,9 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
+        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
       - name: "Set up Go"
-        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
+        uses: "actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -142,12 +142,12 @@ jobs:
           - { GOOS: "darwin", GOARCH: "arm64" }
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
+        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
         with:
           filter: "blob:none"
           fetch-depth: 0
       - name: "Set up Go"
-        uses: "actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00"
+        uses: "actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c"
         with:
           go-version-file: "./go.mod"
           check-latest: true
@@ -159,11 +159,11 @@ jobs:
             GOARM="${{ matrix.go.GOARM }}"
           file ./dist/* && gzip -nv ./dist/*
       - name: "Generate artifact attestation"
-        uses: "actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a"
+        uses: "actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8"
         with:
           subject-path: "./dist/*.gz"
       - name: "Upload artifact"
-        uses: "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02"
+        uses: "actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f"
         with:
           name: "dist-${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}-${{ matrix.go.GOARM }}"
           path: "./dist/*.gz"
@@ -178,14 +178,14 @@ jobs:
       packages: "write"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8"
+        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
         with:
           filter: "blob:none"
           fetch-depth: 0
       - name: "Set up QEMU"
-        uses: "docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392"
+        uses: "docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130"
       - name: "Set up Docker Buildx"
-        uses: "docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435"
+        uses: "docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f"
       - name: "Login to GitHub Container Registry"
         if: "github.event_name != 'pull_request'"
         uses: "docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef"
@@ -202,7 +202,7 @@ jobs:
           password: "${{ secrets.DOCKERHUB_TOKEN }}"
       - name: "Extract metadata"
         id: "meta"
-        uses: "docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f"
+        uses: "docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051"
         with:
           images: |
             ghcr.io/${{ github.repository }}
@@ -232,7 +232,7 @@ jobs:
       contents: "write"
     steps:
       - name: "Download artifacts"
-        uses: "actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0"
+        uses: "actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131"
         with:
           pattern: "dist-*"
           merge-multiple: true
