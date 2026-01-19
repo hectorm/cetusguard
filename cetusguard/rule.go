@@ -66,6 +66,7 @@ var (
 		"API_PREFIX_COMMIT":       `%API_PREFIX%/commit`,
 		"API_PREFIX_CONFIGS":      `%API_PREFIX%/configs`,
 		"API_PREFIX_CONTAINERS":   `%API_PREFIX%/containers`,
+		"API_PREFIX_DEBUG":        `%API_PREFIX%/debug`,
 		"API_PREFIX_DISTRIBUTION": `%API_PREFIX%/distribution`,
 		"API_PREFIX_EVENTS":       `%API_PREFIX%/events`,
 		"API_PREFIX_EXEC":         `%API_PREFIX%/exec`,
