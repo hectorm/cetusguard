@@ -155,6 +155,7 @@ jobs:
           - { GOOS: "linux", GOARCH: "riscv64" }
           - { GOOS: "linux", GOARCH: "ppc64le" }
           - { GOOS: "linux", GOARCH: "s390x" }
+          - { GOOS: "linux", GOARCH: "loong64" }
           - { GOOS: "windows", GOARCH: "amd64" }
           - { GOOS: "windows", GOARCH: "arm64" }
           - { GOOS: "darwin", GOARCH: "amd64" }
@@ -250,6 +251,7 @@ jobs:
             linux/riscv64
             linux/ppc64le
             linux/s390x
+            linux/loong64
           tags: "${{ steps.meta.outputs.tags }}"
           labels: "${{ steps.meta.outputs.labels }}"
           extra-args: |
