@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-action.json
+name: "Go version"
+description: "Get Go minor version from go.mod"
+
+outputs:
+  version:
+    description: "Go version"
+    value: "${{ steps.go-version.outputs.version }}"
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Get Go minor version from go.mod"
+      id: "go-version"
+      shell: "bash"
+      run: |
+        awk '/^go[ \t]+[0-9]+\.[0-9]+/ {
+          split($2, v, ".");
+          print("version=" int(v[1]) "." int(v[2]) ".x");
+          exit;
+        }' ./go.mod >> "${GITHUB_OUTPUT:?}"

@@ -26,7 +26,7 @@ VERSION := $(if $(GIT_TAG),$(GIT_TAG),$(GIT_SHA))
 GOOS := $(shell '$(GO)' env GOOS)
 GOARCH := $(shell '$(GO)' env GOARCH)
 GOVARIANT := $(GO386)$(GOAMD64)$(GOARM)$(GOMIPS)$(GOMIPS64)$(GOPPC64)
-export CGO_ENABLED := 0
+export CGO_ENABLED ?= 0
 
 GOFLAGS := -trimpath
 LDFLAGS := -s -w -X "main.version=$(VERSION)"
@@ -70,11 +70,11 @@ staticcheck:
 
 .PHONY: test
 test:
-	'$(GO)' test -v ./...
+	'$(GO)' test -v -count=1 -timeout=120s ./...
 
 .PHONY: test-race
 test-race:
-	CGO_ENABLED=1 '$(GO)' test -v -race ./...
+	CGO_ENABLED=1 '$(GO)' test -v -count=1 -timeout=240s -race ./...
 
 .PHONY: test-e2e
 test-e2e:

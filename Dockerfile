@@ -9,6 +9,7 @@ FROM --platform=${BUILDPLATFORM:-linux/amd64} docker.io/golang:1.25.6-trixie@sha
 ARG TARGETOS
 ARG TARGETARCH
 ARG TARGETVARIANT
+ARG SOURCE_DATE_EPOCH
 
 WORKDIR /src/
 COPY ./go.mod ./go.sum ./
@@ -21,14 +22,17 @@ RUN make build \
 		GOARM="$([ "${TARGETARCH-}" != 'arm' ] || printf '%s' "${TARGETVARIANT#v}")"
 RUN test -z "$(readelf -x .interp ./dist/cetusguard-* 2>/dev/null)"
 
+WORKDIR /rootfs/
+RUN install -DTm 0555 /src/dist/cetusguard-* ./cetusguard
+
 ##################################################
 ## "main" stage
 ##################################################
 
 FROM scratch AS main
 
-COPY --from=build /src/dist/cetusguard-* /bin/cetusguard
+COPY --from=build /rootfs/ /
 
 ENV CETUSGUARD_FRONTEND_ADDR='tcp://:2375'
 
-ENTRYPOINT ["/bin/cetusguard"]
+ENTRYPOINT ["/cetusguard"]
