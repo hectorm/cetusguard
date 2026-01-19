@@ -1,5 +1,5 @@
 diff --git a/e2e/compose-env.yaml b/e2e/compose-env.yaml
-index df810df6cc..6dfb95c8dc 100644
+index 1d25623c2d..14a90beb80 100644
 --- a/e2e/compose-env.yaml
 +++ b/e2e/compose-env.yaml
 @@ -6,2 +6,13 @@ services:
@@ -17,18 +17,18 @@ index df810df6cc..6dfb95c8dc 100644
 +  engine-shaded:
        image: 'docker:${ENGINE_VERSION:-28}-dind'
 diff --git a/e2e/container/run_test.go b/e2e/container/run_test.go
-index d279f2521b..a905b05f77 100644
+index d52230e238..4c586864e4 100644
 --- a/e2e/container/run_test.go
 +++ b/e2e/container/run_test.go
-@@ -5,4 +5,2 @@
- 	"fmt"
+@@ -4,4 +4,2 @@
+ 	"bytes"
 -	"io"
 -	"math/rand"
  	"os/exec"
-@@ -285,2 +283,3 @@ func TestProcessTermination(t *testing.T) {
+@@ -185,2 +183,3 @@ func TestProcessTermination(t *testing.T) {
  
 +/*
  // Adapted from https://github.com/docker/for-mac/issues/7632#issue-2932169772
-@@ -338 +337,2 @@ func TestRunReadAfterContainerExit(t *testing.T) {
+@@ -238 +237,2 @@ func TestRunReadAfterContainerExit(t *testing.T) {
  }
 +*/
