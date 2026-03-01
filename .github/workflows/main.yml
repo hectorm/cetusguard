@@ -19,12 +19,12 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
+        uses: "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd"
       - name: "Get Go version"
         id: "go-version"
         uses: "./.github/actions/go-version"
       - name: "Set up Go"
-        uses: "actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5"
+        uses: "actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417"
         with:
           go-version: "${{ steps.go-version.outputs.version }}"
           check-latest: true
@@ -41,12 +41,12 @@ jobs:
       security-events: "write"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
+        uses: "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd"
       - name: "Get Go version"
         id: "go-version"
         uses: "./.github/actions/go-version"
       - name: "Set up Go"
-        uses: "actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5"
+        uses: "actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417"
         with:
           go-version: "${{ steps.go-version.outputs.version }}"
           check-latest: true
@@ -64,12 +64,12 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
+        uses: "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd"
       - name: "Get Go version"
         id: "go-version"
         uses: "./.github/actions/go-version"
       - name: "Set up Go"
-        uses: "actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5"
+        uses: "actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417"
         with:
           go-version: "${{ steps.go-version.outputs.version }}"
           check-latest: true
@@ -92,12 +92,12 @@ jobs:
         os: ["ubuntu-latest", "windows-latest", "macos-latest"]
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
+        uses: "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd"
       - name: "Get Go version"
         id: "go-version"
         uses: "./.github/actions/go-version"
       - name: "Set up Go"
-        uses: "actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5"
+        uses: "actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417"
         with:
           go-version: "${{ steps.go-version.outputs.version }}"
           check-latest: true
@@ -120,12 +120,12 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
+        uses: "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd"
       - name: "Get Go version"
         id: "go-version"
         uses: "./.github/actions/go-version"
       - name: "Set up Go"
-        uses: "actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5"
+        uses: "actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417"
         with:
           go-version: "${{ steps.go-version.outputs.version }}"
           check-latest: true
@@ -162,7 +162,7 @@ jobs:
           - { GOOS: "darwin", GOARCH: "arm64" }
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
+        uses: "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd"
         with:
           filter: "blob:none"
           fetch-depth: 0
@@ -172,7 +172,7 @@ jobs:
         id: "go-version"
         uses: "./.github/actions/go-version"
       - name: "Set up Go"
-        uses: "actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5"
+        uses: "actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417"
         with:
           go-version: "${{ steps.go-version.outputs.version }}"
           check-latest: true
@@ -184,11 +184,11 @@ jobs:
             GOARM="${{ matrix.go.GOARM }}"
           file ./dist/* && gzip -nv ./dist/*
       - name: "Generate artifact attestation"
-        uses: "actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8"
+        uses: "actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32"
         with:
           subject-path: "./dist/*.gz"
       - name: "Upload artifact"
-        uses: "actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f"
+        uses: "actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f"
         with:
           name: "dist-${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}-${{ matrix.go.GOARM }}"
           path: "./dist/*.gz"
@@ -203,7 +203,7 @@ jobs:
       packages: "write"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
+        uses: "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd"
         with:
           filter: "blob:none"
           fetch-depth: 0
@@ -213,14 +213,14 @@ jobs:
         uses: "hectorm/ghaction-docker-buildx-setup@fec3efdbb455c2aa58a4fbfd11a9853f5de2cdba"
       - name: "Login to GitHub Container Registry"
         if: "github.event_name != 'pull_request'"
-        uses: "docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef"
+        uses: "docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9"
         with:
           registry: "ghcr.io"
           username: "${{ github.actor }}"
           password: "${{ secrets.GITHUB_TOKEN }}"
       - name: "Login to Docker Hub"
         if: "github.event_name != 'pull_request'"
-        uses: "docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef"
+        uses: "docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9"
         with:
           registry: "docker.io"
           username: "${{ secrets.DOCKERHUB_USERNAME }}"
@@ -240,7 +240,7 @@ jobs:
           labels: |
             org.opencontainers.image.created={{commit_date 'YYYY-MM-DDTHH:mm:ss.SSS[Z]' tz='UTC'}}
       - name: "Build and push"
-        uses: "hectorm/ghaction-docker-buildx-build@33922c57afa698702c5e79d8935676df4da1d85d"
+        uses: "hectorm/ghaction-docker-buildx-build@cc28557c639a7ccb0dbe0d57a8afd6c381eb38f9"
         with:
           context: "./"
           platforms: |
@@ -269,7 +269,7 @@ jobs:
       contents: "write"
     steps:
       - name: "Download artifacts"
-        uses: "actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131"
+        uses: "actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3"
         with:
           pattern: "dist-*"
           merge-multiple: true
