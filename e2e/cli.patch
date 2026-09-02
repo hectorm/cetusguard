@@ -1,8 +1,8 @@
 diff --git a/e2e/compose-env.yaml b/e2e/compose-env.yaml
-index 1d25623c2d..14a90beb80 100644
+index c4f3774..a941302 100644
 --- a/e2e/compose-env.yaml
 +++ b/e2e/compose-env.yaml
-@@ -6,2 +6,13 @@ services:
+@@ -28,2 +28,13 @@ services:
    engine:
 +      image: 'localhost.test/cetusguard:${TEST_ID:?}'
 +      restart: 'on-failure'
@@ -15,9 +15,9 @@ index 1d25623c2d..14a90beb80 100644
 +        CETUSGUARD_LOG_LEVEL: '7'
 +
 +  engine-shaded:
-       image: 'docker:${ENGINE_VERSION:-28}-dind'
+       build:
 diff --git a/e2e/container/run_test.go b/e2e/container/run_test.go
-index d52230e238..4c586864e4 100644
+index 574a203..9e650ac 100644
 --- a/e2e/container/run_test.go
 +++ b/e2e/container/run_test.go
 @@ -4,4 +4,2 @@
@@ -25,10 +25,10 @@ index d52230e238..4c586864e4 100644
 -	"io"
 -	"math/rand"
  	"os/exec"
-@@ -185,2 +183,3 @@ func TestProcessTermination(t *testing.T) {
+@@ -220,2 +218,3 @@ func TestProcessTermination(t *testing.T) {
  
 +/*
  // Adapted from https://github.com/docker/for-mac/issues/7632#issue-2932169772
-@@ -238 +237,2 @@ func TestRunReadAfterContainerExit(t *testing.T) {
+@@ -273 +272,2 @@ func TestRunReadAfterContainerExit(t *testing.T) {
  }
 +*/
