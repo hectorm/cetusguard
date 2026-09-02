@@ -2,7 +2,7 @@ package testdata
 
 import "strings"
 
-var TestTlsCacert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
+var TestTLSCacert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
 MIIFLTCCAxWgAwIBAgIUOUAIhjrC9MIDPSu9Wl08XMDXYO4wDQYJKoZIhvcNAQEL
 BQAwJTEjMCEGA1UEAwwaZGFlbW9uOkNvbnRhaW5lciBkYWVtb24gQ0EwIBcNMDAw
 MTAxMDAwMDAwWhgPMjA5OTEyMzEwMDAwMDBaMCUxIzAhBgNVBAMMGmRhZW1vbjpD
@@ -33,7 +33,7 @@ luHoZLdD3M213fTRxuj+zK/Zsc4is3C9LDC7xuZ/uY/Zq78NwuwxA+D3O2+kWhy7
 x4BKpSGiKDvk4bqtJbeJfRFDqzTYuBK8QK4lYFUWcAXu
 -----END TESTING CERTIFICATE-----`, "TESTING CERTIFICATE", "CERTIFICATE"))
 
-var TestTlsServerCert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
+var TestTLSServerCert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
 MIIFDjCCAvagAwIBAgIUaQoQ6KbHUT1wW9G6MWncqWZEiUYwDQYJKoZIhvcNAQEL
 BQAwJTEjMCEGA1UEAwwaZGFlbW9uOkNvbnRhaW5lciBkYWVtb24gQ0EwIBcNMDAw
 MTAxMDAwMDAwWhgPMjA5OTEyMzEwMDAwMDBaMCkxJzAlBgNVBAMMHmRhZW1vbjpD
@@ -64,7 +64,7 @@ zh8tMVPWqvaoj3gYNJ5h+lYwwF6OdiRtDuuZJx9jkUpCWZigpg/zdGIBIzkUkrra
 4HE=
 -----END TESTING CERTIFICATE-----`, "TESTING CERTIFICATE", "CERTIFICATE"))
 
-var TestTlsServerExpiredCert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
+var TestTLSServerExpiredCert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
 MIIFDDCCAvSgAwIBAgIUaQoQ6KbHUT1wW9G6MWncqWZEiUgwDQYJKoZIhvcNAQEL
 BQAwJTEjMCEGA1UEAwwaZGFlbW9uOkNvbnRhaW5lciBkYWVtb24gQ0EwHhcNMDAw
 MTAxMDAwMDAwWhcNMDAwMTAyMDAwMDAwWjApMScwJQYDVQQDDB5kYWVtb246Q29u
@@ -94,7 +94,7 @@ JeO2Zr4Ga5u+qr/1zmNPjvh1rRmR35jYG6dDn971dwxRaBPkI2Dqf/hsobEhEOjM
 HOfyX94BD5J1x70esKVy1bQHqYKCt45q4k3kqvZqi9T/g+Uhw7MzOddQHBb/lEjs
 -----END TESTING CERTIFICATE-----`, "TESTING CERTIFICATE", "CERTIFICATE"))
 
-var TestTlsServerKey = []byte(strings.ReplaceAll(`-----BEGIN RSA TESTING KEY-----
+var TestTLSServerKey = []byte(strings.ReplaceAll(`-----BEGIN RSA TESTING KEY-----
 MIIJKAIBAAKCAgEAuE9Cn9vqR6UoNc3lGevzMNDYAJU7iOJf/XjKW33E6bk+ol++
 bkwR4n56x70nCujxmerOtfncKzVt4xBzhQnFzpPKNQCEOPiuIgvzvGKFAuXl811L
 DQqmAeuR3E0Qixo1XgJH97qIcV95Xbr/Xvbs/gMmOg4GgLt13de4lgMiSkFsGuXu
@@ -146,7 +146,7 @@ qL+wR9/gekowqJ+OmD8qA+q4bMa3cmNJYIuUV0B9rdPTv7ZDe2sDFbON8Bp8X/jj
 jlqvucy4ge3YsDRFG692Jb8qX96HuqrNCUnb/Y/tWBmlclXYjkpJElqiCNE=
 -----END RSA TESTING KEY-----`, "TESTING KEY", "PRIVATE KEY"))
 
-var TestTlsClientCert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
+var TestTLSClientCert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
 MIIE9TCCAt2gAwIBAgIUaQoQ6KbHUT1wW9G6MWncqWZEiUcwDQYJKoZIhvcNAQEL
 BQAwJTEjMCEGA1UEAwwaZGFlbW9uOkNvbnRhaW5lciBkYWVtb24gQ0EwIBcNMDAw
 MTAxMDAwMDAwWhgPMjA5OTEyMzEwMDAwMDBaMCkxJzAlBgNVBAMMHmRhZW1vbjpD
@@ -176,7 +176,7 @@ VOinuhOuStrUkAhqCdFZzockO6+0DlC1fIsf+1cJt7n7mL61Pm37fyKQ1U//micD
 rV7f2SB5Nh998QWpEu1xzyKt+3b0+sWOEg==
 -----END TESTING CERTIFICATE-----`, "TESTING CERTIFICATE", "CERTIFICATE"))
 
-var TestTlsClientKey = []byte(strings.ReplaceAll(`-----BEGIN RSA TESTING KEY-----
+var TestTLSClientKey = []byte(strings.ReplaceAll(`-----BEGIN RSA TESTING KEY-----
 MIIJKQIBAAKCAgEA0G+YvN2nKZtDXUAdkNfPLarSuMBI48i7Hccxofx51y99z8aI
 6eskru6PISQH6E57f3KsekYceM0KY6EZmAHWJADbLuar7qjrmo3ENVp74X/fpBfX
 GGl0fymTYc22Mzf0H0Loz0oUcZF/kg4I94uJwKvC00g5ygbLNd/gl5kG6DSRZHYy
@@ -228,7 +228,7 @@ TWF4hFd7QuFB419dJqHXrz38RDOPmdCJ01ugCfTKRA1g88Xj6zzISSrA8oydNNH2
 SubZJYf9B8s2aHqNQblcNgSWLyuuW3vcMm+CLFVcbXEoHgNGSPXbgpSyNIwn
 -----END RSA TESTING KEY-----`, "TESTING KEY", "PRIVATE KEY"))
 
-var TestAltTlsCacert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
+var TestAltTLSCacert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
 MIIFPTCCAyWgAwIBAgIUXcQjjHmmGiXt+0qoohb54fCo9M8wDQYJKoZIhvcNAQEL
 BQAwLTErMCkGA1UEAwwiYWx0LWRhZW1vbjpDb250YWluZXIgYWx0IGRhZW1vbiBD
 QTAgFw0wMDAxMDEwMDAwMDBaGA8yMDk5MTIzMTAwMDAwMFowLTErMCkGA1UEAwwi
@@ -260,7 +260,7 @@ X4sQiEYi/Bu3Y8jXYRjcLmK0lxotMYY+crAgvXPIFvlh2wAlFla411fRO+8/17Ls
 Tw==
 -----END TESTING CERTIFICATE-----`, "TESTING CERTIFICATE", "CERTIFICATE"))
 
-var TestAltTlsServerCert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
+var TestAltTLSServerCert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
 MIIFHjCCAwagAwIBAgIUVermdqhsr3w99Gt1XgafVGnywfQwDQYJKoZIhvcNAQEL
 BQAwLTErMCkGA1UEAwwiYWx0LWRhZW1vbjpDb250YWluZXIgYWx0IGRhZW1vbiBD
 QTAgFw0wMDAxMDEwMDAwMDBaGA8yMDk5MTIzMTAwMDAwMFowMTEvMC0GA1UEAwwm
@@ -291,7 +291,7 @@ DkfkdQnUJgVkvonTWwQ9MaOSvCOgdC3XhZMyyGZ2EzlN8xQkBV/bNJ4fCZRJESES
 LWOPYGcBo03d5eIMZw4hLxiM
 -----END TESTING CERTIFICATE-----`, "TESTING CERTIFICATE", "CERTIFICATE"))
 
-var TestAltTlsServerKey = []byte(strings.ReplaceAll(`-----BEGIN RSA TESTING KEY-----
+var TestAltTLSServerKey = []byte(strings.ReplaceAll(`-----BEGIN RSA TESTING KEY-----
 MIIJKQIBAAKCAgEA7IUPemHFnSCpXDlECtzRNL8IzK+Tb/x8ioGXlPstJy08vPcd
 qs7EgIdW2/fgILJK9SPn0RxnNLlUJTCXCrFh3M4vMgYGbCqc2ytHNVxrAbRgFyG3
 IsySIo/jDpiokWEIg1rxrRahMuV06ZpwZoRkQxu5fSjfL3C914GtFYDV3WIIITrd
@@ -343,7 +343,7 @@ tgL6xu7FkgDnd1/Hj3E82cMmeaC8XbVPM3P9wL5D6di0O2X/XT3dKa0Dn04ayceY
 cCpdySPdmRWtf2sDzuKPpQQJWrjd91v7VHRGffJxdb6+1/HIKyVepnc08jDC
 -----END RSA TESTING KEY-----`, "TESTING KEY", "PRIVATE KEY"))
 
-var TestAltTlsClientCert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
+var TestAltTLSClientCert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
 MIIFBTCCAu2gAwIBAgIUVermdqhsr3w99Gt1XgafVGnywfUwDQYJKoZIhvcNAQEL
 BQAwLTErMCkGA1UEAwwiYWx0LWRhZW1vbjpDb250YWluZXIgYWx0IGRhZW1vbiBD
 QTAgFw0wMDAxMDEwMDAwMDBaGA8yMDk5MTIzMTAwMDAwMFowMTEvMC0GA1UEAwwm
@@ -373,7 +373,7 @@ wfaKgCz6gBF6c8LNbA7jEcInbqEn+fOHh4yuUUcMgEFKtrIqbEipeGxhwMUKWIgL
 NB94p7TjcLm9gthIWMCpiS/3A6LwkZ55+kiVUbmwG2U8WQESrXcdMYQ=
 -----END TESTING CERTIFICATE-----`, "TESTING CERTIFICATE", "CERTIFICATE"))
 
-var TestAltTlsClientKey = []byte(strings.ReplaceAll(`-----BEGIN RSA TESTING KEY-----
+var TestAltTLSClientKey = []byte(strings.ReplaceAll(`-----BEGIN RSA TESTING KEY-----
 MIIJKQIBAAKCAgEAnoWB36rKCuFfLscRpuSzXvlwnC50gL5pavraW/e272MGv32p
 bHAJNpUqd5SXch/GVEcpM3aMKWkXNyd/yIqWjcxmB4rXKPWpzrp7rCKRU2TEL2AH
 gUYk2mjAEtSygkwB4CWskSQtd0xWX4bjXPgTYhcdoNVkBwUwu+oiHiNgamczvoq0
@@ -425,22 +425,22 @@ X8HdSKro97cD4/kxXnItgJEJcFrUdtZTN7JXq/rne+YHK7giKmtf5iTphAo/GKzF
 bcMC5JY5OVb2q2y7nClnpWxVxnu3J1KkLy0hQ/ihRz6AHCj70XmuqqhpX4Dg
 -----END RSA TESTING KEY-----`, "TESTING KEY", "PRIVATE KEY"))
 
-var TestInvalidTlsCacert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
+var TestInvalidTLSCacert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
 INVALID CA CERT
 -----END TESTING CERTIFICATE-----`, "TESTING CERTIFICATE", "CERTIFICATE"))
 
-var TestInvalidTlsServerCert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
+var TestInvalidTLSServerCert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
 INVALID SERVER CERT
 -----END TESTING CERTIFICATE-----`, "TESTING CERTIFICATE", "CERTIFICATE"))
 
-var TestInvalidTlsServerKey = []byte(strings.ReplaceAll(`-----BEGIN RSA TESTING KEY-----
+var TestInvalidTLSServerKey = []byte(strings.ReplaceAll(`-----BEGIN RSA TESTING KEY-----
 INVALID SERVER KEY
 -----END RSA TESTING KEY-----`, "TESTING KEY", "PRIVATE KEY"))
 
-var TestInvalidTlsClientCert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
+var TestInvalidTLSClientCert = []byte(strings.ReplaceAll(`-----BEGIN TESTING CERTIFICATE-----
 INVALID CLIENT CERT
 -----END TESTING CERTIFICATE-----`, "TESTING CERTIFICATE", "CERTIFICATE"))
 
-var TestInvalidTlsClientKey = []byte(strings.ReplaceAll(`-----BEGIN RSA TESTING KEY-----
+var TestInvalidTLSClientKey = []byte(strings.ReplaceAll(`-----BEGIN RSA TESTING KEY-----
 INVALID CLIENT KEY
 -----END RSA TESTING KEY-----`, "TESTING KEY", "PRIVATE KEY"))

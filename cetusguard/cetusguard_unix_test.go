@@ -229,7 +229,7 @@ func TestCetusGuardSocketDeniedPatternReq(t *testing.T) {
 	}
 }
 
-func TestCetusGuardSocketTlsAuthBackendReq(t *testing.T) {
+func TestCetusGuardSocketTLSAuthBackendReq(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: tcpDaemonListener,
 		daemonFunc:         tlsAuthDaemon,
@@ -287,7 +287,7 @@ func TestCetusGuardSocketTlsAuthBackendReq(t *testing.T) {
 	}
 }
 
-func TestCetusGuardTlsAuthSocketBackendReq(t *testing.T) {
+func TestCetusGuardTLSAuthSocketBackendReq(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: socketDaemonListener,
 		daemonFunc:         socketDaemon,

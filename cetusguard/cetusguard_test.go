@@ -319,7 +319,7 @@ func TestCetusGuardPlainDeniedPatternReq(t *testing.T) {
 	}
 }
 
-func TestCetusGuardPlainTlsAuthBackendReq(t *testing.T) {
+func TestCetusGuardPlainTLSAuthBackendReq(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: tcpDaemonListener,
 		daemonFunc:         tlsAuthDaemon,
@@ -377,7 +377,7 @@ func TestCetusGuardPlainTlsAuthBackendReq(t *testing.T) {
 	}
 }
 
-func TestCetusGuardTlsAllowedReq(t *testing.T) {
+func TestCetusGuardTLSAllowedReq(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: tcpDaemonListener,
 		daemonFunc:         tlsDaemon,
@@ -435,7 +435,7 @@ func TestCetusGuardTlsAllowedReq(t *testing.T) {
 	}
 }
 
-func TestCetusGuardTlsDeniedMethodReq(t *testing.T) {
+func TestCetusGuardTLSDeniedMethodReq(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: tcpDaemonListener,
 		daemonFunc:         tlsDaemon,
@@ -484,7 +484,7 @@ func TestCetusGuardTlsDeniedMethodReq(t *testing.T) {
 	}
 }
 
-func TestCetusGuardTlsDeniedPatternReq(t *testing.T) {
+func TestCetusGuardTLSDeniedPatternReq(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: tcpDaemonListener,
 		daemonFunc:         tlsDaemon,
@@ -533,7 +533,7 @@ func TestCetusGuardTlsDeniedPatternReq(t *testing.T) {
 	}
 }
 
-func TestCetusGuardTlsAuthAllowedReq(t *testing.T) {
+func TestCetusGuardTLSAuthAllowedReq(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: tcpDaemonListener,
 		daemonFunc:         tlsAuthDaemon,
@@ -591,7 +591,7 @@ func TestCetusGuardTlsAuthAllowedReq(t *testing.T) {
 	}
 }
 
-func TestCetusGuardTlsAuthAllowedStreamReq(t *testing.T) {
+func TestCetusGuardTLSAuthAllowedStreamReq(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: tcpDaemonListener,
 		daemonFunc:         tlsAuthDaemon,
@@ -651,7 +651,7 @@ func TestCetusGuardTlsAuthAllowedStreamReq(t *testing.T) {
 	}
 }
 
-func TestCetusGuardTlsAuthDeniedMethodReq(t *testing.T) {
+func TestCetusGuardTLSAuthDeniedMethodReq(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: tcpDaemonListener,
 		daemonFunc:         tlsAuthDaemon,
@@ -700,7 +700,7 @@ func TestCetusGuardTlsAuthDeniedMethodReq(t *testing.T) {
 	}
 }
 
-func TestCetusGuardTlsAuthDeniedPatternReq(t *testing.T) {
+func TestCetusGuardTLSAuthDeniedPatternReq(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: tcpDaemonListener,
 		daemonFunc:         tlsAuthDaemon,
@@ -749,7 +749,7 @@ func TestCetusGuardTlsAuthDeniedPatternReq(t *testing.T) {
 	}
 }
 
-func TestCetusGuardTlsAuthPlainBackendReq(t *testing.T) {
+func TestCetusGuardTLSAuthPlainBackendReq(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: tcpDaemonListener,
 		daemonFunc:         plainDaemon,
@@ -810,7 +810,7 @@ func TestCetusGuardTlsAuthPlainBackendReq(t *testing.T) {
 func TestCetusGuardExpiredDaemonCertReq(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: tcpDaemonListener,
-		daemonFunc:         expiredTlsDaemon,
+		daemonFunc:         expiredTLSDaemon,
 		backendFunc:        tlsBackend,
 		frontendFunc:       tlsFrontend,
 		clientFunc:         tlsClient,
@@ -859,7 +859,7 @@ func TestCetusGuardExpiredDaemonCertReq(t *testing.T) {
 func TestCetusGuardUntrustedDaemonCertReq(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: tcpDaemonListener,
-		daemonFunc:         altTlsDaemon,
+		daemonFunc:         altTLSDaemon,
 		backendFunc:        tlsBackend,
 		frontendFunc:       tlsFrontend,
 		clientFunc:         tlsClient,
@@ -911,7 +911,7 @@ func TestCetusGuardUntrustedClientCertReq(t *testing.T) {
 		daemonFunc:         tlsDaemon,
 		backendFunc:        tlsBackend,
 		frontendFunc:       tlsAuthFrontend,
-		clientFunc:         altTlsAuthClient,
+		clientFunc:         altTLSAuthClient,
 	}
 
 	defer tc.setup(t)()
@@ -951,7 +951,7 @@ func TestCetusGuardInvalidBackendCacert(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: tcpDaemonListener,
 		daemonFunc:         tlsDaemon,
-		backendFunc:        invalidCacertTlsBackend,
+		backendFunc:        invalidCacertTLSBackend,
 		frontendFunc:       tlsFrontend,
 		clientFunc:         tlsClient,
 	}
@@ -975,7 +975,7 @@ func TestCetusGuardInvalidBackendCert(t *testing.T) {
 	tc := &testCase{
 		daemonListenerFunc: tcpDaemonListener,
 		daemonFunc:         tlsAuthDaemon,
-		backendFunc:        invalidCertTlsAuthBackend,
+		backendFunc:        invalidCertTLSAuthBackend,
 		frontendFunc:       tlsFrontend,
 		clientFunc:         tlsClient,
 	}
@@ -1000,7 +1000,7 @@ func TestCetusGuardInvalidFrontendCacert(t *testing.T) {
 		daemonListenerFunc: tcpDaemonListener,
 		daemonFunc:         tlsDaemon,
 		backendFunc:        tlsBackend,
-		frontendFunc:       invalidCacertTlsAuthFrontend,
+		frontendFunc:       invalidCacertTLSAuthFrontend,
 		clientFunc:         tlsAuthClient,
 	}
 
@@ -1024,7 +1024,7 @@ func TestCetusGuardInvalidFrontendCert(t *testing.T) {
 		daemonListenerFunc: tcpDaemonListener,
 		daemonFunc:         tlsDaemon,
 		backendFunc:        tlsBackend,
-		frontendFunc:       invalidCertTlsFrontend,
+		frontendFunc:       invalidCertTLSFrontend,
 		clientFunc:         tlsClient,
 	}
 
@@ -1304,48 +1304,48 @@ func tlsDaemon() (*http.Server, error) {
 		return nil, err
 	}
 
-	cert, err := tls.X509KeyPair(testdata.TestTlsServerCert, testdata.TestTlsServerKey)
+	cert, err := tls.X509KeyPair(testdata.TestTLSServerCert, testdata.TestTLSServerKey)
 	if err != nil {
 		return nil, err
 	}
 	server.TLSConfig = &tls.Config{
-		MinVersion:   minTlsVersion,
+		MinVersion:   minTLSVersion,
 		Certificates: []tls.Certificate{cert},
 	}
 
 	return server, nil
 }
 
-func expiredTlsDaemon() (*http.Server, error) {
+func expiredTLSDaemon() (*http.Server, error) {
 	server, err := plainDaemon()
 	if err != nil {
 		return nil, err
 	}
 
-	cert, err := tls.X509KeyPair(testdata.TestTlsServerExpiredCert, testdata.TestTlsServerKey)
+	cert, err := tls.X509KeyPair(testdata.TestTLSServerExpiredCert, testdata.TestTLSServerKey)
 	if err != nil {
 		return nil, err
 	}
 	server.TLSConfig = &tls.Config{
-		MinVersion:   minTlsVersion,
+		MinVersion:   minTLSVersion,
 		Certificates: []tls.Certificate{cert},
 	}
 
 	return server, nil
 }
 
-func altTlsDaemon() (*http.Server, error) {
+func altTLSDaemon() (*http.Server, error) {
 	server, err := plainDaemon()
 	if err != nil {
 		return nil, err
 	}
 
-	cert, err := tls.X509KeyPair(testdata.TestAltTlsServerCert, testdata.TestAltTlsServerKey)
+	cert, err := tls.X509KeyPair(testdata.TestAltTLSServerCert, testdata.TestAltTLSServerKey)
 	if err != nil {
 		return nil, err
 	}
 	server.TLSConfig = &tls.Config{
-		MinVersion:   minTlsVersion,
+		MinVersion:   minTLSVersion,
 		Certificates: []tls.Certificate{cert},
 	}
 
@@ -1359,7 +1359,7 @@ func tlsAuthDaemon() (*http.Server, error) {
 	}
 
 	cacertPool := x509.NewCertPool()
-	if ok := cacertPool.AppendCertsFromPEM(testdata.TestTlsCacert); !ok {
+	if ok := cacertPool.AppendCertsFromPEM(testdata.TestTLSCacert); !ok {
 		return nil, errors.New("error loading CA certificate")
 	}
 	server.TLSConfig.ClientAuth = tls.RequireAndVerifyClientCert
@@ -1387,25 +1387,25 @@ func tlsBackend(listener net.Listener, tmpdir string) (*Backend, error) {
 	}
 
 	clientCacertPath := filepath.Join(tmpdir, "client-ca.pem")
-	if err := os.WriteFile(clientCacertPath, testdata.TestTlsCacert, 0600); err != nil {
+	if err := os.WriteFile(clientCacertPath, testdata.TestTLSCacert, 0600); err != nil {
 		return nil, err
 	}
-	backend.TlsCacert = clientCacertPath
+	backend.TLSCacert = clientCacertPath
 
 	return backend, nil
 }
 
-func invalidCacertTlsBackend(listener net.Listener, tmpdir string) (*Backend, error) {
+func invalidCacertTLSBackend(listener net.Listener, tmpdir string) (*Backend, error) {
 	backend, err := plainBackend(listener, tmpdir)
 	if err != nil {
 		return nil, err
 	}
 
 	clientCacertPath := filepath.Join(tmpdir, "client-ca.pem")
-	if err := os.WriteFile(clientCacertPath, testdata.TestInvalidTlsCacert, 0600); err != nil {
+	if err := os.WriteFile(clientCacertPath, testdata.TestInvalidTLSCacert, 0600); err != nil {
 		return nil, err
 	}
-	backend.TlsCacert = clientCacertPath
+	backend.TLSCacert = clientCacertPath
 
 	return backend, nil
 }
@@ -1417,37 +1417,37 @@ func tlsAuthBackend(listener net.Listener, tmpdir string) (*Backend, error) {
 	}
 
 	clientCertPath := filepath.Join(tmpdir, "client-cert.pem")
-	if err := os.WriteFile(clientCertPath, testdata.TestTlsClientCert, 0600); err != nil {
+	if err := os.WriteFile(clientCertPath, testdata.TestTLSClientCert, 0600); err != nil {
 		return nil, err
 	}
-	backend.TlsCert = clientCertPath
+	backend.TLSCert = clientCertPath
 
 	clientKeyPath := filepath.Join(tmpdir, "client-key.pem")
-	if err := os.WriteFile(clientKeyPath, testdata.TestTlsClientKey, 0600); err != nil {
+	if err := os.WriteFile(clientKeyPath, testdata.TestTLSClientKey, 0600); err != nil {
 		return nil, err
 	}
-	backend.TlsKey = clientKeyPath
+	backend.TLSKey = clientKeyPath
 
 	return backend, nil
 }
 
-func invalidCertTlsAuthBackend(listener net.Listener, tmpdir string) (*Backend, error) {
+func invalidCertTLSAuthBackend(listener net.Listener, tmpdir string) (*Backend, error) {
 	backend, err := tlsBackend(listener, tmpdir)
 	if err != nil {
 		return nil, err
 	}
 
 	clientCertPath := filepath.Join(tmpdir, "client-cert.pem")
-	if err := os.WriteFile(clientCertPath, testdata.TestInvalidTlsClientCert, 0600); err != nil {
+	if err := os.WriteFile(clientCertPath, testdata.TestInvalidTLSClientCert, 0600); err != nil {
 		return nil, err
 	}
-	backend.TlsCert = clientCertPath
+	backend.TLSCert = clientCertPath
 
 	clientKeyPath := filepath.Join(tmpdir, "client-key.pem")
-	if err := os.WriteFile(clientKeyPath, testdata.TestInvalidTlsClientKey, 0600); err != nil {
+	if err := os.WriteFile(clientKeyPath, testdata.TestInvalidTLSClientKey, 0600); err != nil {
 		return nil, err
 	}
-	backend.TlsKey = clientKeyPath
+	backend.TLSKey = clientKeyPath
 
 	return backend, nil
 }
@@ -1467,37 +1467,37 @@ func tlsFrontend(tmpdir string) (*Frontend, error) {
 	}
 
 	serverCertPath := filepath.Join(tmpdir, "server-cert.pem")
-	if err := os.WriteFile(serverCertPath, testdata.TestTlsServerCert, 0600); err != nil {
+	if err := os.WriteFile(serverCertPath, testdata.TestTLSServerCert, 0600); err != nil {
 		return nil, err
 	}
-	frontend.TlsCert = serverCertPath
+	frontend.TLSCert = serverCertPath
 
 	serverKeyPath := filepath.Join(tmpdir, "server-key.pem")
-	if err := os.WriteFile(serverKeyPath, testdata.TestTlsServerKey, 0600); err != nil {
+	if err := os.WriteFile(serverKeyPath, testdata.TestTLSServerKey, 0600); err != nil {
 		return nil, err
 	}
-	frontend.TlsKey = serverKeyPath
+	frontend.TLSKey = serverKeyPath
 
 	return frontend, nil
 }
 
-func invalidCertTlsFrontend(tmpdir string) (*Frontend, error) {
+func invalidCertTLSFrontend(tmpdir string) (*Frontend, error) {
 	frontend, err := plainFrontend(tmpdir)
 	if err != nil {
 		return nil, err
 	}
 
 	serverCertPath := filepath.Join(tmpdir, "server-cert.pem")
-	if err := os.WriteFile(serverCertPath, testdata.TestInvalidTlsServerCert, 0600); err != nil {
+	if err := os.WriteFile(serverCertPath, testdata.TestInvalidTLSServerCert, 0600); err != nil {
 		return nil, err
 	}
-	frontend.TlsCert = serverCertPath
+	frontend.TLSCert = serverCertPath
 
 	serverKeyPath := filepath.Join(tmpdir, "server-key.pem")
-	if err := os.WriteFile(serverKeyPath, testdata.TestInvalidTlsServerKey, 0600); err != nil {
+	if err := os.WriteFile(serverKeyPath, testdata.TestInvalidTLSServerKey, 0600); err != nil {
 		return nil, err
 	}
-	frontend.TlsKey = serverKeyPath
+	frontend.TLSKey = serverKeyPath
 
 	return frontend, nil
 }
@@ -1509,25 +1509,25 @@ func tlsAuthFrontend(tmpdir string) (*Frontend, error) {
 	}
 
 	serverCacertPath := filepath.Join(tmpdir, "server-ca.pem")
-	if err := os.WriteFile(serverCacertPath, testdata.TestTlsCacert, 0600); err != nil {
+	if err := os.WriteFile(serverCacertPath, testdata.TestTLSCacert, 0600); err != nil {
 		return nil, err
 	}
-	frontend.TlsCacert = serverCacertPath
+	frontend.TLSCacert = serverCacertPath
 
 	return frontend, nil
 }
 
-func invalidCacertTlsAuthFrontend(tmpdir string) (*Frontend, error) {
+func invalidCacertTLSAuthFrontend(tmpdir string) (*Frontend, error) {
 	frontend, err := tlsFrontend(tmpdir)
 	if err != nil {
 		return nil, err
 	}
 
 	serverCacertPath := filepath.Join(tmpdir, "server-ca.pem")
-	if err := os.WriteFile(serverCacertPath, testdata.TestInvalidTlsCacert, 0600); err != nil {
+	if err := os.WriteFile(serverCacertPath, testdata.TestInvalidTLSCacert, 0600); err != nil {
 		return nil, err
 	}
-	frontend.TlsCacert = serverCacertPath
+	frontend.TLSCacert = serverCacertPath
 
 	return frontend, nil
 }
@@ -1554,12 +1554,12 @@ func tlsClient() (*http.Client, error) {
 	}
 
 	cacertPool := x509.NewCertPool()
-	if ok := cacertPool.AppendCertsFromPEM(testdata.TestTlsCacert); !ok {
+	if ok := cacertPool.AppendCertsFromPEM(testdata.TestTLSCacert); !ok {
 		return nil, errors.New("error loading CA certificate")
 	}
 	transport := client.Transport.(*http.Transport)
 	transport.TLSClientConfig = &tls.Config{
-		MinVersion: minTlsVersion,
+		MinVersion: minTLSVersion,
 		RootCAs:    cacertPool,
 		/* #nosec G402 */
 		InsecureSkipVerify: true,
@@ -1568,19 +1568,19 @@ func tlsClient() (*http.Client, error) {
 	return client, nil
 }
 
-func altTlsClient() (*http.Client, error) {
+func altTLSClient() (*http.Client, error) {
 	client, err := plainClient()
 	if err != nil {
 		return nil, err
 	}
 
 	cacertPool := x509.NewCertPool()
-	if ok := cacertPool.AppendCertsFromPEM(testdata.TestAltTlsCacert); !ok {
+	if ok := cacertPool.AppendCertsFromPEM(testdata.TestAltTLSCacert); !ok {
 		return nil, errors.New("error loading CA certificate")
 	}
 	transport := client.Transport.(*http.Transport)
 	transport.TLSClientConfig = &tls.Config{
-		MinVersion: minTlsVersion,
+		MinVersion: minTLSVersion,
 		RootCAs:    cacertPool,
 		/* #nosec G402 */
 		InsecureSkipVerify: true,
@@ -1595,7 +1595,7 @@ func tlsAuthClient() (*http.Client, error) {
 		return nil, err
 	}
 
-	cert, err := tls.X509KeyPair(testdata.TestTlsClientCert, testdata.TestTlsClientKey)
+	cert, err := tls.X509KeyPair(testdata.TestTLSClientCert, testdata.TestTLSClientKey)
 	if err != nil {
 		return nil, err
 	}
@@ -1605,13 +1605,13 @@ func tlsAuthClient() (*http.Client, error) {
 	return client, nil
 }
 
-func altTlsAuthClient() (*http.Client, error) {
-	client, err := altTlsClient()
+func altTLSAuthClient() (*http.Client, error) {
+	client, err := altTLSClient()
 	if err != nil {
 		return nil, err
 	}
 
-	cert, err := tls.X509KeyPair(testdata.TestAltTlsClientCert, testdata.TestAltTlsClientKey)
+	cert, err := tls.X509KeyPair(testdata.TestAltTLSClientCert, testdata.TestAltTLSClientKey)
 	if err != nil {
 		return nil, err
 	}
@@ -1683,7 +1683,7 @@ func (tc *testCase) setup(t *testing.T) func() {
 
 	go func() {
 		var err error
-		if tc.backend.TlsCacert != "" {
+		if tc.backend.TLSCacert != "" {
 			err = tc.daemon.ServeTLS(tc.daemonListener, "", "")
 		} else {
 			err = tc.daemon.Serve(tc.daemonListener)

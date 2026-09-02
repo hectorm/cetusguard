@@ -35,49 +35,49 @@ func main() {
 		"Address to bind the server to, can be specified multiple times (env CETUSGUARD_FRONTEND_ADDR)",
 	)
 
-	var backendTlsCacert string
+	var backendTLSCacert string
 	flag.StringVar(
-		&backendTlsCacert,
+		&backendTLSCacert,
 		"backend-tls-cacert",
 		env.StringEnv("", "CETUSGUARD_BACKEND_TLS_CACERT"),
 		"Path to the backend TLS certificate used to verify the daemon identity (env CETUSGUARD_BACKEND_TLS_CACERT)",
 	)
 
-	var backendTlsCert string
+	var backendTLSCert string
 	flag.StringVar(
-		&backendTlsCert,
+		&backendTLSCert,
 		"backend-tls-cert",
 		env.StringEnv("", "CETUSGUARD_BACKEND_TLS_CERT"),
 		"Path to the backend TLS certificate used to authenticate with the daemon (env CETUSGUARD_BACKEND_TLS_CERT)",
 	)
 
-	var backendTlsKey string
+	var backendTLSKey string
 	flag.StringVar(
-		&backendTlsKey,
+		&backendTLSKey,
 		"backend-tls-key",
 		env.StringEnv("", "CETUSGUARD_BACKEND_TLS_KEY"),
 		"Path to the backend TLS key used to authenticate with the daemon (env CETUSGUARD_BACKEND_TLS_KEY)",
 	)
 
-	var frontendTlsCacert string
+	var frontendTLSCacert string
 	flag.StringVar(
-		&frontendTlsCacert,
+		&frontendTLSCacert,
 		"frontend-tls-cacert",
 		env.StringEnv("", "CETUSGUARD_FRONTEND_TLS_CACERT"),
 		"Path to the frontend TLS certificate used to verify the identity of clients (env CETUSGUARD_FRONTEND_TLS_CACERT)",
 	)
 
-	var frontendTlsCert string
+	var frontendTLSCert string
 	flag.StringVar(
-		&frontendTlsCert,
+		&frontendTLSCert,
 		"frontend-tls-cert",
 		env.StringEnv("", "CETUSGUARD_FRONTEND_TLS_CERT"),
 		"Path to the frontend TLS certificate (env CETUSGUARD_FRONTEND_TLS_CERT)",
 	)
 
-	var frontendTlsKey string
+	var frontendTLSKey string
 	flag.StringVar(
-		&frontendTlsKey,
+		&frontendTLSKey,
 		"frontend-tls-key",
 		env.StringEnv("", "CETUSGUARD_FRONTEND_TLS_KEY"),
 		"Path to the frontend TLS key (env CETUSGUARD_FRONTEND_TLS_KEY)",
@@ -159,15 +159,15 @@ func main() {
 	cg := &cetusguard.Server{
 		Backend: &cetusguard.Backend{
 			Addr:      backendAddr,
-			TlsCacert: backendTlsCacert,
-			TlsCert:   backendTlsCert,
-			TlsKey:    backendTlsKey,
+			TLSCacert: backendTLSCacert,
+			TLSCert:   backendTLSCert,
+			TLSKey:    backendTLSKey,
 		},
 		Frontend: &cetusguard.Frontend{
 			Addr:      frontendAddr,
-			TlsCacert: frontendTlsCacert,
-			TlsCert:   frontendTlsCert,
-			TlsKey:    frontendTlsKey,
+			TLSCacert: frontendTLSCacert,
+			TLSCert:   frontendTLSCert,
+			TLSKey:    frontendTLSKey,
 		},
 		Rules: rules,
 	}

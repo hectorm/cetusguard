@@ -25,7 +25,7 @@ import (
 )
 
 const (
-	minTlsVersion = tls.VersionTLS12
+	minTLSVersion = tls.VersionTLS12
 )
 
 const (
@@ -35,16 +35,16 @@ const (
 
 type Backend struct {
 	Addr      string
-	TlsCacert string
-	TlsCert   string
-	TlsKey    string
+	TLSCacert string
+	TLSCert   string
+	TLSKey    string
 }
 
 type Frontend struct {
 	Addr      []string
-	TlsCacert string
-	TlsCert   string
-	TlsKey    string
+	TLSCacert string
+	TLSCert   string
+	TLSKey    string
 }
 
 type Server struct {
@@ -54,12 +54,12 @@ type Server struct {
 
 	backendProto      string
 	backendHost       string
-	backendTlsConfig  *tls.Config
-	backendHttpClient *http.Client
+	backendTLSConfig  *tls.Config
+	backendHTTPClient *http.Client
 
 	frontendNetListeners []net.Listener
-	frontendTlsConfig    *tls.Config
-	frontendHttpServer   *http.Server
+	frontendTLSConfig    *tls.Config
+	frontendHTTPServer   *http.Server
 
 	runningState atomic.Int32
 	mu           sync.Mutex
@@ -84,7 +84,7 @@ func (cg *Server) Start(ready chan<- any) error {
 		return err
 	}
 
-	cg.backendTlsConfig, err = clientTlsConfig(cg.Backend.TlsCacert, cg.Backend.TlsCert, cg.Backend.TlsKey)
+	cg.backendTLSConfig, err = clientTLSConfig(cg.Backend.TLSCacert, cg.Backend.TLSCert, cg.Backend.TLSKey)
 	if err != nil {
 		return err
 	}
@@ -94,10 +94,10 @@ func (cg *Server) Start(ready chan<- any) error {
 		KeepAlive: 90 * time.Second,
 	}
 
-	cg.backendHttpClient = &http.Client{
+	cg.backendHTTPClient = &http.Client{
 		Timeout: 30 * time.Second,
 		Transport: &http.Transport{
-			TLSClientConfig:       cg.backendTlsConfig,
+			TLSClientConfig:       cg.backendTLSConfig,
 			MaxIdleConns:          10,
 			MaxIdleConnsPerHost:   10,
 			TLSHandshakeTimeout:   10 * time.Second,
@@ -127,13 +127,13 @@ func (cg *Server) Start(ready chan<- any) error {
 		}
 	}()
 
-	cg.frontendTlsConfig, err = serverTlsConfig(cg.Frontend.TlsCacert, cg.Frontend.TlsCert, cg.Frontend.TlsKey)
+	cg.frontendTLSConfig, err = serverTLSConfig(cg.Frontend.TLSCacert, cg.Frontend.TLSCert, cg.Frontend.TLSKey)
 	if err != nil {
 		return err
 	}
 
-	cg.frontendHttpServer = &http.Server{
-		TLSConfig:         cg.frontendTlsConfig,
+	cg.frontendHTTPServer = &http.Server{
+		TLSConfig:         cg.frontendTLSConfig,
 		ReadTimeout:       120 * time.Minute,
 		ReadHeaderTimeout: 10 * time.Second,
 		WriteTimeout:      120 * time.Minute,
@@ -175,7 +175,7 @@ func (cg *Server) Start(ready chan<- any) error {
 			if err != http.ErrServerClosed {
 				chErr <- err
 			}
-		}(l, cg.frontendHttpServer, cg.frontendTlsConfig)
+		}(l, cg.frontendHTTPServer, cg.frontendTLSConfig)
 	}
 
 	cg.setIsRunning(true)
@@ -197,8 +197,8 @@ func (cg *Server) Stop() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	cg.backendHttpClient.CloseIdleConnections()
-	err := cg.frontendHttpServer.Shutdown(ctx)
+	cg.backendHTTPClient.CloseIdleConnections()
+	err := cg.frontendHTTPServer.Shutdown(ctx)
 
 	logger.Infof("exit\n")
 	return err
@@ -249,7 +249,7 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 	}
 
 	newReq := req.Clone(req.Context())
-	if cg.backendTlsConfig != nil {
+	if cg.backendTLSConfig != nil {
 		newReq.URL.Scheme = "https"
 	} else {
 		newReq.URL.Scheme = "http"
@@ -260,7 +260,7 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 		newReq.URL.Host = cg.backendHost
 	}
 
-	res, err := cg.backendHttpClient.Transport.RoundTrip(newReq)
+	res, err := cg.backendHTTPClient.Transport.RoundTrip(newReq)
 	if err == io.EOF || err == io.ErrUnexpectedEOF || errors.Is(err, context.Canceled) || errors.Is(err, syscall.ECONNREFUSED) {
 		mWri.WriteHeader(http.StatusBadGateway)
 		return nil
@@ -376,7 +376,7 @@ func (cg *Server) handleInvalidRequest(wri http.ResponseWriter, req *http.Reques
 	wri.WriteHeader(http.StatusForbidden)
 }
 
-func clientTlsConfig(cacertPath string, certPath string, keyPath string) (*tls.Config, error) {
+func clientTLSConfig(cacertPath string, certPath string, keyPath string) (*tls.Config, error) {
 	var tlsConfig *tls.Config
 
 	var cacertPool *x509.CertPool
@@ -402,7 +402,7 @@ func clientTlsConfig(cacertPath string, certPath string, keyPath string) (*tls.C
 
 	if cacertPool != nil || len(certificates) > 0 {
 		tlsConfig = &tls.Config{
-			MinVersion:   minTlsVersion,
+			MinVersion:   minTLSVersion,
 			RootCAs:      cacertPool,
 			Certificates: certificates,
 		}
@@ -411,7 +411,7 @@ func clientTlsConfig(cacertPath string, certPath string, keyPath string) (*tls.C
 	return tlsConfig, nil
 }
 
-func serverTlsConfig(cacertPath string, certPath string, keyPath string) (*tls.Config, error) {
+func serverTLSConfig(cacertPath string, certPath string, keyPath string) (*tls.Config, error) {
 	var tlsConfig *tls.Config
 
 	var clientAuth tls.ClientAuthType
@@ -441,7 +441,7 @@ func serverTlsConfig(cacertPath string, certPath string, keyPath string) (*tls.C
 
 	if cacertPool != nil || len(certificates) > 0 {
 		tlsConfig = &tls.Config{
-			MinVersion:   minTlsVersion,
+			MinVersion:   minTLSVersion,
 			Certificates: certificates,
 			ClientAuth:   clientAuth,
 			ClientCAs:    cacertPool,
