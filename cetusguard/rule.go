@@ -189,6 +189,9 @@ func BuildRulesFromFilePath(path string) ([]Rule, error) {
 
 		rules = append(rules, r...)
 	}
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
 
 	return rules, nil
 }
