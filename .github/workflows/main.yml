@@ -19,12 +19,12 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
+        uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
       - name: "Get Go version"
         id: "go-version"
         uses: "./.github/actions/go-version"
       - name: "Set up Go"
-        uses: "actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5"
+        uses: "actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e"
         with:
           go-version: "${{ steps.go-version.outputs.version }}"
           check-latest: true
@@ -36,26 +36,41 @@ jobs:
     name: "Run gosec"
     runs-on: "ubuntu-latest"
     permissions:
-      actions: "read"
       contents: "read"
-      security-events: "write"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
+        uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
       - name: "Get Go version"
         id: "go-version"
         uses: "./.github/actions/go-version"
       - name: "Set up Go"
-        uses: "actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5"
+        uses: "actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e"
         with:
           go-version: "${{ steps.go-version.outputs.version }}"
           check-latest: true
-      - name: "Install gosec"
-        run: |
-          go install github.com/securego/gosec/v2/cmd/gosec@latest
       - name: "Run gosec"
-        run:
+        run: |
           make gosec
+
+  modernize:
+    name: "Run modernize"
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: "read"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
+      - name: "Get Go version"
+        id: "go-version"
+        uses: "./.github/actions/go-version"
+      - name: "Set up Go"
+        uses: "actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e"
+        with:
+          go-version: "${{ steps.go-version.outputs.version }}"
+          check-latest: true
+      - name: "Run modernize"
+        run: |
+          make modernize
 
   staticcheck:
     name: "Run staticcheck"
@@ -64,25 +79,22 @@ jobs:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
+        uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
       - name: "Get Go version"
         id: "go-version"
         uses: "./.github/actions/go-version"
       - name: "Set up Go"
-        uses: "actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5"
+        uses: "actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e"
         with:
           go-version: "${{ steps.go-version.outputs.version }}"
           check-latest: true
-      - name: "Install staticcheck"
-        run: |
-          go install honnef.co/go/tools/cmd/staticcheck@latest
       - name: "Run staticcheck"
         run: |
           make staticcheck
 
   test:
     name: "Test on ${{ matrix.os }}"
-    needs: ["gofmt", "gosec", "staticcheck"]
+    needs: ["gofmt", "gosec", "modernize", "staticcheck"]
     runs-on: "${{ matrix.os }}"
     permissions:
       contents: "read"
@@ -92,40 +104,34 @@ jobs:
         os: ["ubuntu-latest", "windows-latest", "macos-latest"]
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
+        uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
       - name: "Get Go version"
         id: "go-version"
         uses: "./.github/actions/go-version"
       - name: "Set up Go"
-        uses: "actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5"
+        uses: "actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e"
         with:
           go-version: "${{ steps.go-version.outputs.version }}"
           check-latest: true
       - name: "Test"
-        run: |
-          make test
-        env:
-          CGO_ENABLED: "1"
-      - name: "Test (race)"
-        run: |
-          make test-race
+        run: make test GO_TEST_ARGS="-race -timeout=240s"
         env:
           CGO_ENABLED: "1"
 
   test-e2e:
     name: "Test e2e"
-    needs: ["gofmt", "gosec", "staticcheck"]
+    needs: ["gofmt", "gosec", "modernize", "staticcheck"]
     runs-on: "ubuntu-24.04"
     permissions:
       contents: "read"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
+        uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
       - name: "Get Go version"
         id: "go-version"
         uses: "./.github/actions/go-version"
       - name: "Set up Go"
-        uses: "actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5"
+        uses: "actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e"
         with:
           go-version: "${{ steps.go-version.outputs.version }}"
           check-latest: true
@@ -162,7 +168,7 @@ jobs:
           - { GOOS: "darwin", GOARCH: "arm64" }
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
+        uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
         with:
           filter: "blob:none"
           fetch-depth: 0
@@ -172,7 +178,7 @@ jobs:
         id: "go-version"
         uses: "./.github/actions/go-version"
       - name: "Set up Go"
-        uses: "actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5"
+        uses: "actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e"
         with:
           go-version: "${{ steps.go-version.outputs.version }}"
           check-latest: true
@@ -184,11 +190,11 @@ jobs:
             GOARM="${{ matrix.go.GOARM }}"
           file ./dist/* && gzip -nv ./dist/*
       - name: "Generate artifact attestation"
-        uses: "actions/attest-build-provenance@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8"
+        uses: "actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8"
         with:
           subject-path: "./dist/*.gz"
       - name: "Upload artifact"
-        uses: "actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f"
+        uses: "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
         with:
           name: "dist-${{ matrix.go.GOOS }}-${{ matrix.go.GOARCH }}-${{ matrix.go.GOARM }}"
           path: "./dist/*.gz"
@@ -199,11 +205,14 @@ jobs:
     needs: ["build"]
     runs-on: "ubuntu-latest"
     permissions:
+      artifact-metadata: "write"
+      attestations: "write"
       contents: "read"
+      id-token: "write"
       packages: "write"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8"
+        uses: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
         with:
           filter: "blob:none"
           fetch-depth: 0
@@ -213,21 +222,21 @@ jobs:
         uses: "hectorm/ghaction-docker-buildx-setup@fec3efdbb455c2aa58a4fbfd11a9853f5de2cdba"
       - name: "Login to GitHub Container Registry"
         if: "github.event_name != 'pull_request'"
-        uses: "docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef"
+        uses: "docker/login-action@dbcb813823bdd20940b903addbd779551569679f"
         with:
           registry: "ghcr.io"
           username: "${{ github.actor }}"
           password: "${{ secrets.GITHUB_TOKEN }}"
       - name: "Login to Docker Hub"
         if: "github.event_name != 'pull_request'"
-        uses: "docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef"
+        uses: "docker/login-action@dbcb813823bdd20940b903addbd779551569679f"
         with:
           registry: "docker.io"
           username: "${{ secrets.DOCKERHUB_USERNAME }}"
           password: "${{ secrets.DOCKERHUB_TOKEN }}"
       - name: "Extract metadata"
         id: "meta"
-        uses: "docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051"
+        uses: "docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302"
         with:
           images: |
             ghcr.io/${{ github.repository }}
@@ -240,7 +249,8 @@ jobs:
           labels: |
             org.opencontainers.image.created={{commit_date 'YYYY-MM-DDTHH:mm:ss.SSS[Z]' tz='UTC'}}
       - name: "Build and push"
-        uses: "hectorm/ghaction-docker-buildx-build@33922c57afa698702c5e79d8935676df4da1d85d"
+        id: "build-push"
+        uses: "hectorm/ghaction-docker-buildx-build@cc28557c639a7ccb0dbe0d57a8afd6c381eb38f9"
         with:
           context: "./"
           platforms: |
@@ -259,6 +269,20 @@ jobs:
             --output=type=image,push=${{ github.event_name != 'pull_request' }},rewrite-timestamp=true
             --provenance=mode=max,reproducible=true
             --sbom=true
+      - name: "Generate artifact attestation (GHCR)"
+        if: "github.event_name != 'pull_request'"
+        uses: "actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8"
+        with:
+          subject-name: "ghcr.io/${{ github.repository }}"
+          subject-digest: "${{ steps.build-push.outputs.digest }}"
+          push-to-registry: "${{ github.event_name != 'pull_request' }}"
+      - name: "Generate artifact attestation (Docker Hub)"
+        if: "github.event_name != 'pull_request'"
+        uses: "actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8"
+        with:
+          subject-name: "index.docker.io/${{ github.repository }}"
+          subject-digest: "${{ steps.build-push.outputs.digest }}"
+          push-to-registry: "${{ github.event_name != 'pull_request' }}"
 
   publish-github-release:
     name: "Publish GitHub release"
@@ -269,7 +293,7 @@ jobs:
       contents: "write"
     steps:
       - name: "Download artifacts"
-        uses: "actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131"
+        uses: "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c"
         with:
           pattern: "dist-*"
           merge-multiple: true
