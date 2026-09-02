@@ -129,7 +129,7 @@ func BuildRules(str string) ([]Rule, error) {
 		patternFrag := matches[2]
 
 		methods := make(map[string]struct{})
-		for _, method := range strings.Split(methodsFrag, ",") {
+		for method := range strings.SplitSeq(methodsFrag, ",") {
 			methods[method] = struct{}{}
 		}
 

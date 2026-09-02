@@ -61,7 +61,7 @@ type Server struct {
 	frontendTlsConfig    *tls.Config
 	frontendHttpServer   *http.Server
 
-	runningState int32
+	runningState atomic.Int32
 	mu           sync.Mutex
 }
 
@@ -218,14 +218,14 @@ func (cg *Server) Addrs() ([]net.Addr, error) {
 }
 
 func (cg *Server) IsRunning() bool {
-	return atomic.LoadInt32(&cg.runningState) != 0
+	return cg.runningState.Load() != 0
 }
 
 func (cg *Server) setIsRunning(running bool) {
 	if running {
-		atomic.StoreInt32(&cg.runningState, 1)
+		cg.runningState.Store(1)
 	} else {
-		atomic.StoreInt32(&cg.runningState, 0)
+		cg.runningState.Store(0)
 	}
 }
 
