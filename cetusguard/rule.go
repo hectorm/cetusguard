@@ -28,7 +28,7 @@ var (
 	ruleLineRegex    = regexp.MustCompile(`^[\t ]*([A-Z]+(?:,[A-Z]+)*)[\t ]+(.+?)[\t ]*$`)
 	commentLineRegex = regexp.MustCompile(`^[\t ]*(?:!.*)?$`)
 	newLineRegex     = regexp.MustCompile(`\r?\n`)
-	ruleVars         = map[string]string{
+	ruleVars         = map[string]string{ /* #nosec G101 */
 		"DOMAIN":       `(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)`,
 		"IPV4":         `(?:[0-9]{1,3}(?:\.[0-9]{1,3}){3})`,
 		"IPV6":         `(?:\[[a-fA-F0-9]{0,4}(?::[a-fA-F0-9]{0,4}){2,7}(?:%[a-zA-Z0-9_]+)?\])`,
