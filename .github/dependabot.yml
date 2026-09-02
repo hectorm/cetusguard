@@ -18,6 +18,14 @@ updates:
       docker-all:
         patterns: ["*"]
 
+  - package-ecosystem: "docker-compose"
+    directory: "/examples/compose"
+    schedule:
+      interval: "monthly"
+    groups:
+      docker-compose-all:
+        patterns: ["*"]
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
