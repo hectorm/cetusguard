@@ -28,11 +28,6 @@ const (
 	minTLSVersion = tls.VersionTLS12
 )
 
-const (
-	mediaTypeRawStream         = "application/vnd.docker.raw-stream"
-	mediaTypeMultiplexedStream = "application/vnd.docker.multiplexed-stream"
-)
-
 type Backend struct {
 	Addr      string
 	TLSCacert string
@@ -136,7 +131,7 @@ func (cg *Server) Start(ready chan<- any) error {
 		TLSConfig:         cg.frontendTLSConfig,
 		ReadTimeout:       120 * time.Minute,
 		ReadHeaderTimeout: 10 * time.Second,
-		WriteTimeout:      120 * time.Minute,
+		WriteTimeout:      0, // A positive value closes streaming responses
 		IdleTimeout:       90 * time.Second,
 		ErrorLog:          logger.LgrError(),
 		Handler: http.HandlerFunc(func(wri http.ResponseWriter, req *http.Request) {
@@ -271,19 +266,6 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 	defer func() {
 		_ = res.Body.Close()
 	}()
-
-	resMediaType := res.Header.Get("Content-Type")
-
-	if resMediaType == mediaTypeRawStream || resMediaType == mediaTypeMultiplexedStream {
-		logger.Debugf("stream response\n")
-
-		// If the response is a stream, we need to disable the write deadline to prevent the connection from being closed
-		rc := http.NewResponseController(wri)
-		err = rc.SetWriteDeadline(time.Time{})
-		if err != nil {
-			return fmt.Errorf("error disabling write deadline: %w", err)
-		}
-	}
 
 	if res.StatusCode == 101 {
 		logger.Debugf("connection hijack\n")
