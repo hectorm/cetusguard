@@ -2,19 +2,24 @@ package cetusguard
 
 import (
 	"log"
+	"maps"
 	"os"
 	"path/filepath"
 	"reflect"
 	"regexp"
+	"regexp/syntax"
+	"slices"
 	"strings"
 	"testing"
 )
 
+var expandedRuleVars = maps.Clone(ruleVars)
+
 func init() {
-	for k, v := range ruleVars {
-		for kk, vv := range ruleVars {
+	for k, v := range expandedRuleVars {
+		for kk, vv := range expandedRuleVars {
 			if strings.Contains(vv, "%"+k+"%") {
-				ruleVars[kk] = strings.ReplaceAll(vv, "%"+k+"%", v)
+				expandedRuleVars[kk] = strings.ReplaceAll(vv, "%"+k+"%", v)
 			}
 		}
 	}
@@ -22,7 +27,7 @@ func init() {
 
 func TestRuleVars(t *testing.T) {
 	varRegex := regexp.MustCompile(`%[a-zA-Z0-9_]+%`)
-	for k, v := range ruleVars {
+	for k, v := range expandedRuleVars {
 		if varRegex.MatchString(v) {
 			t.Errorf("%s variable contains an undefined variable: %s", k, v)
 			continue
@@ -30,6 +35,38 @@ func TestRuleVars(t *testing.T) {
 		if _, err := regexp.Compile("^" + v + "$"); err != nil {
 			t.Errorf("%s variable could not be compiled: %v", k, err)
 			continue
+		}
+	}
+}
+
+func TestRuleVarsExcludeQuerySeparator(t *testing.T) {
+	var matchesQuestionMark func(re *syntax.Regexp) bool
+	matchesQuestionMark = func(re *syntax.Regexp) bool {
+		switch re.Op {
+		case syntax.OpAnyChar, syntax.OpAnyCharNotNL:
+			return true
+		case syntax.OpLiteral:
+			if slices.Contains(re.Rune, '?') {
+				return true
+			}
+		case syntax.OpCharClass:
+			for i := 0; i < len(re.Rune); i += 2 {
+				if re.Rune[i] <= '?' && '?' <= re.Rune[i+1] {
+					return true
+				}
+			}
+		}
+		return slices.ContainsFunc(re.Sub, matchesQuestionMark)
+	}
+
+	for k, v := range expandedRuleVars {
+		re, err := syntax.Parse(v, syntax.Perl)
+		if err != nil {
+			t.Errorf("%s variable could not be parsed: %v", k, err)
+			continue
+		}
+		if matchesQuestionMark(re) {
+			t.Errorf("%s variable can match a query separator: %s", k, v)
 		}
 	}
 }
@@ -96,6 +133,7 @@ func TestBuildInvalidRules(t *testing.T) {
 		"GET %API_PREFIX%/\x81/test06",
 		"GET\n%API_PREFIX%/test07",
 		"GET\r\n%API_PREFIX%/test08",
+		"GET %API_PREFIX%/test09\\?)|(.*",
 	}
 
 	for _, v := range rawRules {
@@ -105,6 +143,97 @@ func TestBuildInvalidRules(t *testing.T) {
 			continue
 		}
 	}
+}
+
+func TestBuildQueryRules(t *testing.T) {
+	rawRules := map[string]struct {
+		pattern    string
+		matchQuery bool
+	}{
+		`GET /x`:                     {`^/x$`, false},
+		`GET /x?`:                    {`^/x?$`, false},
+		`GET /x[?&]`:                 {`^/x[?&]$`, false},
+		`GET /x\x3F`:                 {`^/x\x3F$`, false},
+		`GET /x\?a=1`:                {`^(?:/x\?a=1)$`, true},
+		`GET /x\?a=.*`:               {`^(?:/x\?a=.*)$`, true},
+		`GET /x[^/\?]`:               {`^(?:/x[^/\?])$`, true},
+		`GET /x\\?`:                  {`^(?:/x\\?)$`, true},
+		`GET /a\?x=1|/b\?y=1`:        {`^(?:/a\?x=1|/b\?y=1)$`, true},
+		`GET /x(?:\?a=(?:0|false))?`: {`^(?:/x(?:\?a=(?:0|false))?)$`, true},
+		`GET /x\`:                    {`^/x\$`, false},
+		`GET /a|/b`:                  {`^/a|/b$`, false},
+	}
+
+	for raw, wanted := range rawRules {
+		rules, err := BuildRules(raw)
+		if err != nil {
+			t.Errorf("\"%s\": %v", raw, err)
+			continue
+		}
+		if len(rules) != 1 {
+			t.Errorf("\"%s\": len(rules) = %d, want = %d", raw, len(rules), 1)
+			continue
+		}
+		if rules[0].MatchQuery != wanted.matchQuery {
+			t.Errorf("\"%s\": MatchQuery = %t, want = %t", raw, rules[0].MatchQuery, wanted.matchQuery)
+		}
+		if rules[0].Pattern.String() != wanted.pattern {
+			t.Errorf("\"%s\": Pattern = \"%s\", want = \"%s\"", raw, rules[0].Pattern, wanted.pattern)
+		}
+	}
+}
+
+func TestBuildOverlappingVarRules(t *testing.T) {
+	if !slices.IsSorted(ruleVarNames) {
+		t.Fatalf("ruleVarNames = %v, want = sorted", ruleVarNames)
+	}
+
+	// "%API_PREFIX%" and "%CONTAINER_NAME%" overlap on the shared "%"
+	raw := "GET %API_PREFIX%CONTAINER_NAME%0"
+	wanted := `^(?:/v[0-9]+(?:\.[0-9]+)*)?CONTAINER_NAME%0$`
+
+	for range 100 {
+		rules, err := BuildRules(raw)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if result := rules[0].Pattern.String(); result != wanted {
+			t.Fatalf("\"%s\": Pattern = \"%s\", want = \"%s\"", raw, result, wanted)
+		}
+	}
+}
+
+func FuzzBuildRules(f *testing.F) {
+	seeds := []string{
+		`GET %API_PREFIX_CONTAINERS%/json(?:\?all=(?:0|false))?`,
+		`DELETE %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%(?:\?v=1)?`,
+		`POST %API_PREFIX_IMAGES%/create\?fromImage=ghcr\.io%2Fexample%2F[^&]+&tag=[^&]+`,
+		`GET /a\?x=1|/b\?y=1`,
+		`GET /a\?b)|(.*`,
+		`GET (?m)/x\?a=1`,
+		`GET /x\?\Qa=1)|(.*\E`,
+		`GET /x\?a=1\Q`,
+	}
+	for _, seed := range seeds {
+		f.Add(seed)
+	}
+
+	f.Fuzz(func(t *testing.T, raw string) {
+		rules, _ := BuildRules(raw)
+		for _, rule := range rules {
+			if !rule.MatchQuery {
+				continue
+			}
+			pattern := rule.Pattern.String()
+			re, err := syntax.Parse(pattern, syntax.Perl)
+			if err != nil {
+				t.Fatalf("\"%s\": %v", raw, err)
+			}
+			if re.Op != syntax.OpConcat || re.Sub[0].Op != syntax.OpBeginText || re.Sub[len(re.Sub)-1].Op != syntax.OpEndText {
+				t.Fatalf("\"%s\": Pattern = \"%s\", want = anchored as a whole", raw, pattern)
+			}
+		}
+	})
 }
 
 func TestBuildRulesFromFilePath(t *testing.T) {
@@ -183,7 +312,7 @@ func TestBuildRulesFromNonexistentPath(t *testing.T) {
 }
 
 func TestDomainRegex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleVars["DOMAIN"] + "$")
+	re := regexp.MustCompile("^" + expandedRuleVars["DOMAIN"] + "$")
 
 	testCases := map[string]bool{
 		"":                  false,
@@ -208,7 +337,7 @@ func TestDomainRegex(t *testing.T) {
 }
 
 func TestIpv4Regex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleVars["IPV4"] + "$")
+	re := regexp.MustCompile("^" + expandedRuleVars["IPV4"] + "$")
 
 	testCases := map[string]bool{
 		"":                false,
@@ -228,7 +357,7 @@ func TestIpv4Regex(t *testing.T) {
 }
 
 func TestIpv6Regex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleVars["IPV6"] + "$")
+	re := regexp.MustCompile("^" + expandedRuleVars["IPV6"] + "$")
 
 	testCases := map[string]bool{
 		"":                    false,
@@ -250,7 +379,7 @@ func TestIpv6Regex(t *testing.T) {
 }
 
 func TestHostRegex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleVars["HOST"] + "$")
+	re := regexp.MustCompile("^" + expandedRuleVars["HOST"] + "$")
 
 	testCases := map[string]bool{
 		"":                      false,
@@ -280,7 +409,7 @@ func TestHostRegex(t *testing.T) {
 }
 
 func TestObjectIdRegex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleVars["_OBJECT_ID"] + "$")
+	re := regexp.MustCompile("^" + expandedRuleVars["_OBJECT_ID"] + "$")
 
 	testCases := map[string]bool{
 		"":                 false,
@@ -296,7 +425,7 @@ func TestObjectIdRegex(t *testing.T) {
 }
 
 func TestObjectNameRegex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleVars["_OBJECT_NAME"] + "$")
+	re := regexp.MustCompile("^" + expandedRuleVars["_OBJECT_NAME"] + "$")
 
 	testCases := map[string]bool{
 		"":        false,
@@ -317,7 +446,7 @@ func TestObjectNameRegex(t *testing.T) {
 }
 
 func TestImageReferenceRegex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleVars["IMAGE_REFERENCE"] + "$")
+	re := regexp.MustCompile("^" + expandedRuleVars["IMAGE_REFERENCE"] + "$")
 
 	testCases := map[string]bool{
 		"":                        false,
@@ -368,8 +497,28 @@ func TestImageReferenceRegex(t *testing.T) {
 	}
 }
 
+func TestNetworkNameRegex(t *testing.T) {
+	re := regexp.MustCompile("^" + expandedRuleVars["NETWORK_NAME"] + "$")
+
+	testCases := map[string]bool{
+		"":           false,
+		"n":          true,
+		"network":    true,
+		"net work":   true,
+		"net%3Fwork": true,
+		"net/work":   false,
+		"net?work":   false,
+	}
+
+	for input, wanted := range testCases {
+		if result := re.MatchString(input); result != wanted {
+			t.Errorf("\"%s\" match = %t, want = %t", input, result, wanted)
+		}
+	}
+}
+
 func TestApiPrefixRegex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleVars["API_PREFIX"] + "$")
+	re := regexp.MustCompile("^" + expandedRuleVars["API_PREFIX"] + "$")
 
 	testCases := map[string]bool{
 		"":           true,
@@ -396,8 +545,8 @@ func TestApiPrefixRegex(t *testing.T) {
 	}
 }
 
-func TestApiPrefixPing(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleVars["API_PREFIX_PING"] + "$")
+func TestApiPrefixPingRegex(t *testing.T) {
+	re := regexp.MustCompile("^" + expandedRuleVars["API_PREFIX_PING"] + "$")
 
 	testCases := map[string]bool{
 		"":            false,
@@ -420,7 +569,7 @@ func TestApiPrefixPing(t *testing.T) {
 }
 
 func TestApiPrefixLibpodRegex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleVars["API_PREFIX_LIBPOD"] + "$")
+	re := regexp.MustCompile("^" + expandedRuleVars["API_PREFIX_LIBPOD"] + "$")
 
 	testCases := map[string]bool{
 		"":                  false,
@@ -439,7 +588,7 @@ func TestApiPrefixLibpodRegex(t *testing.T) {
 }
 
 func TestApiPrefixLibpodPingRegex(t *testing.T) {
-	re := regexp.MustCompile("^" + ruleVars["API_PREFIX_LIBPOD_PING"] + "$")
+	re := regexp.MustCompile("^" + expandedRuleVars["API_PREFIX_LIBPOD_PING"] + "$")
 
 	testCases := map[string]bool{
 		"":                    false,

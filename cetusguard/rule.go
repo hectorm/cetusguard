@@ -3,10 +3,11 @@ package cetusguard
 import (
 	"bufio"
 	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
 	"regexp"
-	"sort"
+	"slices"
 	"strings"
 
 	"github.com/hectorm/cetusguard/internal/logger"
@@ -53,7 +54,7 @@ var (
 		"VOLUME_ID_OR_NAME": `(?:%VOLUME_ID%|%VOLUME_NAME%)`,
 
 		"NETWORK_ID":         `%_OBJECT_ID%`,
-		"NETWORK_NAME":       `(?:[^/]+)`,
+		"NETWORK_NAME":       `(?:[^/?]+)`,
 		"NETWORK_ID_OR_NAME": `(?:%NETWORK_ID%|%NETWORK_NAME%)`,
 
 		"PLUGIN_ID":         `%_OBJECT_ID%`,
@@ -110,6 +111,7 @@ var (
 		"_OBJECT_ID":   `(?:[a-fA-F0-9]+)`,
 		"_OBJECT_NAME": `(?:[a-zA-Z0-9][a-zA-Z0-9_.-]+)`,
 	}
+	ruleVarNames = slices.Sorted(maps.Keys(ruleVars))
 )
 
 func BuildRules(str string) ([]Rule, error) {
@@ -135,9 +137,9 @@ func BuildRules(str string) ([]Rule, error) {
 
 		for {
 			p := patternFrag
-			for k, v := range ruleVars {
+			for _, k := range ruleVarNames {
 				if strings.Contains(p, "%"+k+"%") {
-					p = strings.ReplaceAll(p, "%"+k+"%", v)
+					p = strings.ReplaceAll(p, "%"+k+"%", ruleVars[k])
 				}
 			}
 			if p == patternFrag {
@@ -145,15 +147,23 @@ func BuildRules(str string) ([]Rule, error) {
 			}
 			patternFrag = p
 		}
-		pattern, err := regexp.Compile("^" + patternFrag + "$")
+		matchQuery := strings.Contains(patternFrag, `\?`)
+		expr := "^" + patternFrag + "$"
+		if matchQuery {
+			if _, err := regexp.Compile(patternFrag); err != nil {
+				return nil, fmt.Errorf("invalid rule pattern: %s", str)
+			}
+			expr = "^(?:" + patternFrag + ")$"
+		}
+		pattern, err := regexp.Compile(expr)
 		if err != nil {
 			return nil, fmt.Errorf("invalid rule pattern: %s", str)
 		}
 
-		rule := Rule{methods, pattern}
+		rule := Rule{Methods: methods, Pattern: pattern, MatchQuery: matchQuery}
 		rules = append(rules, rule)
 
-		logger.Debugf("loaded rule: %s\n", rule)
+		logger.Debugf("loaded rule: %s (match query: %t)\n", rule, rule.MatchQuery)
 	}
 
 	return rules, nil
@@ -197,16 +207,13 @@ func BuildRulesFromFilePath(path string) ([]Rule, error) {
 }
 
 type Rule struct {
-	Methods map[string]struct{}
-	Pattern *regexp.Regexp
+	Methods    map[string]struct{}
+	Pattern    *regexp.Regexp
+	MatchQuery bool
 }
 
 func (rule Rule) String() string {
-	methods := make([]string, 0, len(rule.Methods))
-	for k := range rule.Methods {
-		methods = append(methods, k)
-	}
-	sort.Strings(methods)
+	methods := slices.Sorted(maps.Keys(rule.Methods))
 
 	return fmt.Sprintf("%s %s",
 		strings.Join(methods, ","),

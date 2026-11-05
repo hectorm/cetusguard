@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"mime"
 	"net"
 	"net/http"
 	"net/url"
@@ -135,6 +136,7 @@ func (cg *Server) Start(ready chan<- any) error {
 		IdleTimeout:       90 * time.Second,
 		ErrorLog:          logger.LgrError(),
 		Handler: http.HandlerFunc(func(wri http.ResponseWriter, req *http.Request) {
+			req = normalizeRequest(req)
 			if cg.validateRequest(req) {
 				err := cg.handleValidRequest(wri, req)
 				if err != nil {
@@ -225,10 +227,27 @@ func (cg *Server) setIsRunning(running bool) {
 }
 
 func (cg *Server) validateRequest(req *http.Request) bool {
+	if req.URL.Opaque != "" {
+		return false
+	}
+
 	p := cleanPath(req.URL.Path)
+	query, parsed := canonicalizeQuery(req.URL.RawQuery)
+	queryOk := parsed && !strings.Contains(p, "?") && !hasFormBody(req)
+	target := p
+	if query != "" {
+		target += "?" + query
+	}
+
 	for _, rule := range cg.Rules {
-		_, mOk := rule.Methods[req.Method]
-		if mOk && rule.Pattern.MatchString(p) {
+		if _, ok := rule.Methods[req.Method]; !ok {
+			continue
+		}
+		if rule.MatchQuery {
+			if queryOk && rule.Pattern.MatchString(target) {
+				return true
+			}
+		} else if rule.Pattern.MatchString(p) {
 			return true
 		}
 	}
@@ -236,7 +255,7 @@ func (cg *Server) validateRequest(req *http.Request) bool {
 }
 
 func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request) error {
-	logger.Debugf("allowed request: %s %s\n", req.Method, req.URL.Path)
+	logger.Debugf("allowed request: %s %s\n", req.Method, req.URL.RequestURI())
 
 	mWri := &middleware.ResponseWriter{ResponseWriter: wri}
 	if f, ok := wri.(http.Flusher); ok {
@@ -353,7 +372,11 @@ func (cg *Server) handleValidRequest(wri http.ResponseWriter, req *http.Request)
 }
 
 func (cg *Server) handleInvalidRequest(wri http.ResponseWriter, req *http.Request) {
-	logger.Warningf("denied request: %s %s\n", req.Method, req.URL.Path)
+	target := req.URL.EscapedPath()
+	if logger.Level() >= logger.LvlDebug {
+		target = req.URL.RequestURI()
+	}
+	logger.Warningf("denied request: %s %s\n", req.Method, target)
 
 	wri.WriteHeader(http.StatusForbidden)
 }
@@ -453,6 +476,18 @@ func parseAddr(addr string) (string, string, error) {
 	}
 }
 
+func normalizeRequest(req *http.Request) *http.Request {
+	r := *req
+	u := *req.URL
+	r.URL = &u
+	u.Path = cleanPath(u.Path)
+	u.RawPath = ""
+	if rawQuery, ok := canonicalizeQuery(u.RawQuery); ok {
+		u.RawQuery = rawQuery
+	}
+	return &r
+}
+
 // Borrowed from net/http/server.go
 func cleanPath(p string) string {
 	if p == "" {
@@ -466,4 +501,25 @@ func cleanPath(p string) string {
 		np += "/"
 	}
 	return np
+}
+
+func canonicalizeQuery(rawQuery string) (string, bool) {
+	values, err := url.ParseQuery(rawQuery)
+	if err != nil {
+		return "", false
+	}
+	return values.Encode(), true
+}
+
+func hasFormBody(req *http.Request) bool {
+	if req.ContentLength == 0 {
+		return false
+	}
+	for _, ct := range req.Header.Values("Content-Type") {
+		mediaType, _, _ := mime.ParseMediaType(ct)
+		if mediaType == "application/x-www-form-urlencoded" || mediaType == "multipart/form-data" {
+			return true
+		}
+	}
+	return false
 }

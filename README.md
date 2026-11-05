@@ -64,11 +64,11 @@ All other endpoints are denied and must be explicitly allowed through a rule syn
 blank   = ( SP / HTAB )
 method  = 1*%x41-5A                             ; HTTP method
 methods = method *( "," method )                ; HTTP method list
-pattern = 1*UNICODE                             ; Target path regex
+pattern = 1*UNICODE                             ; Target regex (path and optional query)
 rule    = *blank methods 1*blank pattern *blank ; Rule
 ```
 
-Only requests that match the specified HTTP methods and target path regex are allowed.
+Only requests that match the specified HTTP methods and target regex of a rule are allowed. The regex is matched against the decoded path or, if it contains `\?`, against the path and query, with the query parameters sorted by key and percent-encoded in uppercase except for ASCII letters, digits and `-._~` (e.g. `/` as `%2F`, spaces as `+`). Such rules never match requests with an unparsable query or a form body. Wildcards before `\?` must not match `?`, e.g. use `[^/?]+` instead of `[^/]+`.
 
 There are several variables specified by surrounding `%` that can be used to construct rule patterns, the full list and values can be found in the [`rule.go`](./cetusguard/rule.go) file.
 
@@ -94,26 +94,32 @@ GET %API_PREFIX_EVENTS%
 ! List containers
 GET %API_PREFIX_CONTAINERS%/json
 
+! List only running containers
+GET %API_PREFIX_CONTAINERS%/json(?:\?all=(?:0|false))?
+
 ! Inspect a container
 GET %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/json
 
 ! Create a container
-POST %API_PREFIX_CONTAINERS%/create(\?.*)?
+POST %API_PREFIX_CONTAINERS%/create
 
 ! Start a container
-POST %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/start(\?.*)?
+POST %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/start
 
 ! Kill a container
-POST %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/kill(\?.*)?
+POST %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%/kill
 
 ! Remove a container
-DELETE %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%(\?.*)?
+DELETE %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%
+
+! Remove a container only if it is stopped
+DELETE %API_PREFIX_CONTAINERS%/%CONTAINER_ID_OR_NAME%(?:\?v=1)?
 
 ! Connect a container to a network
-POST %API_PREFIX_NETWORKS%/%NETWORK_ID_OR_NAME%/connect(\?.*)?
+POST %API_PREFIX_NETWORKS%/%NETWORK_ID_OR_NAME%/connect
 
 ! Disconnect a container from a network
-POST %API_PREFIX_NETWORKS%/%NETWORK_ID_OR_NAME%/disconnect(\?.*)?
+POST %API_PREFIX_NETWORKS%/%NETWORK_ID_OR_NAME%/disconnect
 
 ! Inspect an image
 GET %API_PREFIX_IMAGES%/%IMAGE_ID_OR_REFERENCE%/json
@@ -121,8 +127,11 @@ GET %API_PREFIX_IMAGES%/%IMAGE_ID_OR_REFERENCE%/json
 ! Pull or import an image
 POST %API_PREFIX_IMAGES%/create
 
+! Pull images only from a GitHub Container Registry organization
+POST %API_PREFIX_IMAGES%/create\?fromImage=ghcr\.io%2Fexample%2F[^&]+&tag=[^&]+
+
 ! Remove an image
-DELETE %API_PREFIX_IMAGES%/%IMAGE_ID_OR_REFERENCE%(\?.*)?
+DELETE %API_PREFIX_IMAGES%/%IMAGE_ID_OR_REFERENCE%
 ```
 
 ## License
